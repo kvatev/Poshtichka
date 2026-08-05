@@ -24,26 +24,31 @@ import {
   BarChart3,
   Gift,
   Megaphone,
+  Kanban,
+  DollarSign,
+  Database,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type AdminTab =
   | "dashboard"
+  | "leads"
   | "calendar"
-  | "bookings"
+  | "finance"
   | "customers"
+  | "media"
+  | "homepage"
+  | "content"
   | "gallery"
   | "testimonials"
   | "faq"
   | "pricing"
   | "products"
-  | "media"
-  | "content"
-  | "homepage"
-  | "seo"
-  | "analytics"
   | "popups"
   | "banners"
+  | "seo"
+  | "analytics"
+  | "backup"
   | "settings";
 
 interface AdminSidebarProps {
@@ -55,9 +60,10 @@ interface AdminSidebarProps {
 
 export const adminNavItems: { id: AdminTab; label: string; icon: React.ElementType; section?: string }[] = [
   { id: "dashboard", label: "Табло", icon: LayoutDashboard },
-  { id: "calendar", label: "Календар", icon: Calendar },
-  { id: "bookings", label: "Запитвания", icon: ClipboardList },
-  { id: "customers", label: "Клиенти", icon: Users },
+  { id: "leads", label: "Запитвания (Канбан)", icon: Kanban },
+  { id: "calendar", label: "Календар Заетост", icon: Calendar },
+  { id: "finance", label: "Финанси & Плащания", icon: DollarSign },
+  { id: "customers", label: "Клиенти & Профили", icon: Users },
   { id: "media", label: "Медийна Библиотека", icon: FolderOpen, section: "Управление" },
   { id: "homepage", label: "Начална Страница", icon: HomeIcon },
   { id: "content", label: "Текстове & Съдържание", icon: FileText },
@@ -69,8 +75,9 @@ export const adminNavItems: { id: AdminTab; label: string; icon: React.ElementTy
   { id: "popups", label: "Попъп Мениджър", icon: Gift, section: "Маркетинг" },
   { id: "banners", label: "Промо Банери", icon: Megaphone },
   { id: "seo", label: "SEO & Метатегове", icon: Search },
-  { id: "analytics", label: "Аналитика", icon: BarChart3 },
-  { id: "settings", label: "Общи Настройки", icon: Settings, section: "Система" },
+  { id: "analytics", label: "Аналитика & Отчети", icon: BarChart3 },
+  { id: "backup", label: "Бекъп & Сигурност", icon: Database, section: "Система" },
+  { id: "settings", label: "Общи Настройки", icon: Settings },
 ];
 
 export const AdminSidebar = ({
@@ -111,7 +118,7 @@ export const AdminSidebar = ({
                   Пощичка
                 </span>
                 <span className="text-[10px] uppercase tracking-widest text-brand-primary font-sans">
-                  CMS Admin System
+                  SaaS Business CRM
                 </span>
               </div>
             )}
@@ -127,7 +134,7 @@ export const AdminSidebar = ({
 
         {/* Nav List */}
         <nav className="space-y-1">
-          {adminNavItems.map((item, idx) => {
+          {adminNavItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
             const showSectionLabel = item.section && !collapsed;
