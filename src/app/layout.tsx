@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80",
+        url: "https://poshtichka.bg/media/gallery/Tezza_2025_07_07_170901960_1.webp",
         width: 1200,
         height: 630,
         alt: "Пощичка - Интерактивно преживяване",
@@ -59,7 +59,7 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "Пощичка",
-    "image": "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80",
+    "image": "https://poshtichka.bg/media/gallery/Tezza_2025_07_07_170901960_1.webp",
     "description": "Интерактивно преживяване и персонализирани спомени за сватби и корпоративни събития.",
     "address": {
       "@type": "PostalAddress",

@@ -36,8 +36,8 @@ export default function AboutPage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-8 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         <div className="relative h-96 sm:h-[500px] rounded-3xl overflow-hidden shadow-2xl border border-brand-primary/30">
           <Image
-            src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80"
-            alt="За Пощичка"
+            src="/media/gallery/Tezza_2025_07_07_170901960_1.webp"
+            alt="Автентичният мобилен кът на Пощичка"
             fill
             className="object-cover"
           />

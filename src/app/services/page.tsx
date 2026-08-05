@@ -22,7 +22,8 @@ const servicesList = [
       "Луксозни книгоразделители",
       "Специални метални жетони за гостите",
     ],
-    image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1000&q=80",
+    image: "/media/gallery/Tezza_2025_07_13_155326413.webp",
+    alt: "Сватбени пликове и автентични картички от Пощичка",
   },
   {
     title: "Корпоративно брандиране & Активации",
@@ -34,7 +35,8 @@ const servicesList = [
       "Подходящо за над 300+ участници",
       "Професионално обслужване на място",
     ],
-    image: "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1000&q=80",
+    image: "/media/gallery/Tezza_2025_07_13_155324686.webp",
+    alt: "Табло Пощичка с маркови картички и жетони",
   },
   {
     title: "Рождени дни, Юбилеи & Бейби Шауър",
@@ -46,7 +48,8 @@ const servicesList = [
       "Забавни и интерактивни татуировки за деца и възрастни",
       "Компактно и стилно оборудване",
     ],
-    image: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=1000&q=80",
+    image: "/media/gallery/Tezza_2025_07_13_155331795.webp",
+    alt: "Интерактивно използване на вендинг машина Пощичка",
   },
 ];
 
@@ -112,7 +115,7 @@ export default function ServicesPage() {
             <div className={`relative h-80 sm:h-96 rounded-3xl overflow-hidden shadow-2xl border border-brand-primary/30 ${index % 2 === 1 ? "lg:order-1" : ""}`}>
               <Image
                 src={service.image}
-                alt={service.title}
+                alt={service.alt}
                 fill
                 className="object-cover"
               />

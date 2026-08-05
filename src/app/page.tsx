@@ -9,11 +9,9 @@ import {
   Heart,
   Gift,
   Coins,
-  Smile,
   ArrowRight,
   Star,
   CheckCircle,
-  HelpCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -61,13 +59,13 @@ export default function HomePage() {
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden px-4 sm:px-8 pt-8">
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=2000&q=80"
-            alt="Сватбено тържество с Пощичка"
+            src="/media/gallery/Tezza_2025_07_07_170901960_1.webp"
+            alt="Мобилен кът на Пощичка за събития"
             fill
             priority
             className="object-cover object-center scale-105 filter brightness-[0.45]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-bg via-transparent to-brand-dark/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-bg via-transparent to-brand-dark/50" />
         </div>
 
         <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8 text-white">
@@ -122,7 +120,7 @@ export default function HomePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
-            className="pt-8 flex flex-wrap items-center justify-center gap-8 text-xs text-white/70 font-sans"
+            className="pt-8 flex flex-wrap items-center justify-center gap-8 text-xs text-white/80 font-sans"
           >
             <div className="flex items-center space-x-2">
               <CheckCircle className="w-4 h-4 text-brand-primary" />
@@ -157,33 +155,51 @@ export default function HomePage() {
               icon: Coins,
               title: "Пускане на жетон",
               desc: "Всеки гост получава специална монета-жетон, с която активира бутиковата машина.",
+              img: "/media/gallery/Tezza_2025_07_13_155331795.webp",
+              alt: "Гост пуска монета-жетон в машина Пощичка",
             },
             {
               step: "02",
               icon: Gift,
               title: "Избор & Печат на живо",
               desc: "Гостът избира желания подарък — картичка, временна татуировка или книгоразделител.",
+              img: "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
+              alt: "Брандирани картички Пощичка в отделенията на машината",
             },
             {
               step: "03",
               icon: Heart,
               title: "Спомен за цял живот",
               desc: "Всеки си тръгва с усмивка и личен предмет, изработен специално за Вашето събитие.",
+              img: "/media/gallery/Tezza_2025_07_13_155333570.webp",
+              alt: "Гост държи готови авторски картички от събитието",
             },
           ].map((item, index) => (
-            <Card key={index} className="relative overflow-hidden group">
-              <span className="absolute top-4 right-6 text-5xl font-serif font-bold text-brand-secondary group-hover:text-brand-primary/40 transition-colors">
-                {item.step}
-              </span>
-              <div className="w-14 h-14 rounded-2xl bg-brand-secondary flex items-center justify-center text-brand-accent mb-6 group-hover:scale-110 transition-transform">
-                <item.icon className="w-7 h-7" />
+            <Card key={index} className="relative overflow-hidden group p-0 flex flex-col justify-between">
+              <div className="relative h-48 w-full overflow-hidden">
+                <Image
+                  src={item.img}
+                  alt={item.alt}
+                  fill
+                  loading="lazy"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-brand-dark/20 group-hover:bg-brand-dark/10 transition-colors" />
+                <span className="absolute top-3 right-4 text-4xl font-serif font-bold text-white drop-shadow-md">
+                  {item.step}
+                </span>
               </div>
-              <h3 className="font-serif text-2xl font-bold text-brand-dark mb-3">
-                {item.title}
-              </h3>
-              <p className="text-brand-dark/75 font-sans leading-relaxed text-sm sm:text-base">
-                {item.desc}
-              </p>
+              <div className="p-6 space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-brand-secondary flex items-center justify-center text-brand-accent group-hover:scale-110 transition-transform">
+                  <item.icon className="w-6 h-6" />
+                </div>
+                <h3 className="font-serif text-2xl font-bold text-brand-dark">
+                  {item.title}
+                </h3>
+                <p className="text-brand-dark/75 font-sans leading-relaxed text-sm">
+                  {item.desc}
+                </p>
+              </div>
             </Card>
           ))}
         </div>
@@ -214,25 +230,29 @@ export default function HomePage() {
               {
                 title: "Сватбено изживяване",
                 desc: "Най-вълнуващата алтернатива на традиционната фото кабина. Картички с акварелни рисунки и визии с вашите имена.",
-                img: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
+                img: "/media/gallery/Tezza_2025_07_13_155326413.webp",
+                alt: "Персонализирани сватбени пликове и картички Пощичка",
               },
               {
                 title: "Корпоративно брандиране",
                 desc: "Уникална бранд активация за бизнес събития, презентации и фирмани партита с логото на компанията.",
-                img: "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=800&q=80",
+                img: "/media/gallery/Tezza_2025_07_13_155324686.webp",
+                alt: "Табло Пощичка с маркови картички и жетони",
               },
               {
                 title: "Рождени дни & Юбилеи",
                 desc: "Персонализирани подаръци за гостите, съобразени с тематиката и атмосферата на личния Ви празник.",
-                img: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=800&q=80",
+                img: "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
+                alt: "Мобилен декор Пощичка за лични празници",
               },
             ].map((srv, idx) => (
               <Card key={idx} className="p-0 overflow-hidden group">
                 <div className="relative h-56 w-full">
                   <Image
                     src={srv.img}
-                    alt={srv.title}
+                    alt={srv.alt}
                     fill
+                    loading="lazy"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-brand-dark/20 group-hover:bg-brand-dark/10 transition-colors" />
@@ -354,7 +374,16 @@ export default function HomePage() {
 
       {/* FINAL CTA BANNER */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="bg-gradient-to-r from-brand-dark via-[#383838] to-brand-dark text-white rounded-3xl p-8 sm:p-16 text-center space-y-8 relative overflow-hidden shadow-2xl border border-brand-accent/30">
+        <div className="relative bg-gradient-to-r from-brand-dark via-[#383838] to-brand-dark text-white rounded-3xl p-8 sm:p-16 text-center space-y-8 overflow-hidden shadow-2xl border border-brand-accent/30">
+          <div className="absolute inset-0 z-0 opacity-20">
+            <Image
+              src="/media/gallery/Tezza_2025_07_13_155324686.webp"
+              alt="Фонова снимка Пощичка"
+              fill
+              loading="lazy"
+              className="object-cover"
+            />
+          </div>
           <div className="max-w-3xl mx-auto space-y-4 relative z-10">
             <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight">
               Готови ли сте да създадем незабравим спомен?
