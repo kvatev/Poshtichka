@@ -1,5 +1,7 @@
 User-Agent: *
 Allow: /
 Disallow: /api/
+Disallow: /admin/
+Disallow: /admin
 
 Sitemap: https://poshtichka.bg/sitemap.xml

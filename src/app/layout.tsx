@@ -3,6 +3,7 @@ import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { MainWrapper } from "@/components/main-wrapper";
 
 const playfair = Playfair_Display({
   subsets: ["latin", "cyrillic"],
@@ -86,7 +87,7 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-primary selection:text-brand-dark">
         <Navbar />
-        <main className="flex-grow pt-20 sm:pt-24">{children}</main>
+        <MainWrapper>{children}</MainWrapper>
         <Footer />
       </body>
     </html>
