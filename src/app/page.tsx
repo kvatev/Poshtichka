@@ -19,6 +19,7 @@ import { Card } from "@/components/ui/card";
 import { Accordion } from "@/components/ui/accordion";
 import { CalculatorWidget } from "@/components/calculator";
 import { GalleryGrid } from "@/components/gallery-lightbox";
+import { MapGallery } from "@/components/map-gallery";
 import { HomepageConfig, defaultHomepageConfig } from "@/lib/content-store";
 
 export default function HomePage() {
@@ -327,6 +328,7 @@ export default function HomePage() {
             Разгледайте част от персонализираните подаръци, създадени за наши клиенти.
           </p>
         </div>
+        <MapGallery />
         <GalleryGrid />
       </section>
 
