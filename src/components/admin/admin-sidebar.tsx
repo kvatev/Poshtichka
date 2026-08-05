@@ -28,6 +28,7 @@ import {
   Kanban,
   DollarSign,
   Database,
+  MapPin,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -41,6 +42,7 @@ export type AdminTab =
   | "homepage"
   | "content"
   | "gallery"
+  | "map-events"
   | "testimonials"
   | "faq"
   | "pricing"
@@ -69,6 +71,7 @@ export const adminNavItems: { id: AdminTab; label: string; icon: React.ElementTy
   { id: "homepage", label: "Начална Страница", icon: HomeIcon },
   { id: "content", label: "Текстове & Съдържание", icon: FileText },
   { id: "gallery", label: "Галерия", icon: ImageIcon },
+  { id: "map-events", label: "Карта & Локации", icon: MapPin },
   { id: "testimonials", label: "Отзиви", icon: MessageSquareQuote },
   { id: "faq", label: "ЧЗВ", icon: HelpCircle },
   { id: "pricing", label: "Цени & Калкулатор", icon: Tag },

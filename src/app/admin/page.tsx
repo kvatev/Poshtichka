@@ -10,6 +10,7 @@ import { CalendarView } from "@/components/admin/calendar-view";
 import { FinanceManager } from "@/components/admin/finance-manager";
 import { CustomersManager } from "@/components/admin/customers-manager";
 import { GalleryManager } from "@/components/admin/gallery-manager";
+import { AdminMapManager } from "@/components/admin/admin-map-manager";
 import { TestimonialsManager } from "@/components/admin/testimonials-manager";
 import { FAQManager } from "@/components/admin/faq-manager";
 import { PricingManager } from "@/components/admin/pricing-manager";
@@ -208,6 +209,7 @@ export default function AdminDashboardPage() {
           {activeTab === "homepage" && <HomepageEditor />}
           {activeTab === "content" && <WebsiteContentManager />}
           {activeTab === "gallery" && <GalleryManager />}
+          {activeTab === "map-events" && <AdminMapManager />}
           {activeTab === "testimonials" && <TestimonialsManager />}
           {activeTab === "faq" && <FAQManager />}
           {activeTab === "pricing" && <PricingManager />}
