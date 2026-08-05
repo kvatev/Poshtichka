@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/navbar";
+import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { MainWrapper } from "@/components/main-wrapper";
-import { TopBanner } from "@/components/banner";
 import { PopupModal } from "@/components/popup-modal";
 
 const playfair = Playfair_Display({
@@ -87,8 +86,7 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-primary selection:text-brand-dark">
-        <TopBanner />
-        <Navbar />
+        <Header />
         <MainWrapper>{children}</MainWrapper>
         <Footer />
         <PopupModal />

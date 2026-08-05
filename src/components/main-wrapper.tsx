@@ -8,7 +8,7 @@ export function MainWrapper({ children }: { children: React.ReactNode }) {
   const isAdmin = pathname?.startsWith("/admin");
 
   return (
-    <main className={`flex-grow ${isAdmin ? "" : "pt-20 sm:pt-24"}`}>
+    <main className={`flex-grow ${isAdmin ? "" : "min-h-[calc(100vh-200px)]"}`}>
       {children}
     </main>
   );

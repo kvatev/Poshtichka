@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,49 +19,33 @@ const navLinks = [
 ];
 
 export const Navbar = () => {
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   if (pathname?.startsWith("/admin")) {
     return null;
   }
 
   return (
-    <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-4 px-4 sm:px-8",
-        scrolled
-          ? "glass-panel py-3 shadow-sm border-b border-brand-primary/20 bg-white/90 backdrop-blur-md"
-          : "bg-transparent"
-      )}
-    >
+    <nav className="w-full py-3 sm:py-3.5 px-4 sm:px-8 transition-all duration-300">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center space-x-2 group">
-          <div className="w-10 h-10 rounded-full bg-brand-primary/30 flex items-center justify-center border border-brand-primary/40 group-hover:scale-105 transition-transform">
+        <Link href="/" className="flex items-center space-x-2.5 group">
+          <div className="w-10 h-10 rounded-full bg-brand-primary/30 flex items-center justify-center border border-brand-primary/40 group-hover:scale-105 transition-transform shadow-xs">
             <Sparkles className="w-5 h-5 text-brand-accent" />
           </div>
           <div className="flex flex-col">
-            <span className="font-serif text-2xl font-bold tracking-tight text-brand-dark">
+            <span className="font-serif text-2xl font-bold tracking-tight text-brand-dark leading-none">
               Пощичка
             </span>
-            <span className="text-[10px] tracking-widest uppercase text-brand-accent font-sans">
+            <span className="text-[10px] tracking-widest uppercase text-brand-accent font-sans mt-0.5">
               Interactive Memory Lab
             </span>
           </div>
         </Link>
 
         {/* Desktop Nav Links */}
-        <nav className="hidden lg:flex items-center space-x-7">
+        <div className="hidden lg:flex items-center space-x-7">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
@@ -71,8 +55,8 @@ export const Navbar = () => {
                 className={cn(
                   "font-sans text-sm tracking-wide transition-colors relative py-1",
                   isActive
-                    ? "text-brand-accent font-semibold"
-                    : "text-brand-dark/80 hover:text-brand-dark"
+                    ? "text-brand-accent font-bold"
+                    : "text-brand-dark/80 hover:text-brand-dark font-medium"
                 )}
               >
                 {link.label}
@@ -86,18 +70,22 @@ export const Navbar = () => {
               </Link>
             );
           })}
-        </nav>
+        </div>
 
         {/* Desktop CTA */}
         <div className="hidden lg:flex items-center space-x-3">
           <Link href="/calendar">
-            <Button variant="outline" size="sm" className="hidden xl:flex items-center space-x-1.5 border-brand-accent/40 text-brand-dark">
+            <Button
+              variant="outline"
+              size="sm"
+              className="hidden xl:flex items-center space-x-1.5 border-brand-accent/40 text-brand-dark hover:bg-brand-secondary"
+            >
               <Calendar className="w-4 h-4 text-brand-accent" />
               <span>Заетост</span>
             </Button>
           </Link>
           <Link href="/booking">
-            <Button variant="primary" size="md">
+            <Button variant="primary" size="md" className="shadow-sm">
               Резервирай събитие
             </Button>
           </Link>
@@ -106,7 +94,7 @@ export const Navbar = () => {
         {/* Mobile Menu Toggle Button */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="lg:hidden p-2 rounded-full bg-brand-secondary text-brand-dark focus:outline-none"
+          className="lg:hidden p-2 rounded-full bg-brand-secondary text-brand-dark focus:outline-none hover:bg-brand-primary/40 transition-colors"
           aria-label="Превключи меню"
         >
           {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -121,7 +109,7 @@ export const Navbar = () => {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="lg:hidden glass-panel mt-4 rounded-2xl p-6 shadow-xl border border-brand-primary/30 bg-white/95"
+            className="lg:hidden mt-3 rounded-2xl p-5 shadow-xl border border-brand-primary/30 bg-white"
           >
             <div className="flex flex-col space-y-3">
               {navLinks.map((link) => (
@@ -136,7 +124,7 @@ export const Navbar = () => {
                 >
                   <span>{link.label}</span>
                   {link.href === "/calendar" && (
-                    <span className="text-xs bg-brand-secondary px-2 py-0.5 rounded-full text-brand-accent font-medium">
+                    <span className="text-xs bg-brand-secondary px-2.5 py-0.5 rounded-full text-brand-accent font-semibold">
                       Заетост
                     </span>
                   )}
@@ -153,6 +141,6 @@ export const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </nav>
   );
 };
