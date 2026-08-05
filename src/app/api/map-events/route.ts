@@ -37,17 +37,41 @@ let mockMapEvents: EventLocation[] = [
   },
   {
     id: "MAP-03",
-    eventName: "Юбилей 50г в Wave Resort",
+    eventName: "",
     cityName: "Поморие",
     latitude: 42.5583,
     longitude: 27.6444,
+    coverImage: "",
+    galleryImages: [],
+    description: "Пощичка на гостуване в Поморие.",
+    eventDate: "2026-08-28",
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "MAP-04",
+    eventName: "Сватба в Созопол: Мария & Георги",
+    cityName: "Созопол",
+    latitude: 42.4175,
+    longitude: 27.6958,
     coverImage: "/media/gallery/Tezza_2025_07_13_155331795.webp",
     galleryImages: [
       "/media/gallery/Tezza_2025_07_13_155331795.webp",
-      "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
+      "/media/gallery/Tezza_2025_07_13_155324686.webp",
     ],
-    description: "Елегантно стилно парти с картички от драсканици за гостите.",
-    eventDate: "2026-08-28",
+    description: "Второ незабравимо гостуване в Созопол с картички от драсканици за гостите.",
+    eventDate: "2026-07-20",
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "MAP-05",
+    eventName: "",
+    cityName: "Бургас",
+    latitude: 42.5048,
+    longitude: 27.4626,
+    coverImage: "",
+    galleryImages: [],
+    description: "Второ гостуване на Пощичка в Бургас за частен рожден ден.",
+    eventDate: "2026-06-15",
     createdAt: new Date().toISOString(),
   },
 ];
@@ -72,14 +96,14 @@ export async function GET() {
     // Map snake_case database columns to camelCase EventLocation interface
     const formattedEvents: EventLocation[] = dbEvents.map((item) => ({
       id: item.id,
-      eventName: item.event_name,
+      eventName: item.event_name || "",
       cityName: item.city_name,
       latitude: Number(item.latitude),
       longitude: Number(item.longitude),
-      coverImage: item.cover_image,
+      coverImage: item.cover_image || "",
       galleryImages: Array.isArray(item.gallery_images) ? item.gallery_images : [],
-      description: item.description,
-      eventDate: item.event_date,
+      description: item.description || "",
+      eventDate: item.event_date || "",
       createdAt: item.created_at,
       updatedAt: item.updated_at,
     }));
@@ -91,29 +115,34 @@ export async function GET() {
 }
 
 /**
- * POST: Create a new map event location
+ * POST: Create a new map event location (eventName, coverImage, galleryImages are ALL OPTIONAL)
  */
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { eventName, cityName, latitude, longitude, coverImage, galleryImages, description, eventDate } = body;
 
-    if (!eventName || !cityName || latitude === undefined || longitude === undefined || !coverImage) {
+    // Only cityName, latitude, and longitude are required!
+    if (!cityName || latitude === undefined || longitude === undefined) {
       return NextResponse.json(
-        { error: "Всички задължителни полета трябва да бъдат попълнени." },
+        { error: "Моля, изберете град и валидни координати на картата." },
         { status: 400 }
       );
     }
 
+    const finalEventName = eventName ? eventName.trim() : "";
+    const finalCoverImage = coverImage ? coverImage.trim() : "";
+    const finalGalleryImages = Array.isArray(galleryImages) ? galleryImages : [];
+
     const newEvent: EventLocation = {
       id: `MAP-${Date.now()}`,
-      eventName,
-      cityName,
+      eventName: finalEventName,
+      cityName: cityName.trim(),
       latitude: Number(latitude),
       longitude: Number(longitude),
-      coverImage,
-      galleryImages: Array.isArray(galleryImages) ? galleryImages : [coverImage],
-      description: description || "",
+      coverImage: finalCoverImage,
+      galleryImages: finalGalleryImages,
+      description: description ? description.trim() : "",
       eventDate: eventDate || new Date().toISOString().split("T")[0],
       createdAt: new Date().toISOString(),
     };
@@ -126,12 +155,12 @@ export async function POST(req: NextRequest) {
         .from("map_events")
         .insert([
           {
-            event_name: eventName,
-            city_name: cityName,
+            event_name: finalEventName,
+            city_name: cityName.trim(),
             latitude: Number(latitude),
             longitude: Number(longitude),
-            cover_image: coverImage,
-            gallery_images: Array.isArray(galleryImages) ? galleryImages : [coverImage],
+            cover_image: finalCoverImage,
+            gallery_images: finalGalleryImages,
             description: description || "",
             event_date: eventDate || null,
           },
@@ -165,8 +194,12 @@ export async function PUT(req: NextRequest) {
     const { id, eventName, cityName, latitude, longitude, coverImage, galleryImages, description, eventDate } = body;
 
     if (!id) {
-      return NextResponse.json({ error: "Липсва ИД на събитието за дублиране/редакция." }, { status: 400 });
+      return NextResponse.json({ error: "Липсва ИД на събитието за редакция." }, { status: 400 });
     }
+
+    const finalEventName = eventName !== undefined ? eventName : "";
+    const finalCoverImage = coverImage !== undefined ? coverImage : "";
+    const finalGalleryImages = Array.isArray(galleryImages) ? galleryImages : [];
 
     let updatedEvent: EventLocation | null = null;
 
@@ -177,14 +210,14 @@ export async function PUT(req: NextRequest) {
       const { data, error } = await supabase
         .from("map_events")
         .update({
-          event_name: eventName,
+          event_name: finalEventName,
           city_name: cityName,
           latitude: Number(latitude),
           longitude: Number(longitude),
-          cover_image: coverImage,
-          gallery_images: Array.isArray(galleryImages) ? galleryImages : [],
-          description: description,
-          event_date: eventDate,
+          cover_image: finalCoverImage,
+          gallery_images: finalGalleryImages,
+          description: description || "",
+          event_date: eventDate || null,
           updated_at: new Date().toISOString(),
         })
         .eq("id", id)
@@ -213,12 +246,12 @@ export async function PUT(req: NextRequest) {
       if (ev.id === id) {
         return {
           ...ev,
-          eventName: eventName ?? ev.eventName,
+          eventName: finalEventName,
           cityName: cityName ?? ev.cityName,
           latitude: latitude !== undefined ? Number(latitude) : ev.latitude,
           longitude: longitude !== undefined ? Number(longitude) : ev.longitude,
-          coverImage: coverImage ?? ev.coverImage,
-          galleryImages: galleryImages ?? ev.galleryImages,
+          coverImage: finalCoverImage,
+          galleryImages: finalGalleryImages,
           description: description ?? ev.description,
           eventDate: eventDate ?? ev.eventDate,
           updatedAt: new Date().toISOString(),
@@ -248,8 +281,6 @@ export async function DELETE(req: NextRequest) {
 
     try {
       const supabase = await createClient();
-      
-      // DB Delete: Delete record from 'map_events' table
       await supabase.from("map_events").delete().eq("id", id);
     } catch {
       // Fallback

@@ -1,11 +1,11 @@
 export interface EventLocation {
   id: string;
-  eventName: string;
+  eventName?: string; // Optional: Defaults to "Пощичка в {cityName}" if left blank
   cityName: string;
   latitude: number;
   longitude: number;
-  coverImage: string;
-  galleryImages: string[];
+  coverImage?: string; // Optional: Uses fallback brand image if left blank
+  galleryImages?: string[]; // Optional: Empty array if no images
   description?: string;
   eventDate?: string;
   createdAt?: string;
@@ -13,12 +13,12 @@ export interface EventLocation {
 }
 
 export interface CreateEventLocationInput {
-  eventName: string;
+  eventName?: string;
   cityName: string;
   latitude: number;
   longitude: number;
-  coverImage: string;
-  galleryImages: string[];
+  coverImage?: string;
+  galleryImages?: string[];
   description?: string;
   eventDate?: string;
 }
