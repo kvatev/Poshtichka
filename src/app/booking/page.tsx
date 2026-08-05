@@ -31,6 +31,29 @@ const bookingSchema = z.object({
 
 type BookingFormData = z.infer<typeof bookingSchema>;
 
+const initialBookedDates = new Set([
+  "2026-08-14",
+  "2026-08-22",
+  "2026-08-28",
+  "2026-09-05",
+  "2026-09-12",
+  "2026-09-19",
+]);
+
+export default function BookingPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[60vh] flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-brand-primary border-t-transparent" />
+        </div>
+      }
+    >
+      <BookingFormContent />
+    </Suspense>
+  );
+}
+
 function BookingFormContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -39,7 +62,7 @@ function BookingFormContent() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [bookedDates, setBookedDates] = useState<Set<string>>(new Set());
+  const [bookedDates, setBookedDates] = useState<Set<string>>(initialBookedDates);
   const [availabilityWarning, setAvailabilityWarning] = useState<string | null>(null);
 
   const {
@@ -382,19 +405,5 @@ function BookingFormContent() {
         )}
       </section>
     </div>
-  );
-}
-
-export default function BookingPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="py-24 text-center text-xs text-brand-dark/70 font-sans">
-          Зареждане на формата за резервация...
-        </div>
-      }
-    >
-      <BookingFormContent />
-    </Suspense>
   );
 }
