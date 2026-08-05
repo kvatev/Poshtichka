@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   LayoutDashboard,
@@ -109,8 +110,14 @@ export const AdminSidebar = ({
         {/* Brand Header */}
         <div className="flex items-center justify-between pb-3 border-b border-white/10">
           <div className="flex items-center space-x-3 overflow-hidden">
-            <div className="w-10 h-10 rounded-xl bg-brand-accent/20 border border-brand-accent/40 flex items-center justify-center text-brand-primary flex-shrink-0">
-              <Sparkles className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl overflow-hidden border border-brand-accent/40 flex-shrink-0 relative">
+              <Image
+                src="/media/logos/logo.webp"
+                alt="Пощичка Лого"
+                fill
+                className="object-cover"
+                sizes="40px"
+              />
             </div>
             {!collapsed && (
               <div className="flex flex-col">

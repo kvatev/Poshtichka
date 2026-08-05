@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { Sparkles, Lock, User, Eye, EyeOff, ArrowRight, ShieldCheck } from "lucide-react";
+import { Lock, User, Eye, EyeOff, ArrowRight, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function AdminLoginPage() {
@@ -59,8 +60,15 @@ export default function AdminLoginPage() {
       >
         {/* Header */}
         <div className="text-center space-y-3 mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-accent/20 border border-brand-accent/40 text-brand-primary mb-2 shadow-inner">
-            <Sparkles className="w-7 h-7" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl border border-brand-accent/40 overflow-hidden relative mb-2 shadow-lg">
+            <Image
+              src="/media/logos/logo.webp"
+              alt="Пощичка Лого"
+              fill
+              className="object-cover"
+              sizes="64px"
+              priority
+            />
           </div>
           <h1 className="font-serif text-3xl font-bold tracking-tight text-white">
             Пощичка Admin

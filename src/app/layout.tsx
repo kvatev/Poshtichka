@@ -33,6 +33,11 @@ export const metadata: Metadata = {
     "Пощичка",
   ],
   authors: [{ name: "Пощичка" }],
+  icons: {
+    icon: "/media/logos/logo.webp",
+    shortcut: "/media/logos/logo.webp",
+    apple: "/media/logos/logo.webp",
+  },
   openGraph: {
     title: "Пощичка | Всеки гост си тръгва със спомен",
     description: "Персонализирани спомени, създадени на живо по време на Вашето събитие.",

@@ -1,5 +1,4 @@
 {
-  "/_not-found/page": "/_not-found",
   "/api/admin/content/route": "/api/admin/content",
   "/api/admin/login/route": "/api/admin/login",
   "/api/admin/logout/route": "/api/admin/logout",
@@ -11,16 +10,17 @@
   "/api/gallery/route": "/api/gallery",
   "/robots.txt/route": "/robots.txt",
   "/sitemap.xml/route": "/sitemap.xml",
+  "/_not-found/page": "/_not-found",
   "/booking/page": "/booking",
   "/calendar/page": "/calendar",
   "/contact/page": "/contact",
   "/page": "/",
   "/about/page": "/about",
-  "/faq/page": "/faq",
   "/gallery/page": "/gallery",
-  "/privacy/page": "/privacy",
+  "/faq/page": "/faq",
   "/terms/page": "/terms",
+  "/privacy/page": "/privacy",
   "/services/page": "/services",
-  "/admin/login/page": "/admin/login",
-  "/admin/page": "/admin"
+  "/admin/page": "/admin",
+  "/admin/login/page": "/admin/login"
 }

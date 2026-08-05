@@ -2,8 +2,9 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Sparkles, Instagram, Mail, MapPin, Phone, Calendar } from "lucide-react";
+import { Instagram, Mail, MapPin, Phone, Calendar } from "lucide-react";
 
 export const Footer = () => {
   const pathname = usePathname();
@@ -17,9 +18,15 @@ export const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-8 grid grid-cols-1 md:grid-cols-4 gap-12">
         {/* Brand Column */}
         <div className="space-y-4 md:col-span-1">
-          <div className="flex items-center space-x-2">
-            <div className="w-9 h-9 rounded-full bg-brand-accent/20 flex items-center justify-center border border-brand-accent/40">
-              <Sparkles className="w-5 h-5 text-brand-primary" />
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-xl overflow-hidden border border-brand-primary/30 flex-shrink-0 relative shadow-sm">
+              <Image
+                src="/media/logos/logo.webp"
+                alt="Пощичка Лого"
+                fill
+                className="object-cover"
+                sizes="40px"
+              />
             </div>
             <span className="font-serif text-2xl font-bold tracking-tight text-white">
               Пощичка

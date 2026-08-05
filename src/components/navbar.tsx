@@ -4,7 +4,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Sparkles, Calendar } from "lucide-react";
+import Image from "next/image";
+import { Menu, X, Calendar } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 
@@ -30,9 +31,16 @@ export const Navbar = () => {
     <nav className="w-full py-3 sm:py-3.5 px-4 sm:px-8 transition-all duration-300">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center space-x-2.5 group">
-          <div className="w-10 h-10 rounded-full bg-brand-primary/30 flex items-center justify-center border border-brand-primary/40 group-hover:scale-105 transition-transform shadow-xs">
-            <Sparkles className="w-5 h-5 text-brand-accent" />
+        <Link href="/" className="flex items-center space-x-3 group">
+          <div className="w-10 h-10 rounded-xl overflow-hidden border border-brand-accent/30 group-hover:scale-105 transition-transform shadow-xs flex-shrink-0 relative">
+            <Image
+              src="/media/logos/logo.webp"
+              alt="Пощичка Лого"
+              fill
+              className="object-cover"
+              sizes="40px"
+              priority
+            />
           </div>
           <div className="flex flex-col">
             <span className="font-serif text-2xl font-bold tracking-tight text-brand-dark leading-none">

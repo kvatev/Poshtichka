@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
-// Sample booked dates if Supabase table is empty/unconfigured
+export const revalidate = 60; // Cache for 60 seconds
+
 const mockBookedDates = [
   "2026-08-14",
   "2026-08-22",
@@ -12,6 +13,10 @@ const mockBookedDates = [
 ];
 
 export async function GET() {
+  const headers = {
+    "Cache-Control": "public, max-age=60, s-maxage=60, stale-while-revalidate=300",
+  };
+
   try {
     const supabase = await createClient();
     const { data: bookings, error } = await supabase
@@ -20,18 +25,21 @@ export async function GET() {
       .eq("status", "confirmed");
 
     if (error || !bookings || bookings.length === 0) {
-      return NextResponse.json({
-        bookedDates: mockBookedDates,
-      });
+      return NextResponse.json(
+        { bookedDates: mockBookedDates },
+        { headers }
+      );
     }
 
     const dates = bookings.map((b) => b.event_date);
-    return NextResponse.json({
-      bookedDates: Array.from(new Set([...mockBookedDates, ...dates])),
-    });
+    return NextResponse.json(
+      { bookedDates: Array.from(new Set([...mockBookedDates, ...dates])) },
+      { headers }
+    );
   } catch {
-    return NextResponse.json({
-      bookedDates: mockBookedDates,
-    });
+    return NextResponse.json(
+      { bookedDates: mockBookedDates },
+      { headers }
+    );
   }
 }

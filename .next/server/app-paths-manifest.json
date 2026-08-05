@@ -1,5 +1,4 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
   "/api/admin/content/route": "app/api/admin/content/route.js",
   "/api/admin/login/route": "app/api/admin/login/route.js",
   "/api/admin/logout/route": "app/api/admin/logout/route.js",
@@ -11,16 +10,17 @@
   "/api/gallery/route": "app/api/gallery/route.js",
   "/robots.txt/route": "app/robots.txt/route.js",
   "/sitemap.xml/route": "app/sitemap.xml/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/booking/page": "app/booking/page.js",
   "/calendar/page": "app/calendar/page.js",
   "/contact/page": "app/contact/page.js",
   "/page": "app/page.js",
   "/about/page": "app/about/page.js",
-  "/faq/page": "app/faq/page.js",
   "/gallery/page": "app/gallery/page.js",
-  "/privacy/page": "app/privacy/page.js",
+  "/faq/page": "app/faq/page.js",
   "/terms/page": "app/terms/page.js",
+  "/privacy/page": "app/privacy/page.js",
   "/services/page": "app/services/page.js",
-  "/admin/login/page": "app/admin/login/page.js",
-  "/admin/page": "app/admin/page.js"
+  "/admin/page": "app/admin/page.js",
+  "/admin/login/page": "app/admin/login/page.js"
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useTransition } from "react";
+import React, { useState, useEffect, useTransition, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
@@ -34,17 +34,28 @@ const monthNamesBg = [
 
 const dayNamesBg = ["Пон", "Втор", "Сря", "Четв", "Пет", "Съб", "Нед"];
 
+const initialBookedDates = new Set([
+  "2026-08-14",
+  "2026-08-22",
+  "2026-08-28",
+  "2026-09-05",
+  "2026-09-12",
+  "2026-09-19",
+]);
+
 export default function PublicCalendarPage() {
   const router = useRouter();
   const [, startTransition] = useTransition();
 
-  const today = new Date();
+  const today = useMemo(() => new Date(), []);
   const [currentYear, setCurrentYear] = useState<number>(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState<number>(today.getMonth()); // 0-indexed
-  const [bookedDates, setBookedDates] = useState<Set<string>>(new Set());
-  const [loading, setLoading] = useState(true);
+  const [bookedDates, setBookedDates] = useState<Set<string>>(initialBookedDates);
 
   useEffect(() => {
+    // Prefetch booking page for instant navigation on date click
+    router.prefetch("/booking");
+
     fetch("/api/calendar")
       .then((res) => res.json())
       .then((data) => {
@@ -52,9 +63,8 @@ export default function PublicCalendarPage() {
           setBookedDates(new Set(data.bookedDates));
         }
       })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
+      .catch(() => {});
+  }, [router]);
 
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
@@ -85,21 +95,23 @@ export default function PublicCalendarPage() {
     return `${year}-${mStr}-${dStr}`;
   };
 
-  // Calculate calendar grid (Monday start)
-  const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
-  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  
-  // Day index 0 is Sunday, 1 is Monday... convert to Monday start (0: Mon ... 6: Sun)
-  let firstDayIndex = firstDayOfMonth.getDay() - 1;
-  if (firstDayIndex === -1) firstDayIndex = 6;
+  // Memoized calendar grid (Monday start)
+  const calendarGrid = useMemo(() => {
+    const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    
+    let firstDayIndex = firstDayOfMonth.getDay() - 1;
+    if (firstDayIndex === -1) firstDayIndex = 6;
 
-  const calendarGrid = [];
-  for (let i = 0; i < firstDayIndex; i++) {
-    calendarGrid.push(null);
-  }
-  for (let day = 1; day <= daysInMonth; day++) {
-    calendarGrid.push(day);
-  }
+    const grid = [];
+    for (let i = 0; i < firstDayIndex; i++) {
+      grid.push(null);
+    }
+    for (let day = 1; day <= daysInMonth; day++) {
+      grid.push(day);
+    }
+    return grid;
+  }, [currentYear, currentMonth]);
 
   const handleSelectDate = (dateStr: string, isAvailable: boolean) => {
     if (!isAvailable) return;
@@ -214,15 +226,7 @@ export default function PublicCalendarPage() {
             </div>
 
             {/* Days grid */}
-            {loading ? (
-              <div className="py-20 text-center space-y-3">
-                <div className="w-8 h-8 border-4 border-brand-accent border-t-transparent rounded-full animate-spin mx-auto" />
-                <p className="text-xs text-brand-dark/60 font-medium">
-                  Проверка на свободните дати...
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-7 gap-2">
+            <div className="grid grid-cols-7 gap-2">
                 {calendarGrid.map((dayNum, idx) => {
                   if (dayNum === null) {
                     return (
@@ -295,7 +299,6 @@ export default function PublicCalendarPage() {
                   );
                 })}
               </div>
-            )}
           </div>
         </Card>
 
