@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Sparkles, Instagram, Mail, MapPin, Phone } from "lucide-react";
+import { Sparkles, Instagram, Mail, MapPin, Phone, Calendar } from "lucide-react";
 
 export const Footer = () => {
   const pathname = usePathname();
@@ -55,8 +55,19 @@ export const Footer = () => {
               </Link>
             </li>
             <li>
+              <Link href="/calendar" className="hover:text-brand-primary transition-colors flex items-center space-x-1.5">
+                <span>Публичен Календар</span>
+                <span className="text-[10px] bg-brand-accent/30 text-brand-primary px-1.5 py-0.5 rounded">Ново</span>
+              </Link>
+            </li>
+            <li>
               <Link href="/faq" className="hover:text-brand-primary transition-colors">
                 Често задавани въпроси
+              </Link>
+            </li>
+            <li>
+              <Link href="/contact" className="hover:text-brand-primary transition-colors">
+                Контакти & Локация
               </Link>
             </li>
           </ul>
@@ -68,11 +79,31 @@ export const Footer = () => {
             Видове събития
           </h3>
           <ul className="space-y-2 text-sm font-sans text-white/70">
-            <li>Сватбени тържества</li>
-            <li>Корпоративни партита & Брандинг</li>
-            <li>Рождени дни & Юбилеи</li>
-            <li>Бейби шауър & Кръщенета</li>
-            <li>Фестивали & Маркетинг активации</li>
+            <li>
+              <Link href="/services" className="hover:text-brand-primary transition-colors">
+                Сватбени тържества
+              </Link>
+            </li>
+            <li>
+              <Link href="/services" className="hover:text-brand-primary transition-colors">
+                Корпоративни партита & Брандинг
+              </Link>
+            </li>
+            <li>
+              <Link href="/services" className="hover:text-brand-primary transition-colors">
+                Рождени дни & Юбилеи
+              </Link>
+            </li>
+            <li>
+              <Link href="/services" className="hover:text-brand-primary transition-colors">
+                Бейби шауър & Кръщенета
+              </Link>
+            </li>
+            <li>
+              <Link href="/services" className="hover:text-brand-primary transition-colors">
+                Фестивали & Маркетинг активации
+              </Link>
+            </li>
           </ul>
         </div>
 

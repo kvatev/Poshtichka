@@ -17,6 +17,13 @@ import {
   LogOut,
   Sparkles,
   ExternalLink,
+  FolderOpen,
+  FileText,
+  Home as HomeIcon,
+  Search,
+  BarChart3,
+  Gift,
+  Megaphone,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -30,6 +37,13 @@ export type AdminTab =
   | "faq"
   | "pricing"
   | "products"
+  | "media"
+  | "content"
+  | "homepage"
+  | "seo"
+  | "analytics"
+  | "popups"
+  | "banners"
   | "settings";
 
 interface AdminSidebarProps {
@@ -39,17 +53,24 @@ interface AdminSidebarProps {
   setCollapsed: (val: boolean) => void;
 }
 
-export const adminNavItems: { id: AdminTab; label: string; icon: React.ElementType }[] = [
+export const adminNavItems: { id: AdminTab; label: string; icon: React.ElementType; section?: string }[] = [
   { id: "dashboard", label: "Табло", icon: LayoutDashboard },
   { id: "calendar", label: "Календар", icon: Calendar },
   { id: "bookings", label: "Запитвания", icon: ClipboardList },
   { id: "customers", label: "Клиенти", icon: Users },
+  { id: "media", label: "Медийна Библиотека", icon: FolderOpen, section: "Управление" },
+  { id: "homepage", label: "Начална Страница", icon: HomeIcon },
+  { id: "content", label: "Текстове & Съдържание", icon: FileText },
   { id: "gallery", label: "Галерия", icon: ImageIcon },
   { id: "testimonials", label: "Отзиви", icon: MessageSquareQuote },
   { id: "faq", label: "ЧЗВ", icon: HelpCircle },
-  { id: "pricing", label: "Цени", icon: Tag },
-  { id: "products", label: "Продукти", icon: Package },
-  { id: "settings", label: "Настройки", icon: Settings },
+  { id: "pricing", label: "Цени & Калкулатор", icon: Tag },
+  { id: "products", label: "Продукти & Сувенири", icon: Package },
+  { id: "popups", label: "Попъп Мениджър", icon: Gift, section: "Маркетинг" },
+  { id: "banners", label: "Промо Банери", icon: Megaphone },
+  { id: "seo", label: "SEO & Метатегове", icon: Search },
+  { id: "analytics", label: "Аналитика", icon: BarChart3 },
+  { id: "settings", label: "Общи Настройки", icon: Settings, section: "Система" },
 ];
 
 export const AdminSidebar = ({
@@ -77,9 +98,9 @@ export const AdminSidebar = ({
         collapsed ? "w-20" : "w-64"
       )}
     >
-      <div className="p-4 space-y-6">
+      <div className="p-4 space-y-4 overflow-y-auto max-h-[calc(100vh-80px)]">
         {/* Brand Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-white/10">
+        <div className="flex items-center justify-between pb-3 border-b border-white/10">
           <div className="flex items-center space-x-3 overflow-hidden">
             <div className="w-10 h-10 rounded-xl bg-brand-accent/20 border border-brand-accent/40 flex items-center justify-center text-brand-primary flex-shrink-0">
               <Sparkles className="w-5 h-5" />
@@ -90,7 +111,7 @@ export const AdminSidebar = ({
                   Пощичка
                 </span>
                 <span className="text-[10px] uppercase tracking-widest text-brand-primary font-sans">
-                  Admin Panel
+                  CMS Admin System
                 </span>
               </div>
             )}
@@ -106,31 +127,39 @@ export const AdminSidebar = ({
 
         {/* Nav List */}
         <nav className="space-y-1">
-          {adminNavItems.map((item) => {
+          {adminNavItems.map((item, idx) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
+            const showSectionLabel = item.section && !collapsed;
+
             return (
-              <button
-                key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                className={cn(
-                  "w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-sans text-sm transition-all duration-200 cursor-pointer",
-                  isActive
-                    ? "bg-brand-accent text-white font-medium shadow-md"
-                    : "text-white/70 hover:bg-white/5 hover:text-white"
+              <React.Fragment key={item.id}>
+                {showSectionLabel && (
+                  <div className="pt-3 pb-1 px-3 text-[10px] uppercase tracking-widest font-mono text-brand-primary/70 font-semibold">
+                    {item.section}
+                  </div>
                 )}
-                title={item.label}
-              >
-                <Icon className="w-5 h-5 flex-shrink-0" />
-                {!collapsed && <span>{item.label}</span>}
-              </button>
+                <button
+                  onClick={() => setActiveTab(item.id)}
+                  className={cn(
+                    "w-full flex items-center space-x-3 px-3.5 py-2 rounded-xl font-sans text-xs sm:text-sm transition-all duration-200 cursor-pointer",
+                    isActive
+                      ? "bg-brand-accent text-white font-semibold shadow-md"
+                      : "text-white/70 hover:bg-white/5 hover:text-white"
+                  )}
+                  title={item.label}
+                >
+                  <Icon className="w-4 h-4 flex-shrink-0" />
+                  {!collapsed && <span className="truncate">{item.label}</span>}
+                </button>
+              </React.Fragment>
             );
           })}
         </nav>
       </div>
 
       {/* Footer controls */}
-      <div className="p-4 border-t border-white/10 space-y-2">
+      <div className="p-4 border-t border-white/10 space-y-2 bg-brand-dark">
         <Link
           href="/"
           target="_blank"
@@ -146,11 +175,11 @@ export const AdminSidebar = ({
         <button
           onClick={handleLogout}
           className={cn(
-            "w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-sans text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors cursor-pointer"
+            "w-full flex items-center space-x-3 px-3.5 py-2 rounded-xl font-sans text-xs text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors cursor-pointer"
           )}
           title="Изход"
         >
-          <LogOut className="w-5 h-5 flex-shrink-0" />
+          <LogOut className="w-4 h-4 flex-shrink-0" />
           {!collapsed && <span>Изход</span>}
         </button>
       </div>

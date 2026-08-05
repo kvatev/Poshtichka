@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -12,14 +12,29 @@ import {
   ArrowRight,
   Star,
   CheckCircle,
+  Calendar as CalendarIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Accordion } from "@/components/ui/accordion";
 import { CalculatorWidget } from "@/components/calculator";
 import { GalleryGrid } from "@/components/gallery-lightbox";
+import { HomepageConfig, defaultHomepageConfig } from "@/lib/content-store";
 
 export default function HomePage() {
+  const [config, setConfig] = useState<HomepageConfig>(defaultHomepageConfig);
+
+  useEffect(() => {
+    fetch("/api/content")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.homepage) {
+          setConfig((prev) => ({ ...prev, ...data.homepage }));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const faqItems = [
     {
       id: "cost",
@@ -54,18 +69,18 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="space-y-24 sm:space-y-32 pb-24">
+    <div className="space-y-24 sm:space-y-32 pb-24 font-sans">
       {/* HERO SECTION */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden px-4 sm:px-8 pt-8">
+      <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden px-4 sm:px-8 pt-12">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/media/gallery/Tezza_2025_07_07_170901960_1.webp"
+            src={config.heroImageUrl || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
             alt="Мобилен кът на Пощичка за събития"
             fill
             priority
             className="object-cover object-center scale-105 filter brightness-[0.45]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-bg via-transparent to-brand-dark/50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/40 to-brand-dark/60" />
         </div>
 
         <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8 text-white">
@@ -85,8 +100,8 @@ export default function HomePage() {
             transition={{ duration: 0.9, delay: 0.1 }}
             className="font-serif text-4xl sm:text-6xl md:text-7xl font-bold leading-tight tracking-tight drop-shadow-md"
           >
-            Всеки гост си тръгва <br className="hidden sm:inline" />
-            <span className="text-brand-primary italic font-normal">със спомен</span>
+            {config.heroTitleLine1} <br className="hidden sm:inline" />
+            <span className="text-brand-primary italic font-normal">{config.heroTitleHighlight}</span>
           </motion.h1>
 
           <motion.p
@@ -95,7 +110,7 @@ export default function HomePage() {
             transition={{ duration: 0.9, delay: 0.2 }}
             className="text-lg sm:text-2xl text-white/90 font-sans max-w-3xl mx-auto leading-relaxed font-light"
           >
-            Персонализирани подаръци, създадени на живо по време на Вашето събитие чрез специално проектирана бутикова машина.
+            {config.heroSubtitle}
           </motion.p>
 
           <motion.div
@@ -105,13 +120,25 @@ export default function HomePage() {
             className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
           >
             <Link href="/booking">
-              <Button variant="primary" size="lg" className="w-full sm:w-auto text-base">
-                Запазете дата за събитие
+              <Button variant="primary" size="lg" className="w-full sm:w-auto text-base px-8 py-4">
+                {config.primaryCtaText}
               </Button>
             </Link>
+
+            <Link href="/calendar">
+              <Button
+                variant="outline"
+                size="lg"
+                className="w-full sm:w-auto text-base border-brand-primary/60 text-brand-primary hover:bg-brand-primary hover:text-brand-dark flex items-center space-x-2"
+              >
+                <CalendarIcon className="w-4 h-4" />
+                <span>Вижте Календара с Наличност</span>
+              </Button>
+            </Link>
+
             <Link href="/gallery">
               <Button variant="outline" size="lg" className="w-full sm:w-auto text-base border-white text-white hover:bg-white hover:text-brand-dark">
-                Разгледайте галерията
+                {config.secondaryCtaText}
               </Button>
             </Link>
           </motion.div>
@@ -141,7 +168,7 @@ export default function HomePage() {
             Магията на живо
           </span>
           <h2 className="font-serif text-3xl sm:text-5xl font-bold text-brand-dark">
-            Как функционира Пощичка?
+            {config.howItWorksTitle}
           </h2>
           <p className="text-brand-dark/70 text-base sm:text-lg font-sans">
             Подарете на своите гости преживяване, което ще помнят дълго след края на събитието.
@@ -175,7 +202,7 @@ export default function HomePage() {
               alt: "Гост държи готови авторски картички от събитието",
             },
           ].map((item, index) => (
-            <Card key={index} className="relative overflow-hidden group p-0 flex flex-col justify-between">
+            <Card key={index} className="relative overflow-hidden group p-0 flex flex-col justify-between shadow-lg border border-brand-primary/20">
               <div className="relative h-48 w-full overflow-hidden">
                 <Image
                   src={item.img}
@@ -214,11 +241,11 @@ export default function HomePage() {
                 За всеки специален повод
               </span>
               <h2 className="font-serif text-3xl sm:text-5xl font-bold text-brand-dark mt-2">
-                Услуги & Събития
+                {config.servicesPreviewTitle}
               </h2>
             </div>
             <Link href="/services">
-              <Button variant="outline" size="md" className="flex items-center space-x-2">
+              <Button variant="outline" size="md" className="flex items-center space-x-2 border-brand-accent text-brand-accent hover:bg-brand-accent hover:text-white">
                 <span>Вижте всички услуги</span>
                 <ArrowRight className="w-4 h-4" />
               </Button>
@@ -246,7 +273,7 @@ export default function HomePage() {
                 alt: "Мобилен декор Пощичка за лични празници",
               },
             ].map((srv, idx) => (
-              <Card key={idx} className="p-0 overflow-hidden group">
+              <Card key={idx} className="p-0 overflow-hidden group border border-brand-primary/20 shadow-md">
                 <div className="relative h-56 w-full">
                   <Image
                     src={srv.img}
@@ -278,7 +305,7 @@ export default function HomePage() {
             Прозрачност & Ясни условия
           </span>
           <h2 className="font-serif text-3xl sm:text-5xl font-bold text-brand-dark">
-            Изчислете цена за Вашето събитие
+            {config.calculatorTitle}
           </h2>
           <p className="text-brand-dark/70 text-base font-sans">
             Използвайте нашия интерактивен калкулатор за бърза ориентировъчна цена.
@@ -294,7 +321,7 @@ export default function HomePage() {
             Галерия с преживявания
           </span>
           <h2 className="font-serif text-3xl sm:text-5xl font-bold text-brand-dark">
-            Моменти, записани в картички
+            {config.galleryTitle}
           </h2>
           <p className="text-brand-dark/70 text-base font-sans">
             Разгледайте част от персонализираните подаръци, създадени за наши клиенти.
@@ -304,14 +331,14 @@ export default function HomePage() {
       </section>
 
       {/* TESTIMONIALS */}
-      <section className="bg-brand-bg py-20">
+      <section className="bg-brand-bg py-20 border-y border-brand-primary/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-12">
           <div className="text-center max-w-3xl mx-auto space-y-4">
             <span className="text-xs uppercase tracking-widest text-brand-accent font-semibold">
               Отзиви от събития
             </span>
             <h2 className="font-serif text-3xl sm:text-5xl font-bold text-brand-dark">
-              Какво споделят нашите младоженци & клиенти
+              {config.testimonialsTitle}
             </h2>
           </div>
 
@@ -336,7 +363,7 @@ export default function HomePage() {
                 role: "Сватбен организатор",
               },
             ].map((t, idx) => (
-              <Card key={idx} className="flex flex-col justify-between space-y-6">
+              <Card key={idx} className="flex flex-col justify-between space-y-6 shadow-md border border-brand-primary/20">
                 <div className="space-y-4">
                   <div className="flex text-brand-accent space-x-1">
                     {[...Array(5)].map((_, i) => (
@@ -366,7 +393,7 @@ export default function HomePage() {
             Въпроси & Отговори
           </span>
           <h2 className="font-serif text-3xl sm:text-5xl font-bold text-brand-dark">
-            Често задавани въпроси
+            {config.faqTitle}
           </h2>
         </div>
         <Accordion items={faqItems} />
@@ -386,15 +413,21 @@ export default function HomePage() {
           </div>
           <div className="max-w-3xl mx-auto space-y-4 relative z-10">
             <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight">
-              Готови ли сте да създадем незабравим спомен?
+              {config.finalCtaTitle}
             </h2>
             <p className="text-white/80 font-sans text-base sm:text-lg font-light leading-relaxed">
-              Датите за сватбения сезон се запълват бързо. Свържете се с нас, за да проверим наличността за Вашето събитие.
+              {config.finalCtaSubtitle}
             </p>
-            <div className="pt-4">
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/booking">
-                <Button variant="primary" size="lg" className="text-base px-10 py-4">
+                <Button variant="primary" size="lg" className="text-base px-10 py-4 w-full sm:w-auto">
                   Изпратете запитване за дата
+                </Button>
+              </Link>
+              <Link href="/calendar">
+                <Button variant="outline" size="lg" className="text-base border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-brand-dark w-full sm:w-auto flex items-center justify-center space-x-2">
+                  <CalendarIcon className="w-4 h-4" />
+                  <span>Календар със свободна заетост</span>
                 </Button>
               </Link>
             </div>

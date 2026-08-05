@@ -1,11 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion } from "framer-motion";
-import { CheckCircle2, Send, Calendar, Users, MapPin, Sparkles } from "lucide-react";
+import {
+  CheckCircle2,
+  Send,
+  Calendar as CalendarIcon,
+  AlertTriangle,
+  ArrowRight,
+  ShieldAlert,
+} from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -23,25 +31,73 @@ const bookingSchema = z.object({
 
 type BookingFormData = z.infer<typeof bookingSchema>;
 
-export default function BookingPage() {
+function BookingFormContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const queryDate = searchParams?.get("date") || "";
+
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [bookedDates, setBookedDates] = useState<Set<string>>(new Set());
+  const [availabilityWarning, setAvailabilityWarning] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<BookingFormData>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
+      eventDate: queryDate,
       eventType: "сватба",
       preferredContact: "phone",
       guestCount: 100,
     },
   });
 
+  const selectedDate = watch("eventDate");
+
+  // Fetch confirmed booked dates for validation
+  useEffect(() => {
+    fetch("/api/calendar")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.bookedDates && Array.isArray(data.bookedDates)) {
+          setBookedDates(new Set(data.bookedDates));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Pre-fill query date if provided
+  useEffect(() => {
+    if (queryDate) {
+      setValue("eventDate", queryDate);
+    }
+  }, [queryDate, setValue]);
+
+  // Real-time validation when user picks a date
+  useEffect(() => {
+    if (selectedDate && bookedDates.has(selectedDate)) {
+      setAvailabilityWarning(
+        `За съжаление, датата ${selectedDate} вече е резервирана. Моля, изберете друга дата.`
+      );
+    } else {
+      setAvailabilityWarning(null);
+    }
+  }, [selectedDate, bookedDates]);
+
   const onSubmit = async (data: BookingFormData) => {
+    if (bookedDates.has(data.eventDate)) {
+      setErrorMessage(
+        `Датата ${data.eventDate} е вече заета. Моля, проверете свободните дати в нашия календар.`
+      );
+      return;
+    }
+
     setLoading(true);
     setErrorMessage("");
 
@@ -52,8 +108,12 @@ export default function BookingPage() {
         body: JSON.stringify(data),
       });
 
+      const resData = await response.json();
+
       if (!response.ok) {
-        throw new Error("Възникна грешка при изпращането. Моля, опитайте отново.");
+        throw new Error(
+          resData.error || "Възникна грешка при изпращането. Моля, опитайте отново."
+        );
       }
 
       setSubmitted(true);
@@ -69,7 +129,7 @@ export default function BookingPage() {
   };
 
   return (
-    <div className="space-y-16 pb-24">
+    <div className="space-y-16 pb-24 font-sans">
       {/* Header */}
       <section className="bg-brand-secondary/40 py-16 sm:py-24 border-b border-brand-primary/20">
         <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
@@ -82,6 +142,16 @@ export default function BookingPage() {
           <p className="text-brand-dark/80 text-lg sm:text-xl font-sans max-w-2xl mx-auto font-light leading-relaxed">
             Попълнете кратката форма по-долу и ние ще съставим индивидуална оферта и ще потвърдим наличността в рамките на няколко часа.
           </p>
+
+          <div className="pt-2">
+            <button
+              onClick={() => router.push("/calendar")}
+              className="inline-flex items-center space-x-2 text-xs font-semibold bg-white px-4 py-2 rounded-full border border-brand-primary/30 text-brand-accent hover:bg-brand-secondary transition-colors"
+            >
+              <CalendarIcon className="w-4 h-4" />
+              <span>Вижте публичния календар със свободни дати →</span>
+            </button>
+          </div>
         </div>
       </section>
 
@@ -106,8 +176,39 @@ export default function BookingPage() {
           <Card className="p-8 sm:p-12 shadow-2xl border-2 border-brand-primary/30 bg-white">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {errorMessage && (
-                <div className="p-4 rounded-xl bg-red-50 text-red-700 text-sm font-sans border border-red-200">
-                  {errorMessage}
+                <div className="p-4 rounded-2xl bg-red-50 text-red-800 text-sm font-sans border border-red-200 flex items-start space-x-3">
+                  <ShieldAlert className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <div className="space-y-2">
+                    <p>{errorMessage}</p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => router.push("/calendar")}
+                      className="border-red-300 text-red-800 hover:bg-red-100 text-xs"
+                    >
+                      Към Календара
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {availabilityWarning && (
+                <div className="p-4 rounded-2xl bg-amber-50 text-amber-900 text-sm font-sans border border-amber-300 flex items-start space-x-3">
+                  <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <div className="space-y-2">
+                    <p className="font-medium">{availabilityWarning}</p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => router.push("/calendar")}
+                      className="border-amber-400 text-amber-900 hover:bg-amber-100 text-xs flex items-center space-x-1"
+                    >
+                      <span>Разгледайте свободните дати</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </Button>
+                  </div>
                 </div>
               )}
 
@@ -270,8 +371,8 @@ export default function BookingPage() {
                 variant="accent"
                 size="lg"
                 type="submit"
-                disabled={loading}
-                className="w-full flex items-center justify-center space-x-2 text-base py-4"
+                disabled={loading || Boolean(availabilityWarning)}
+                className="w-full flex items-center justify-center space-x-2 text-base py-4 disabled:opacity-50"
               >
                 <span>{loading ? "Изпращане..." : "Изпрати запитване за дата"}</span>
                 <Send className="w-4 h-4" />
@@ -281,5 +382,19 @@ export default function BookingPage() {
         )}
       </section>
     </div>
+  );
+}
+
+export default function BookingPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="py-24 text-center text-xs text-brand-dark/70 font-sans">
+          Зареждане на формата за резервация...
+        </div>
+      }
+    >
+      <BookingFormContent />
+    </Suspense>
   );
 }

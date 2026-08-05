@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Sparkles } from "lucide-react";
+import { Menu, X, Sparkles, Calendar } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +13,7 @@ const navLinks = [
   { href: "/about", label: "За нас" },
   { href: "/services", label: "Услуги" },
   { href: "/gallery", label: "Галерия" },
+  { href: "/calendar", label: "Календар" },
   { href: "/faq", label: "ЧЗВ" },
   { href: "/contact", label: "Контакти" },
 ];
@@ -39,7 +40,7 @@ export const Navbar = () => {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-4 px-4 sm:px-8",
         scrolled
-          ? "glass-panel py-3 shadow-sm border-b border-brand-primary/20"
+          ? "glass-panel py-3 shadow-sm border-b border-brand-primary/20 bg-white/90 backdrop-blur-md"
           : "bg-transparent"
       )}
     >
@@ -60,7 +61,7 @@ export const Navbar = () => {
         </Link>
 
         {/* Desktop Nav Links */}
-        <nav className="hidden md:flex items-center space-x-8">
+        <nav className="hidden lg:flex items-center space-x-7">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
@@ -88,7 +89,13 @@ export const Navbar = () => {
         </nav>
 
         {/* Desktop CTA */}
-        <div className="hidden md:flex items-center space-x-4">
+        <div className="hidden lg:flex items-center space-x-3">
+          <Link href="/calendar">
+            <Button variant="outline" size="sm" className="hidden xl:flex items-center space-x-1.5 border-brand-accent/40 text-brand-dark">
+              <Calendar className="w-4 h-4 text-brand-accent" />
+              <span>Заетост</span>
+            </Button>
+          </Link>
           <Link href="/booking">
             <Button variant="primary" size="md">
               Резервирай събитие
@@ -99,7 +106,7 @@ export const Navbar = () => {
         {/* Mobile Menu Toggle Button */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden p-2 rounded-full bg-brand-secondary text-brand-dark focus:outline-none"
+          className="lg:hidden p-2 rounded-full bg-brand-secondary text-brand-dark focus:outline-none"
           aria-label="Превключи меню"
         >
           {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -114,23 +121,28 @@ export const Navbar = () => {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden glass-panel mt-4 rounded-2xl p-6 shadow-xl border border-brand-primary/30"
+            className="lg:hidden glass-panel mt-4 rounded-2xl p-6 shadow-xl border border-brand-primary/30 bg-white/95"
           >
-            <div className="flex flex-col space-y-4">
+            <div className="flex flex-col space-y-3">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
                   className={cn(
-                    "font-sans text-base py-2 border-b border-brand-secondary/60 text-brand-dark",
+                    "font-sans text-base py-2 border-b border-brand-secondary/60 text-brand-dark flex items-center justify-between",
                     pathname === link.href && "text-brand-accent font-bold"
                   )}
                 >
-                  {link.label}
+                  <span>{link.label}</span>
+                  {link.href === "/calendar" && (
+                    <span className="text-xs bg-brand-secondary px-2 py-0.5 rounded-full text-brand-accent font-medium">
+                      Заетост
+                    </span>
+                  )}
                 </Link>
               ))}
-              <div className="pt-2">
+              <div className="pt-3 space-y-2">
                 <Link href="/booking" onClick={() => setMobileOpen(false)}>
                   <Button variant="primary" size="md" className="w-full">
                     Резервирай събитие

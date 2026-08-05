@@ -13,7 +13,14 @@ import { FAQManager } from "@/components/admin/faq-manager";
 import { PricingManager } from "@/components/admin/pricing-manager";
 import { ProductsManager } from "@/components/admin/products-manager";
 import { SettingsManager } from "@/components/admin/settings-manager";
-import { UserCheck, ShieldCheck } from "lucide-react";
+import { MediaLibraryManager } from "@/components/admin/media-library-manager";
+import { WebsiteContentManager } from "@/components/admin/website-content-manager";
+import { HomepageEditor } from "@/components/admin/homepage-editor";
+import { SeoManager } from "@/components/admin/seo-manager";
+import { AnalyticsDashboard } from "@/components/admin/analytics-dashboard";
+import { PopupManager } from "@/components/admin/popup-manager";
+import { BannerManager } from "@/components/admin/banner-manager";
+import { ShieldCheck } from "lucide-react";
 
 export default function AdminDashboardPage() {
   const router = useRouter();
@@ -83,18 +90,25 @@ export default function AdminDashboardPage() {
         </header>
 
         {/* Dynamic Module Body */}
-        <main className="p-6 sm:p-8 flex-1 max-w-7xl w-full mx-auto">
+        <main className="p-6 sm:p-8 flex-1 max-w-7xl w-full mx-auto space-y-6">
           {activeTab === "dashboard" && (
             <DashboardOverview onNavigateToTab={(tab) => setActiveTab(tab as AdminTab)} />
           )}
           {activeTab === "calendar" && <CalendarView />}
           {activeTab === "bookings" && <BookingsManager />}
           {activeTab === "customers" && <CustomersManager />}
+          {activeTab === "media" && <MediaLibraryManager />}
+          {activeTab === "homepage" && <HomepageEditor />}
+          {activeTab === "content" && <WebsiteContentManager />}
           {activeTab === "gallery" && <GalleryManager />}
           {activeTab === "testimonials" && <TestimonialsManager />}
           {activeTab === "faq" && <FAQManager />}
           {activeTab === "pricing" && <PricingManager />}
           {activeTab === "products" && <ProductsManager />}
+          {activeTab === "popups" && <PopupManager />}
+          {activeTab === "banners" && <BannerManager />}
+          {activeTab === "seo" && <SeoManager />}
+          {activeTab === "analytics" && <AnalyticsDashboard />}
           {activeTab === "settings" && <SettingsManager />}
         </main>
       </div>
