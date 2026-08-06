@@ -10,23 +10,29 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
+          teal: "#00b4b6",
+          tealDark: "#008b8d",
+          tealLight: "#e5f7f7",
+          dark: "#182b2c",
+          cream: "#f9f6f0",
+          creamLight: "#fdfbf7",
           primary: "#E8B4B8",
           secondary: "#F7E7E3",
-          accent: "#C89B6D",
-          dark: "#2C2C2C",
-          bg: "#FAF7F5",
+          accent: "#00b4b6",
+          bg: "#f9f6f0",
           white: "#FFFFFF",
           muted: "#71717A",
         },
       },
       fontFamily: {
-        serif: ["var(--font-playfair)", "serif"],
-        sans: ["var(--font-inter)", "sans-serif"],
+        display: ["var(--font-display)", "var(--font-playfair)", "serif"],
+        sans: ["var(--font-sans)", "var(--font-inter)", "sans-serif"],
+        serif: ["var(--font-display)", "serif"],
       },
       boxShadow: {
-        glass: "0 8px 32px 0 rgba(44, 44, 44, 0.06)",
-        card: "0 10px 30px -5px rgba(232, 180, 184, 0.2)",
-        glow: "0 0 25px rgba(200, 155, 109, 0.25)",
+        glass: "0 8px 32px 0 rgba(0, 180, 182, 0.08)",
+        card: "0 10px 30px -5px rgba(0, 180, 182, 0.15)",
+        glow: "0 0 25px rgba(0, 180, 182, 0.25)",
       },
       animation: {
         "float": "float 6s ease-in-out infinite",
@@ -42,4 +48,5 @@ const config: Config = {
   },
   plugins: [],
 };
+
 export default config;
