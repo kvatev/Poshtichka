@@ -1,18 +1,31 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
 export const HeroSection = () => {
+  const [heroImage, setHeroImage] = useState<string>("/media/Main Page/Main Banner.png");
+
+  useEffect(() => {
+    fetch("/api/content")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.homepage?.heroImageUrl) {
+          setHeroImage(data.homepage.heroImageUrl);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <section className="relative w-full min-h-[80vh] sm:min-h-[85vh] flex items-center justify-center overflow-hidden bg-brand-dark py-20 px-4">
-      {/* Background Image - Strict Path: /media/Main Page/hero-bg.png */}
+      {/* Background Image - Dynamic from Admin Settings, default: /media/Main Page/Main Banner.png */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/media/Main Page/hero-bg.png"
+          src={heroImage}
           alt="Пощичка събитие"
           fill
           className="object-cover object-center opacity-85"
@@ -60,3 +73,4 @@ export const HeroSection = () => {
     </section>
   );
 };
+

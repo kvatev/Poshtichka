@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { PageWrapper } from "@/components/layout/page-wrapper";
 
 const bookingSchema = z.object({
   fullName: z.string().min(2, { message: "Моля, въведете Вашето име" }),
@@ -42,15 +43,17 @@ const initialBookedDates = new Set([
 
 export default function BookingPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-[60vh] flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-brand-primary border-t-transparent" />
-        </div>
-      }
-    >
-      <BookingFormContent />
-    </Suspense>
+    <PageWrapper>
+      <Suspense
+        fallback={
+          <div className="min-h-[60vh] flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#00b4b6] border-t-transparent" />
+          </div>
+        }
+      >
+        <BookingFormContent />
+      </Suspense>
+    </PageWrapper>
   );
 }
 
@@ -83,7 +86,6 @@ function BookingFormContent() {
 
   const selectedDate = watch("eventDate");
 
-  // Fetch confirmed booked dates for validation
   useEffect(() => {
     fetch("/api/calendar")
       .then((res) => res.json())
@@ -95,14 +97,12 @@ function BookingFormContent() {
       .catch(() => {});
   }, []);
 
-  // Pre-fill query date if provided
   useEffect(() => {
     if (queryDate) {
       setValue("eventDate", queryDate);
     }
   }, [queryDate, setValue]);
 
-  // Real-time validation when user picks a date
   useEffect(() => {
     if (selectedDate && bookedDates.has(selectedDate)) {
       setAvailabilityWarning(
@@ -151,15 +151,16 @@ function BookingFormContent() {
     }
   };
 
+
   return (
     <div className="space-y-16 pb-24 font-sans">
       {/* Header */}
-      <section className="bg-brand-secondary/40 py-16 sm:py-24 border-b border-brand-primary/20">
+      <section className="bg-brand-cream py-16 sm:py-24 border-b border-[#00b4b6]/20">
         <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
-          <span className="text-xs uppercase tracking-widest text-brand-accent font-semibold">
+          <span className="text-xs uppercase tracking-widest text-[#00b4b6] font-semibold">
             Резервация & Наличност
           </span>
-          <h1 className="font-serif text-4xl sm:text-6xl font-bold text-brand-dark">
+          <h1 className="font-display text-4xl sm:text-6xl font-bold text-brand-dark">
             Запазете дата за Вашето събитие
           </h1>
           <p className="text-brand-dark/80 text-lg sm:text-xl font-sans max-w-2xl mx-auto font-light leading-relaxed">
@@ -169,7 +170,7 @@ function BookingFormContent() {
           <div className="pt-2">
             <button
               onClick={() => router.push("/calendar")}
-              className="inline-flex items-center space-x-2 text-xs font-semibold bg-white px-4 py-2 rounded-full border border-brand-primary/30 text-brand-accent hover:bg-brand-secondary transition-colors"
+              className="inline-flex items-center space-x-2 text-xs font-semibold bg-white px-4 py-2 rounded-full border border-[#00b4b6]/30 text-[#00b4b6] hover:bg-[#00b4b6]/10 transition-colors"
             >
               <CalendarIcon className="w-4 h-4" />
               <span>Вижте публичния календар със свободни дати →</span>
@@ -183,12 +184,12 @@ function BookingFormContent() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-3xl p-10 sm:p-16 border border-brand-primary/30 text-center space-y-6 shadow-2xl"
+            className="bg-white rounded-3xl p-10 sm:p-16 border border-[#00b4b6]/30 text-center space-y-6 shadow-2xl"
           >
-            <div className="w-20 h-20 rounded-full bg-brand-secondary text-brand-accent mx-auto flex items-center justify-center">
+            <div className="w-20 h-20 rounded-full bg-[#00b4b6]/10 text-[#00b4b6] mx-auto flex items-center justify-center">
               <CheckCircle2 className="w-10 h-10" />
             </div>
-            <h2 className="font-serif text-3xl font-bold text-brand-dark">
+            <h2 className="font-display text-3xl font-bold text-brand-dark">
               Благодарим Ви за запитването!
             </h2>
             <p className="text-brand-dark/80 font-sans text-base max-w-lg mx-auto leading-relaxed">
@@ -196,7 +197,7 @@ function BookingFormContent() {
             </p>
           </motion.div>
         ) : (
-          <Card className="p-8 sm:p-12 shadow-2xl border-2 border-brand-primary/30 bg-white">
+          <Card className="p-8 sm:p-12 shadow-2xl border-2 border-[#00b4b6]/30 bg-white">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {errorMessage && (
                 <div className="p-4 rounded-2xl bg-red-50 text-red-800 text-sm font-sans border border-red-200 flex items-start space-x-3">
@@ -245,7 +246,7 @@ function BookingFormContent() {
                     type="text"
                     {...register("fullName")}
                     placeholder="Мария Иванова"
-                    className="w-full px-4 py-3 rounded-xl border border-brand-primary/30 bg-brand-bg text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
                   />
                   {errors.fullName && (
                     <p className="text-xs text-red-500 font-sans mt-1">
@@ -262,7 +263,7 @@ function BookingFormContent() {
                     type="tel"
                     {...register("phone")}
                     placeholder="+359 888 123 456"
-                    className="w-full px-4 py-3 rounded-xl border border-brand-primary/30 bg-brand-bg text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
                   />
                   {errors.phone && (
                     <p className="text-xs text-red-500 font-sans mt-1">
@@ -279,7 +280,7 @@ function BookingFormContent() {
                     type="email"
                     {...register("email")}
                     placeholder="maria@example.com"
-                    className="w-full px-4 py-3 rounded-xl border border-brand-primary/30 bg-brand-bg text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
                   />
                   {errors.email && (
                     <p className="text-xs text-red-500 font-sans mt-1">
@@ -298,7 +299,7 @@ function BookingFormContent() {
                   <input
                     type="date"
                     {...register("eventDate")}
-                    className="w-full px-4 py-3 rounded-xl border border-brand-primary/30 bg-brand-bg text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
                   />
                   {errors.eventDate && (
                     <p className="text-xs text-red-500 font-sans mt-1">
@@ -313,7 +314,7 @@ function BookingFormContent() {
                   </label>
                   <select
                     {...register("eventType")}
-                    className="w-full px-4 py-3 rounded-xl border border-brand-primary/30 bg-brand-bg text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
                   >
                     <option value="сватба">Сватбено тържество</option>
                     <option value="корпоративно">Корпоративно събитие / Брандинг</option>
@@ -332,7 +333,7 @@ function BookingFormContent() {
                     type="text"
                     {...register("venueLocation")}
                     placeholder="напр. Созопол, Комплекс Морски Бриз"
-                    className="w-full px-4 py-3 rounded-xl border border-brand-primary/30 bg-brand-bg text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
                   />
                   {errors.venueLocation && (
                     <p className="text-xs text-red-500 font-sans mt-1">
@@ -352,7 +353,7 @@ function BookingFormContent() {
                     type="number"
                     {...register("guestCount")}
                     placeholder="100"
-                    className="w-full px-4 py-3 rounded-xl border border-brand-primary/30 bg-brand-bg text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
                   />
                   {errors.guestCount && (
                     <p className="text-xs text-red-500 font-sans mt-1">
@@ -367,7 +368,7 @@ function BookingFormContent() {
                   </label>
                   <select
                     {...register("preferredContact")}
-                    className="w-full px-4 py-3 rounded-xl border border-brand-primary/30 bg-brand-bg text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
                   >
                     <option value="phone">Телефонно обаждане</option>
                     <option value="email">Имейл</option>
@@ -386,7 +387,7 @@ function BookingFormContent() {
                   rows={4}
                   {...register("message")}
                   placeholder="Споделете подробности за тема, стил или въпроси..."
-                  className="w-full px-4 py-3 rounded-xl border border-brand-primary/30 bg-brand-bg text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                  className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
                 />
               </div>
 
@@ -407,3 +408,4 @@ function BookingFormContent() {
     </div>
   );
 }
+
