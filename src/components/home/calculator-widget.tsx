@@ -5,14 +5,17 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Check, Sparkles, MessageCircle } from "lucide-react";
 
+const GUEST_STEPS = [70, 100, 150];
+
 export const CalculatorWidget = () => {
-  const [guests, setGuests] = useState<number>(100);
+  const [stepIndex, setStepIndex] = useState<number>(1); // Default: index 1 (100 guests)
   const [distance, setDistance] = useState<number>(100);
   const [addInitials, setAddInitials] = useState<boolean>(false);
 
+  const guests = GUEST_STEPS[stepIndex];
   const isLargeEvent = guests >= 150;
 
-  // Math Logic for standard events (< 150 guests):
+  // Math Logic for standard events (70 or 100 guests):
   // Base rental up to 50 guests: 350 €
   // Extra guests: ~0.50 € / guest
   // Distance: first 50km FREE, then 0.23 € / km
@@ -26,7 +29,6 @@ export const CalculatorWidget = () => {
 
   return (
     <section className="py-16 sm:py-24 bg-brand-cream relative">
-
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         {/* Outer Bordered Card */}
         <motion.div
@@ -48,7 +50,7 @@ export const CalculatorWidget = () => {
               </p>
             </div>
 
-            {/* Slider 1: Guests */}
+            {/* Slider 1: Guests (Exact Steps: 70, 100, 150+) */}
             <div className="space-y-4 pt-4">
               <div className="flex items-center justify-center space-x-2">
                 <h3 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
@@ -59,21 +61,36 @@ export const CalculatorWidget = () => {
               <div className="relative px-2">
                 <input
                   type="range"
-                  min={50}
-                  max={200}
-                  step={10}
-                  value={guests}
-                  onChange={(e) => setGuests(Number(e.target.value))}
+                  min={0}
+                  max={2}
+                  step={1}
+                  value={stepIndex}
+                  onChange={(e) => setStepIndex(Number(e.target.value))}
                   className="w-full h-3 bg-[#cdeef0] rounded-lg appearance-none cursor-pointer accent-[#00b4b6]"
                 />
                 <div className="flex justify-between text-sm sm:text-base font-semibold text-[#2d3a37]/70 mt-2 px-1">
-                  <span>50</span>
-                  <span>100</span>
-                  <span className={isLargeEvent ? "text-[#00b4b6] font-bold" : ""}>150+</span>
+                  <span
+                    onClick={() => setStepIndex(0)}
+                    className={`cursor-pointer ${stepIndex === 0 ? "text-[#00b4b6] font-bold scale-110" : ""}`}
+                  >
+                    70
+                  </span>
+                  <span
+                    onClick={() => setStepIndex(1)}
+                    className={`cursor-pointer ${stepIndex === 1 ? "text-[#00b4b6] font-bold scale-110" : ""}`}
+                  >
+                    100
+                  </span>
+                  <span
+                    onClick={() => setStepIndex(2)}
+                    className={`cursor-pointer ${stepIndex === 2 ? "text-[#00b4b6] font-bold scale-110" : ""}`}
+                  >
+                    150+
+                  </span>
                 </div>
               </div>
 
-              {/* Large Event Banner Prompt */}
+              {/* Large Event Banner Prompt for 150+ Guests */}
               {isLargeEvent && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
@@ -85,7 +102,7 @@ export const CalculatorWidget = () => {
                     <span>Индивидуална оферта за над 150 гости!</span>
                   </div>
                   <p className="text-xs sm:text-sm text-[#2d3a37]/90 italic">
-                    За мащабни събития с над 150 гости изготвяме преференциални пакети с допълнителен екип и преференциална цена.
+                    За мащабни събития с над 150 гости изготвяме преференциални пакети с допълнителен екип и индивидуални условия.
                   </p>
                 </motion.div>
               )}
@@ -179,5 +196,6 @@ export const CalculatorWidget = () => {
     </section>
   );
 };
+
 
 
