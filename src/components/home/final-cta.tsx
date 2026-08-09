@@ -21,13 +21,13 @@ export const FinalCTA = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6 text-white px-4 sm:px-6">
+      <div className="relative z-10 max-w-6xl mx-auto text-center space-y-6 text-white px-4 sm:px-6">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="font-display text-2xl sm:text-4xl md:text-5xl font-bold uppercase tracking-wide leading-tight drop-shadow-lg text-white"
+          className="font-display text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-wider leading-tight text-white sm:whitespace-nowrap"
         >
           ГОТОВИ ЛИ СТЕ ДА СЪЗДАДЕМ НЕЗАБРАВИМ СПОМЕН?
         </motion.h2>
@@ -37,9 +37,9 @@ export const FinalCTA = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.2 }}
-          className="font-sans text-sm sm:text-lg font-light text-white/90 max-w-xl mx-auto drop-shadow-md"
+          className="font-sans text-base sm:text-xl font-light text-white/95 max-w-3xl mx-auto leading-relaxed"
         >
-          Свържете се с нас и резервирайте Пощичка за вашето незабравимо събитие!
+          Датите за сватбения сезон се запълват бързо. Побързайте, за да запазите Пощичка за вашия повод!
         </motion.p>
 
         <motion.div
@@ -49,16 +49,11 @@ export const FinalCTA = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="pt-4 flex justify-center"
         >
-          <Link href="/booking" className="group block cursor-pointer">
-            <div className="relative w-60 sm:w-80 h-16 sm:h-20 transition-transform duration-300 group-hover:scale-105">
-              <Image
-                src="/media/Main Page/btn-reserve-here.png"
-                alt="Резервирай тук"
-                fill
-                className="object-contain drop-shadow-xl"
-                unoptimized
-              />
-            </div>
+          <Link
+            href="/booking"
+            className="inline-flex items-center justify-center px-10 py-3.5 rounded-full border-2 border-white bg-black/20 hover:bg-white hover:text-[#182b2c] backdrop-blur-md text-white font-stampatello text-lg sm:text-xl font-bold uppercase tracking-wider transition-all duration-300 shadow-xl group cursor-pointer"
+          >
+            <span>РЕЗЕРВИРАЙ ТУК</span>
           </Link>
         </motion.div>
       </div>
