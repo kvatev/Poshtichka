@@ -184,14 +184,20 @@ export const HomepageEditor = () => {
             <input
               type="number"
               min={3}
-              max={60}
-              value={config.topBarSpeedSeconds || 15}
-              onChange={(e) =>
-                setConfig({
-                  ...config,
-                  topBarSpeedSeconds: Math.max(3, Number(e.target.value) || 15),
-                })
-              }
+              max={120}
+              value={config.topBarSpeedSeconds === 0 ? "" : (config.topBarSpeedSeconds ?? 15)}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === "") {
+                  setConfig({ ...config, topBarSpeedSeconds: 0 });
+                } else {
+                  const parsed = parseInt(val, 10);
+                  setConfig({
+                    ...config,
+                    topBarSpeedSeconds: isNaN(parsed) ? 15 : parsed,
+                  });
+                }
+              }}
               className="w-28 px-4 py-2 rounded-xl border border-brand-primary/30 text-sm font-sans text-brand-dark focus:ring-2 focus:ring-brand-accent bg-brand-bg/40 font-bold"
             />
             <span className="text-xs text-brand-dark/70">сек. (по-малко = по-бързо)</span>
@@ -251,6 +257,30 @@ export const HomepageEditor = () => {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Section Save Action Button */}
+        <div className="pt-4 border-t border-brand-primary/10 flex justify-end">
+          <Button
+            type="button"
+            variant="primary"
+            size="sm"
+            onClick={handleSave}
+            disabled={saving}
+            className="flex items-center space-x-2"
+          >
+            {saved ? (
+              <>
+                <Check className="w-4 h-4 text-emerald-400" />
+                <span>Запазено!</span>
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4" />
+                <span>{saving ? "Запазване..." : "Запази промените за Лентата"}</span>
+              </>
+            )}
+          </Button>
         </div>
       </Card>
 
@@ -336,6 +366,30 @@ export const HomepageEditor = () => {
               className="w-full px-4 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/40"
             />
           </div>
+        </div>
+
+        {/* Section Save Action Button */}
+        <div className="pt-4 border-t border-brand-primary/10 flex justify-end">
+          <Button
+            type="button"
+            variant="primary"
+            size="sm"
+            onClick={handleSave}
+            disabled={saving}
+            className="flex items-center space-x-2"
+          >
+            {saved ? (
+              <>
+                <Check className="w-4 h-4 text-emerald-400" />
+                <span>Запазено!</span>
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4" />
+                <span>{saving ? "Запазване..." : "Запази промените за Заглавията"}</span>
+              </>
+            )}
+          </Button>
         </div>
       </Card>
     </div>
