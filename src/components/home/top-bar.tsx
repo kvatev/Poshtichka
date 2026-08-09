@@ -41,7 +41,7 @@ export const TopBar = () => {
           transition={{
             repeat: Infinity,
             ease: "linear",
-            duration: Math.max(3, speedSeconds),
+            duration: Math.max(3, speedSeconds * 2),
           }}
           className="inline-flex items-center space-x-8 shrink-0 pr-8"
         >

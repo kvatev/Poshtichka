@@ -20,6 +20,7 @@ export async function GET() {
     let popups = defaultPopups;
     let banners = defaultBanners;
     let testimonials = defaultTestimonials;
+    let faq = null;
 
     if (settingsData && settingsData.length > 0) {
       settingsData.forEach((item) => {
@@ -29,6 +30,7 @@ export async function GET() {
         if (item.key === "popups") popups = item.value;
         if (item.key === "banners") banners = item.value;
         if (item.key === "testimonials") testimonials = item.value;
+        if (item.key === "faq_items") faq = item.value;
       });
     }
 
@@ -39,6 +41,7 @@ export async function GET() {
       popups,
       banners,
       testimonials,
+      faq,
     });
   } catch {
     return NextResponse.json({
@@ -48,6 +51,7 @@ export async function GET() {
       popups: defaultPopups,
       banners: defaultBanners,
       testimonials: defaultTestimonials,
+      faq: null,
     });
   }
 }
