@@ -9,20 +9,29 @@ const GUEST_STEPS = [70, 100, 150, "150+"] as const;
 
 export const CalculatorWidget = () => {
   const [stepIndex, setStepIndex] = useState<number>(1); // Default: index 1 (100 guests)
-  const [distance, setDistance] = useState<number>(100);
+  const [distance, setDistance] = useState<number>(100); // Distance in 1 direction (km)
   const [addInitials, setAddInitials] = useState<boolean>(false);
 
   const currentStep = GUEST_STEPS[stepIndex];
   const isLargeEvent = currentStep === "150+";
+  const isFarLocation = distance > 450;
+  const needsInquiry = isLargeEvent || isFarLocation;
+
   const numericGuests = typeof currentStep === "number" ? currentStep : 150;
 
-  // Math Logic for standard events (70, 100 or 150 guests):
+  // Round-trip kilometer calculation (двупосочен пробег = 2 * distance):
+  // First 50km in 1 direction (100km round-trip) is FREE!
+  // Billable round-trip km = Math.max(0, (distance - 50) * 2)
+  // Transport cost = billable km * 0.23 € / km
+  const totalRoundTripKm = distance * 2;
+  const billableRoundTripKm = Math.max(0, (distance - 50) * 2);
+  const transportCost = billableRoundTripKm * 0.23;
+
+  // Math Logic for standard events:
   // Base rental up to 50 guests: 350 €
   // Extra guests: ~0.50 € / guest
-  // Distance: first 50km FREE, then 0.23 € / km
   // Initials: +25 €
   const extraGuestsCost = Math.max(0, numericGuests - 50) * 0.5;
-  const transportCost = Math.max(0, distance - 50) * 0.23;
   const initialsCost = addInitials ? 25 : 0;
 
   const minPrice = Math.round(350 + extraGuestsCost + transportCost + initialsCost);
@@ -97,7 +106,7 @@ export const CalculatorWidget = () => {
                 </div>
               </div>
 
-              {/* Large Event Banner Prompt for 150+ Guests */}
+              {/* Large Event Banner Prompt */}
               {isLargeEvent && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
@@ -115,31 +124,50 @@ export const CalculatorWidget = () => {
               )}
             </div>
 
-            {/* Slider 2: Distance from Burgas */}
+            {/* Slider 2: Distance from Burgas (Up to 450 km, >450 = Inquiry, Double km for round-trip) */}
             <div className="space-y-3 pt-4">
               <h3 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
-                ЛОКАЦИЯ ОТ ГРАД БУРГАС ({distance} км)
+                ЛОКАЦИЯ ОТ ГРАД БУРГАС: {isFarLocation ? "Над 450 км (По запитване)" : `${distance} км (${totalRoundTripKm} км двупосочно)`}
               </h3>
               <div className="relative px-2">
                 <input
                   type="range"
                   min={0}
-                  max={300}
+                  max={460}
                   step={10}
                   value={distance}
                   onChange={(e) => setDistance(Number(e.target.value))}
                   className="w-full h-3 bg-[#cdeef0] rounded-lg appearance-none cursor-pointer accent-[#00b4b6]"
                 />
-                <div className="flex justify-between text-sm sm:text-base font-semibold text-[#2d3a37]/70 mt-2 px-1">
+                <div className="flex justify-between text-xs sm:text-sm font-semibold text-[#2d3a37]/70 mt-2 px-1">
                   <span>0 км</span>
-                  <span>100 км</span>
-                  <span>200 км</span>
+                  <span>150 км</span>
                   <span>300 км</span>
+                  <span>450 км</span>
+                  <span className={isFarLocation ? "text-[#00b4b6] font-bold" : ""}>450+ км</span>
                 </div>
               </div>
-              <p className="text-xs sm:text-sm text-[#00b4b6] font-medium italic pt-1">
-                * Първите 50 км са включени безплатно! След 50-ия км цената е 0.23 €/км.
-              </p>
+
+              {/* Notice for 450+ km */}
+              {isFarLocation ? (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="p-4 rounded-2xl bg-[#00b4b6]/10 border border-[#00b4b6]/30 text-[#2d3a37] text-sm sm:text-base space-y-1 flex flex-col items-center"
+                >
+                  <div className="flex items-center space-x-2 text-[#00b4b6] font-bold font-display text-base sm:text-lg">
+                    <Sparkles className="w-5 h-5" />
+                    <span>Индивидуална оферта за над 450 км!</span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-[#2d3a37]/90 italic">
+                    За отдалечени дестинации над 450 км изготвяме специална оферта с включени нощувки и логистика.
+                  </p>
+                </motion.div>
+              ) : (
+                <p className="text-xs sm:text-sm text-[#00b4b6] font-medium italic pt-1">
+                  * Километрите се изчисляват двупосочно (отиване и връщане от Бургас). Първите 50 км в посока (100 км двупосочно) са безплатни!
+                </p>
+              )}
             </div>
 
             {/* Custom Checkbox: Add Initials */}
@@ -163,11 +191,11 @@ export const CalculatorWidget = () => {
             {/* CTA Button */}
             <div className="pt-4">
               <Link
-                href={`/booking?guests=${isLargeEvent ? "150+" : numericGuests}&distance=${distance}&initials=${addInitials}`}
+                href={`/booking?guests=${isLargeEvent ? "150+" : numericGuests}&distance=${isFarLocation ? "450+" : distance}&initials=${addInitials}`}
                 className="inline-flex items-center space-x-2 bg-[#00b4b6] hover:bg-[#009da0] text-white font-display text-lg sm:text-xl font-bold uppercase tracking-wider px-10 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
               >
                 <MessageCircle className="w-5 h-5" />
-                <span>{isLargeEvent ? "ПОИСКАЙ ИНДИВИДУАЛНА ОФЕРТА" : "ИЗПРАТИ ЗАПИТВАНЕ"}</span>
+                <span>{needsInquiry ? "ПОИСКАЙ ИНДИВИДУАЛНА ОФЕРТА" : "ИЗПРАТИ ЗАПИТВАНЕ"}</span>
               </Link>
             </div>
           </div>
@@ -175,16 +203,20 @@ export const CalculatorWidget = () => {
           {/* Dark Bottom Box: Result Price */}
           <div className="bg-[#2d3a37] text-white px-6 py-8 text-center space-y-3">
             <p className="font-sans text-base sm:text-lg font-light text-white/90">
-              {isLargeEvent ? "Специална такса за голямо събитие:" : "Ориентировъчна цена:"}
+              {needsInquiry ? "Специална такса за вашето събитие:" : "Ориентировъчна цена:"}
             </p>
 
-            {isLargeEvent ? (
+            {needsInquiry ? (
               <div className="space-y-2">
                 <div className="font-display text-3xl sm:text-5xl font-bold tracking-wider text-[#00b4b6]">
                   ПО ЗАПИТВАНЕ
                 </div>
                 <p className="text-xs sm:text-sm text-white/90 font-light max-w-lg mx-auto leading-relaxed">
-                  За събития с над 150 гости изготвяме персонална оферта с преференциални условия. Изпратете ни запитване и ще се свържем с Вас!
+                  {isLargeEvent && isFarLocation
+                    ? "За събития с над 150 гости и дестинации над 450 км изготвяме персонална оферта. Изпратете запитване за преференциални условия!"
+                    : isLargeEvent
+                    ? "За събития с над 150 гости изготвяме персонална оферта с преференциални условия."
+                    : "За отдалечени дестинации над 450 км изготвяме персонална оферта с транспорт и логистика."}
                 </p>
               </div>
             ) : (
@@ -193,7 +225,7 @@ export const CalculatorWidget = () => {
                   {minPrice} € – {maxPrice} €
                 </div>
                 <p className="text-xs sm:text-sm text-white/70 font-light max-w-lg mx-auto leading-relaxed">
-                  * Крайната оферта се определя след връзка с нас и обсъждане на дизайните и мястото на събитието.
+                  * Включва отиване и връщане ({totalRoundTripKm} км двупосочно). Крайната оферта се потвърждава след връзка с нас.
                 </p>
               </>
             )}
@@ -203,6 +235,7 @@ export const CalculatorWidget = () => {
     </section>
   );
 };
+
 
 
 
