@@ -27,6 +27,9 @@ export const HomepageEditor = () => {
     setSaving(true);
     setSaved(false);
     try {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("poshtichka_content_homepage_config", JSON.stringify(config));
+      }
       await fetch("/api/admin/content", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -43,7 +46,7 @@ export const HomepageEditor = () => {
 
   return (
     <div className="space-y-6 font-sans">
-      {/* Header */}
+      {/* Single Main Section Header with ONE Save Button */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-brand-primary/20 shadow-xs">
         <div>
           <h2 className="font-serif text-2xl font-bold text-brand-dark">
@@ -55,11 +58,12 @@ export const HomepageEditor = () => {
         </div>
 
         <Button
+          type="button"
           variant="primary"
           size="md"
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center space-x-2"
+          className="flex items-center space-x-2 shrink-0 cursor-pointer shadow-md hover:shadow-lg transition-all"
         >
           {saved ? (
             <>
@@ -258,30 +262,6 @@ export const HomepageEditor = () => {
             ))}
           </div>
         </div>
-
-        {/* Section Save Action Button */}
-        <div className="pt-4 border-t border-brand-primary/10 flex justify-end">
-          <Button
-            type="button"
-            variant="primary"
-            size="sm"
-            onClick={handleSave}
-            disabled={saving}
-            className="flex items-center space-x-2"
-          >
-            {saved ? (
-              <>
-                <Check className="w-4 h-4 text-emerald-400" />
-                <span>Запазено!</span>
-              </>
-            ) : (
-              <>
-                <Save className="w-4 h-4" />
-                <span>{saving ? "Запазване..." : "Запази промените за Лентата"}</span>
-              </>
-            )}
-          </Button>
-        </div>
       </Card>
 
       {/* Section Headings Form */}
@@ -292,7 +272,6 @@ export const HomepageEditor = () => {
             Заглавия на Секциите в Homepage
           </h3>
         </div>
-
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-1">
@@ -366,30 +345,6 @@ export const HomepageEditor = () => {
               className="w-full px-4 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/40"
             />
           </div>
-        </div>
-
-        {/* Section Save Action Button */}
-        <div className="pt-4 border-t border-brand-primary/10 flex justify-end">
-          <Button
-            type="button"
-            variant="primary"
-            size="sm"
-            onClick={handleSave}
-            disabled={saving}
-            className="flex items-center space-x-2"
-          >
-            {saved ? (
-              <>
-                <Check className="w-4 h-4 text-emerald-400" />
-                <span>Запазено!</span>
-              </>
-            ) : (
-              <>
-                <Save className="w-4 h-4" />
-                <span>{saving ? "Запазване..." : "Запази промените за Заглавията"}</span>
-              </>
-            )}
-          </Button>
         </div>
       </Card>
     </div>
