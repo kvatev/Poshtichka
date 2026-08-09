@@ -33,8 +33,8 @@ export const HowItWorks = () => {
           </h2>
         </div>
 
-        {/* 3 Step Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-stretch">
+        {/* 3 Step Cards - Render PNG graphics directly without outer white frames */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-center">
           {steps.map((step, idx) => (
             <motion.div
               key={step.id}
@@ -42,14 +42,14 @@ export const HowItWorks = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: idx * 0.15 }}
-              className="group relative rounded-[32px] overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-[#00b4b6]/20 bg-white flex flex-col justify-center items-center p-2"
+              className="group relative w-full flex justify-center items-center"
             >
-              <div className="relative w-full aspect-[4/5] rounded-[24px] overflow-hidden">
+              <div className="relative w-full aspect-[4/5] flex justify-center items-center">
                 <Image
                   src={step.image}
                   alt={step.title}
                   fill
-                  className="object-contain group-hover:scale-105 transition-transform duration-500"
+                  className="object-contain group-hover:scale-105 transition-transform duration-500 drop-shadow-md"
                   unoptimized
                 />
               </div>
@@ -60,5 +60,6 @@ export const HowItWorks = () => {
     </section>
   );
 };
+
 
 

@@ -22,7 +22,7 @@ export const TestimonialsSection = () => {
           </h2>
         </div>
 
-        {/* 5 Testimonial Cards Grid */}
+        {/* 5 Testimonial Cards Grid - Render PNG graphics directly */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {testimonialImages.map((item, idx) => (
             <motion.div
@@ -31,14 +31,14 @@ export const TestimonialsSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="flex justify-center group"
+              className="flex justify-center items-center group cursor-pointer"
             >
-              <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-md group-hover:shadow-xl transition-all duration-300">
+              <div className="relative w-full aspect-[4/5] flex justify-center items-center">
                 <Image
                   src={item.image}
                   alt={item.name}
                   fill
-                  className="object-contain group-hover:scale-105 transition-transform duration-500"
+                  className="object-contain group-hover:scale-105 transition-transform duration-500 drop-shadow-md"
                   unoptimized
                 />
               </div>
@@ -49,4 +49,5 @@ export const TestimonialsSection = () => {
     </section>
   );
 };
+
 

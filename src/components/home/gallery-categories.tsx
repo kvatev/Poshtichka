@@ -27,7 +27,8 @@ export const GalleryCategories = () => {
   return (
     <section className="py-16 sm:py-24 bg-brand-cream border-b border-[#00b4b6]/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-stretch">
+        {/* 3 Category Cards - Render PNG graphics directly without outer white frames */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-center">
           {categories.map((category, idx) => (
             <motion.div
               key={category.id}
@@ -39,14 +40,14 @@ export const GalleryCategories = () => {
             >
               <Link
                 href="/gallery"
-                className="group block w-full relative rounded-[32px] overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-white p-2 border border-[#00b4b6]/20"
+                className="group block w-full relative flex justify-center items-center cursor-pointer"
               >
-                <div className="relative w-full aspect-[4/5] rounded-[24px] overflow-hidden">
+                <div className="relative w-full aspect-[4/5] flex justify-center items-center">
                   <Image
                     src={category.image}
                     alt={category.title}
                     fill
-                    className="object-contain group-hover:scale-105 transition-transform duration-500"
+                    className="object-contain group-hover:scale-105 transition-transform duration-500 drop-shadow-md"
                     unoptimized
                   />
                 </div>
@@ -58,5 +59,6 @@ export const GalleryCategories = () => {
     </section>
   );
 };
+
 
 
