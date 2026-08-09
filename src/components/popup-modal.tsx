@@ -6,33 +6,53 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Sparkles, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PromoPopup, defaultPopups } from "@/lib/content-store";
+
+export interface PopupLiveConfig {
+  id?: number;
+  title: string;
+  badge?: string;
+  description: string;
+  ctaText: string;
+  ctaUrl: string;
+  imageUrl?: string;
+  isActive: boolean;
+}
 
 export const PopupModal = () => {
-  const [popup, setPopup] = useState<PromoPopup | null>(null);
+  const [popup, setPopup] = useState<PopupLiveConfig | null>(null);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    // Check session storage to avoid showing popup on every single page click
+    // Check session storage so modal doesn't re-open on every page navigation within same session
     const dismissedKey = "poshtichka_popup_dismissed";
     const isDismissed = sessionStorage.getItem(dismissedKey);
 
     if (isDismissed) return;
 
-    fetch("/api/content")
+    fetch("/api/popup")
       .then((res) => res.json())
       .then((data) => {
-        if (data.popups && Array.isArray(data.popups)) {
-          const activePopup = data.popups.find((p: PromoPopup) => p.enabled);
-          if (activePopup) {
-            setPopup(activePopup);
-            // Delay 1.5s for smooth impression
+        if (data && typeof data === "object") {
+          const config: PopupLiveConfig = {
+            id: data.id || 1,
+            title: data.title || "Специална Сватбена Оферта",
+            badge: data.badge || "Промоция",
+            description: data.description || "Запазете вашата дата за сватба или събитие с отстъпка за ранни запитвания.",
+            ctaText: data.ctaText || data.cta_text || "Проверете наличност",
+            ctaUrl: data.ctaUrl || data.cta_url || "/booking",
+            imageUrl: data.imageUrl || data.image_url || "",
+            isActive: typeof data.isActive === "boolean" ? data.isActive : (data.is_active ?? true),
+          };
+
+          // If isActive is false, do not show popup
+          if (config.isActive) {
+            setPopup(config);
             const timer = setTimeout(() => setOpen(true), 1500);
             return () => clearTimeout(timer);
           }
         }
       })
-      .catch(() => {});
+      .catch((err) => console.warn("PopupModal fetch warning:", err));
   }, []);
 
   const handleClose = () => {
@@ -40,7 +60,8 @@ export const PopupModal = () => {
     sessionStorage.setItem("poshtichka_popup_dismissed", "true");
   };
 
-  if (!popup || !open) return null;
+  // If popup is inactive or open state is false, return null
+  if (!popup || !popup.isActive || !open) return null;
 
   return (
     <AnimatePresence>
@@ -67,6 +88,7 @@ export const PopupModal = () => {
                 alt={popup.title}
                 fill
                 className="object-cover"
+                unoptimized
               />
               <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent" />
             </div>
@@ -79,10 +101,10 @@ export const PopupModal = () => {
           )}
 
           <div className="p-6 sm:p-8 text-center space-y-4">
-            {popup.badgeText && (
+            {popup.badge && (
               <span className="inline-flex items-center space-x-1.5 bg-brand-secondary px-3 py-1 rounded-full text-xs font-semibold text-brand-accent uppercase tracking-widest">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>{popup.badgeText}</span>
+                <span>{popup.badge}</span>
               </span>
             )}
 
@@ -91,13 +113,13 @@ export const PopupModal = () => {
             </h3>
 
             <p className="text-brand-dark/80 text-sm sm:text-base leading-relaxed font-light">
-              {popup.subtitle}
+              {popup.description}
             </p>
 
             <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
-              <Link href={popup.buttonLink} onClick={handleClose}>
+              <Link href={popup.ctaUrl || "/booking"} onClick={handleClose}>
                 <Button variant="primary" size="lg" className="w-full sm:w-auto">
-                  {popup.buttonText}
+                  {popup.ctaText || "Проверете наличност"}
                 </Button>
               </Link>
               <Button
