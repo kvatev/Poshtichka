@@ -210,7 +210,7 @@ export const defaultHomepageConfig: HomepageConfig = {
   heroSubtitle: "Персонализирани подаръци, създадени на живо по време на Вашето събитие чрез специально проектирана бутикова машина.",
   primaryCtaText: "Запазете дата за събитие",
   secondaryCtaText: "Разгледайте галерията",
-  heroImageUrl: "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
+  heroImageUrl: "/media/Main Page/Main Banner.png",
   heroVideoUrl: "",
   showVideo: false,
   howItWorksTitle: "Как функционира Пощичка?",

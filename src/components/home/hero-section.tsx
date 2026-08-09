@@ -1,28 +1,17 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
 export const HeroSection = () => {
-  const [heroImage, setHeroImage] = useState<string>("/media/Main Page/Main Banner.png");
-
-  useEffect(() => {
-    fetch("/api/content")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.homepage?.heroImageUrl) {
-          setHeroImage(data.homepage.heroImageUrl);
-        }
-      })
-      .catch(() => {});
-  }, []);
+  const heroImage = "/media/Main Page/Main Banner.png";
 
   return (
     <section className="relative w-full min-h-[80vh] sm:min-h-[85vh] flex items-center justify-center overflow-hidden bg-brand-dark py-20 px-4">
-      {/* Background Image - Dynamic from Admin Settings, default: /media/Main Page/Main Banner.png */}
+      {/* Permanent High-Quality Background Image: /media/Main Page/Main Banner.png */}
       <div className="absolute inset-0 z-0">
         <Image
           src={heroImage}
