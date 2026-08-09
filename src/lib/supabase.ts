@@ -1,15 +1,21 @@
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-key";
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || supabaseAnonKey;
+const supabasePublishableKey =
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  "placeholder-key";
+const supabaseSecretKey =
+  process.env.SUPABASE_SECRET_KEY ||
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  supabasePublishableKey;
 
 // Public client for client-side / anonymous operations
-export const supabasePublic = createClient(supabaseUrl, supabaseAnonKey);
+export const supabasePublic = createClient(supabaseUrl, supabasePublishableKey);
 
-// Admin client for server-side elevated operations (bypassing RLS)
+// Admin client for server-side elevated operations using SUPABASE_SECRET_KEY (bypassing RLS)
 export function getSupabaseAdminClient() {
-  return createClient(supabaseUrl, supabaseServiceKey, {
+  return createClient(supabaseUrl, supabaseSecretKey, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
@@ -17,7 +23,7 @@ export function getSupabaseAdminClient() {
   });
 }
 
-// Public client getter for server-side read operations
+// Public client getter for server-side read operations using NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 export function getSupabasePublicClient() {
-  return createClient(supabaseUrl, supabaseAnonKey);
+  return createClient(supabaseUrl, supabasePublishableKey);
 }
