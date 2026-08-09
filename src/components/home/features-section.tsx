@@ -29,8 +29,9 @@ const features = [
 
 export const FeaturesSection = () => {
   return (
-    <section className="py-12 sm:py-20 bg-brand-cream border-b border-[#00b4b6]/20">
+    <section className="py-12 sm:py-16 bg-brand-cream relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
           {features.map((feature, idx) => (
             <motion.div

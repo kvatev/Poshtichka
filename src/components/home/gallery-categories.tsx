@@ -25,7 +25,8 @@ const categories = [
 
 export const GalleryCategories = () => {
   return (
-    <section className="py-16 sm:py-24 bg-brand-cream border-b border-[#00b4b6]/20">
+    <section className="py-16 sm:py-24 bg-brand-cream relative">
+
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
         {/* 3 Category Cards - Render PNG graphics directly without outer white frames */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-center">

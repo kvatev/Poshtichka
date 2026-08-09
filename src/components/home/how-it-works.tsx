@@ -24,7 +24,8 @@ const steps = [
 
 export const HowItWorks = () => {
   return (
-    <section className="py-16 sm:py-24 bg-brand-cream border-b border-[#00b4b6]/20">
+    <section className="py-16 sm:py-24 bg-brand-cream relative">
+
       <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-12">
         {/* Section Heading */}
         <div className="text-center space-y-4 max-w-3xl mx-auto">

@@ -14,7 +14,8 @@ const testimonialImages = [
 
 export const TestimonialsSection = () => {
   return (
-    <section className="py-16 sm:py-24 bg-brand-cream border-b border-[#00b4b6]/20">
+    <section className="py-16 sm:py-24 bg-brand-cream relative">
+
       <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-10">
         <div className="text-center space-y-3 max-w-3xl mx-auto">
           <h2 className="font-display text-3xl sm:text-5xl font-bold uppercase tracking-wide text-[#00b4b6]">
