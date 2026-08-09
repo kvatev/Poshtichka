@@ -1,6 +1,15 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
+// Server-side in-memory cache for ultra-fast instant updates
+declare global {
+  var __POSHTICHKA_STORE__: Record<string, any> | undefined;
+}
+
+if (!globalThis.__POSHTICHKA_STORE__) {
+  globalThis.__POSHTICHKA_STORE__ = {};
+}
+
 export async function POST(request: Request) {
   try {
     const { key, value } = await request.json();
@@ -11,6 +20,12 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+
+    // Save to global in-memory store
+    if (!globalThis.__POSHTICHKA_STORE__) {
+      globalThis.__POSHTICHKA_STORE__ = {};
+    }
+    globalThis.__POSHTICHKA_STORE__[key] = value;
 
     try {
       const supabase = await createClient();

@@ -9,50 +9,48 @@ import {
   defaultTestimonials,
 } from "@/lib/content-store";
 
+declare global {
+  var __POSHTICHKA_STORE__: Record<string, any> | undefined;
+}
+
 export async function GET() {
+  const store = globalThis.__POSHTICHKA_STORE__ || {};
+
+  let general = store.general_settings || defaultGeneralSettings;
+  let seo = store.seo_settings || defaultSeoSettings;
+  let homepage = store.homepage_config ? { ...defaultHomepageConfig, ...store.homepage_config } : defaultHomepageConfig;
+  let popups = store.popups || defaultPopups;
+  let banners = store.banners || defaultBanners;
+  let testimonials = store.testimonials || defaultTestimonials;
+  let faq = store.faq_items || null;
+
   try {
     const supabase = await createClient();
     const { data: settingsData } = await supabase.from("settings").select("*");
 
-    let general = defaultGeneralSettings;
-    let seo = defaultSeoSettings;
-    let homepage = defaultHomepageConfig;
-    let popups = defaultPopups;
-    let banners = defaultBanners;
-    let testimonials = defaultTestimonials;
-    let faq = null;
-
     if (settingsData && settingsData.length > 0) {
       settingsData.forEach((item) => {
-        if (item.key === "general_settings") general = item.value;
-        if (item.key === "seo_settings") seo = item.value;
-        if (item.key === "homepage_config") homepage = item.value;
+        if (item.key === "general_settings") general = { ...general, ...item.value };
+        if (item.key === "seo_settings") seo = { ...seo, ...item.value };
+        if (item.key === "homepage_config") homepage = { ...homepage, ...item.value };
         if (item.key === "popups") popups = item.value;
         if (item.key === "banners") banners = item.value;
         if (item.key === "testimonials") testimonials = item.value;
         if (item.key === "faq_items") faq = item.value;
       });
     }
-
-    return NextResponse.json({
-      general,
-      seo,
-      homepage,
-      popups,
-      banners,
-      testimonials,
-      faq,
-    });
-  } catch {
-    return NextResponse.json({
-      general: defaultGeneralSettings,
-      seo: defaultSeoSettings,
-      homepage: defaultHomepageConfig,
-      popups: defaultPopups,
-      banners: defaultBanners,
-      testimonials: defaultTestimonials,
-      faq: null,
-    });
+  } catch (err) {
+    console.warn("API Content DB fetch note:", err);
   }
+
+  return NextResponse.json({
+    general,
+    seo,
+    homepage,
+    popups,
+    banners,
+    testimonials,
+    faq,
+  });
 }
 

@@ -6,6 +6,25 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 
 export const FinalCTA = () => {
+  const [title, setTitle] = React.useState("ГОТОВИ ЛИ СТЕ ДА СЪЗДАДЕМ НЕЗАБРАВИМ СПОМЕН?");
+  const [subtitle, setSubtitle] = React.useState(
+    "Датите за сватбения сезон се запълват бързо. Побързайте, за да запазите Пощичка за вашия повод!"
+  );
+
+  React.useEffect(() => {
+    fetch("/api/content")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.homepage?.finalCtaTitle) {
+          setTitle(data.homepage.finalCtaTitle.toUpperCase());
+        }
+        if (data.homepage?.finalCtaSubtitle) {
+          setSubtitle(data.homepage.finalCtaSubtitle);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <section className="relative w-full py-20 sm:py-32 flex items-center justify-center overflow-hidden bg-brand-dark px-4">
       {/* Background Image */}
@@ -29,7 +48,7 @@ export const FinalCTA = () => {
           transition={{ duration: 0.7 }}
           className="font-display text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-wider leading-tight text-white sm:whitespace-nowrap"
         >
-          ГОТОВИ ЛИ СТЕ ДА СЪЗДАДЕМ НЕЗАБРАВИМ СПОМЕН?
+          {title}
         </motion.h2>
 
         <motion.p
@@ -39,7 +58,7 @@ export const FinalCTA = () => {
           transition={{ duration: 0.7, delay: 0.2 }}
           className="font-sans text-base sm:text-xl font-light text-white/95 max-w-3xl mx-auto leading-relaxed"
         >
-          Датите за сватбения сезон се запълват бързо. Побързайте, за да запазите Пощичка за вашия повод!
+          {subtitle}
         </motion.p>
 
         <motion.div
