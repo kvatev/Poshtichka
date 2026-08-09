@@ -40,7 +40,7 @@ export const HeroSection = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="font-sans text-lg sm:text-xl md:text-2xl font-light text-white/90 max-w-2xl mx-auto leading-relaxed drop-shadow-md"
         >
-          Персонализирани спомени, създадени на живо по време на събитието.
+          Персонализирани подаръци, създадени по ваша идея!
         </motion.p>
 
         <motion.div
@@ -49,17 +49,11 @@ export const HeroSection = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="pt-6 flex justify-center"
         >
-          <Link href="/booking" className="group inline-block cursor-pointer">
-            <div className="relative w-64 sm:w-80 h-16 sm:h-20 transition-transform duration-300 group-hover:scale-105">
-              <Image
-                src="/media/Main Page/btn-reserve-here.png"
-                alt="Резервирай тук"
-                fill
-                className="object-contain drop-shadow-xl"
-                priority
-                unoptimized
-              />
-            </div>
+          <Link
+            href="/about"
+            className="inline-flex items-center justify-center px-10 py-3.5 rounded-full border-2 border-white bg-black/20 hover:bg-white hover:text-[#182b2c] backdrop-blur-md text-white font-stampatello text-lg sm:text-xl font-bold uppercase tracking-wider transition-all duration-300 shadow-xl group cursor-pointer"
+          >
+            <span>Разбери повече</span>
           </Link>
         </motion.div>
       </div>
