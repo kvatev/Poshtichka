@@ -19,16 +19,11 @@
 }
 
 @layer base {
-  :root {
-    --font-playfair: 'Playfair Display', serif;
-    --font-inter: 'Inter', sans-serif;
-  }
-
   html {
     scroll-behavior: smooth;
     background-color: #f9f6f0;
     color: #182b2c;
-    font-family: var(--font-inter), sans-serif;
+    font-family: 'StampatelloFaceto', sans-serif;
   }
 
   body {
@@ -36,22 +31,29 @@
     background-color: #f9f6f0;
     color: #182b2c;
     line-height: 1.6;
+    font-family: 'StampatelloFaceto', sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
+  /* Headlines & Titles use SALongBeach font */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'StampatelloFaceto', var(--font-stampatello), 'Playfair Display', serif;
-    letter-spacing: -0.01em;
+    font-family: 'SALongBeach', serif, sans-serif;
+    letter-spacing: 0.02em;
   }
 }
 
 .font-stampatello {
-  font-family: 'StampatelloFaceto', var(--font-stampatello), sans-serif;
+  font-family: 'StampatelloFaceto', sans-serif;
 }
 
-.font-salongbeach {
-  font-family: 'SALongBeach', var(--font-sa-long-beach), cursive;
+.font-salongbeach, .font-display, .font-serif {
+  font-family: 'SALongBeach', serif, sans-serif;
 }
+
+.font-sans {
+  font-family: 'StampatelloFaceto', sans-serif;
+}
+
 
 /* Glassmorphism utility */
 .glass-panel {

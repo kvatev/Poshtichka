@@ -25,9 +25,11 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ["var(--font-display)", "var(--font-playfair)", "serif"],
-        sans: ["var(--font-sans)", "var(--font-inter)", "sans-serif"],
-        serif: ["var(--font-display)", "serif"],
+        display: ["SALongBeach", "serif", "sans-serif"],
+        salongbeach: ["SALongBeach", "serif", "sans-serif"],
+        serif: ["SALongBeach", "serif"],
+        sans: ["StampatelloFaceto", "sans-serif"],
+        stampatello: ["StampatelloFaceto", "sans-serif"],
       },
       boxShadow: {
         glass: "0 8px 32px 0 rgba(0, 180, 182, 0.08)",
