@@ -6,6 +6,7 @@ import {
   defaultHomepageConfig,
   defaultPopups,
   defaultBanners,
+  defaultTestimonials,
 } from "@/lib/content-store";
 
 export async function GET() {
@@ -18,6 +19,7 @@ export async function GET() {
     let homepage = defaultHomepageConfig;
     let popups = defaultPopups;
     let banners = defaultBanners;
+    let testimonials = defaultTestimonials;
 
     if (settingsData && settingsData.length > 0) {
       settingsData.forEach((item) => {
@@ -26,6 +28,7 @@ export async function GET() {
         if (item.key === "homepage_config") homepage = item.value;
         if (item.key === "popups") popups = item.value;
         if (item.key === "banners") banners = item.value;
+        if (item.key === "testimonials") testimonials = item.value;
       });
     }
 
@@ -35,6 +38,7 @@ export async function GET() {
       homepage,
       popups,
       banners,
+      testimonials,
     });
   } catch {
     return NextResponse.json({
@@ -43,6 +47,8 @@ export async function GET() {
       homepage: defaultHomepageConfig,
       popups: defaultPopups,
       banners: defaultBanners,
+      testimonials: defaultTestimonials,
     });
   }
 }
+
