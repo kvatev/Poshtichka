@@ -15,20 +15,22 @@ import {
 
 export const Footer = () => {
   return (
-    <footer className="bg-[#00b4b6] text-white pt-10 pb-8 relative overflow-hidden font-sans border-t border-white/20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-12">
-        {/* 1. High Quality Footer Vector Banner - Stretched Full Width */}
-        <div className="w-full flex justify-center items-center">
-          <Image
-            src="/media/Main Page/footer-banner.png"
-            alt="Пощичка Футър Банер"
-            width={1200}
-            height={340}
-            className="w-full max-w-5xl h-auto object-contain drop-shadow-xl"
-            priority
-            unoptimized
-          />
-        </div>
+    <footer className="bg-[#00b4b6] text-white pt-0 pb-8 relative overflow-hidden font-sans border-t border-white/20">
+      {/* 1. High Quality 4K Footer Vector Banner - Stretched 100% Full Bleed Edge-to-Edge */}
+      <div className="w-full flex justify-center items-center leading-none overflow-hidden">
+        <Image
+          src="/media/Main Page/footer-banner.png"
+          alt="Пощичка Футър Банер"
+          width={3841}
+          height={1116}
+          className="w-full h-auto object-cover block"
+          priority
+          unoptimized
+        />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-12 pt-10">
+
 
         {/* 2. Interactive Functional Footer Navigation & Social Links */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pt-8 border-t border-white/20 text-white">
