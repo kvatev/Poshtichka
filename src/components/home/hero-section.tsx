@@ -4,7 +4,6 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
 
 export const HeroSection = () => {
   const heroImage = "/media/Main Page/Main Banner.png";
@@ -48,18 +47,24 @@ export const HeroSection = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="pt-6"
+          className="pt-6 flex justify-center"
         >
-          <Link
-            href="/services"
-            className="inline-flex items-center space-x-2 px-8 py-3.5 rounded-full border-2 border-white bg-white/10 backdrop-blur-md text-white font-sans text-sm sm:text-base font-semibold uppercase tracking-widest hover:bg-white hover:text-brand-dark transition-all duration-300 shadow-xl group"
-          >
-            <span>ВИЖ ПОВЕЧЕ</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          <Link href="/booking" className="group inline-block cursor-pointer">
+            <div className="relative w-64 sm:w-80 h-16 sm:h-20 transition-transform duration-300 group-hover:scale-105">
+              <Image
+                src="/media/Main Page/btn-reserve-here.png"
+                alt="Резервирай тук"
+                fill
+                className="object-contain drop-shadow-xl"
+                priority
+                unoptimized
+              />
+            </div>
           </Link>
         </motion.div>
       </div>
     </section>
   );
 };
+
 
