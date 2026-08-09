@@ -48,7 +48,7 @@ export const GalleryCategories = () => {
                     src={category.image}
                     alt={category.title}
                     fill
-                    className="object-contain group-hover:scale-105 transition-transform duration-500 drop-shadow-md"
+                    className="object-contain group-hover:scale-105 transition-transform duration-500"
                     unoptimized
                   />
                 </div>

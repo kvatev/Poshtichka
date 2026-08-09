@@ -20,7 +20,7 @@ export const WhatIsPoshtichka = () => {
             alt="Какво е Пощичка?"
             width={3701}
             height={2135}
-            className="w-full max-w-6xl h-auto object-contain drop-shadow-md"
+            className="w-full max-w-6xl h-auto object-contain"
             priority
             unoptimized
           />
