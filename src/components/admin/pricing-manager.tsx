@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { Tag, Save, Sparkles, CheckCircle2, Truck, Palette } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Tag, Save, Sparkles, CheckCircle2, Truck, Palette, Check } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -15,12 +15,55 @@ export const PricingManager = () => {
   const [freeDistance, setFreeDistance] = useState("50");
   const [ratePerKm, setRatePerKm] = useState("0.23");
 
+  const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
-  const handleSavePricing = (e: React.FormEvent) => {
+  useEffect(() => {
+    fetch("/api/content")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.pricing) {
+          if (data.pricing.minRental) setMinRental(String(data.pricing.minRental));
+          if (data.pricing.maxRental) setMaxRental(String(data.pricing.maxRental));
+          if (data.pricing.minDesign) setMinDesign(String(data.pricing.minDesign));
+          if (data.pricing.maxDesign) setMaxDesign(String(data.pricing.maxDesign));
+          if (data.pricing.freeDistance) setFreeDistance(String(data.pricing.freeDistance));
+          if (data.pricing.ratePerKm) setRatePerKm(String(data.pricing.ratePerKm));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleSavePricing = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSavedSuccess(true);
-    setTimeout(() => setSavedSuccess(false), 3000);
+    setSaving(true);
+    setSavedSuccess(false);
+
+    const payload = {
+      minRental,
+      maxRental,
+      minDesign,
+      maxDesign,
+      freeDistance,
+      ratePerKm,
+    };
+
+    try {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("poshtichka_content_pricing_settings", JSON.stringify(payload));
+      }
+      await fetch("/api/admin/content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: "pricing_settings", value: payload }),
+      });
+      setSavedSuccess(true);
+      setTimeout(() => setSavedSuccess(false), 3000);
+    } catch (err) {
+      console.error("Save pricing error:", err);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -35,12 +78,26 @@ export const PricingManager = () => {
             Конфигурирайте ценовата рамка за калкулатора и офертите
           </p>
         </div>
-        {savedSuccess && (
-          <div className="flex items-center space-x-2 text-xs font-semibold text-emerald-700 bg-emerald-100 px-4 py-2 rounded-xl">
-            <CheckCircle2 className="w-4 h-4" />
-            <span>Промените бяха запазени успешно!</span>
-          </div>
-        )}
+        
+        <Button
+          variant="primary"
+          size="md"
+          onClick={handleSavePricing}
+          disabled={saving}
+          className="flex items-center space-x-2 shrink-0 cursor-pointer shadow-md hover:shadow-lg transition-all"
+        >
+          {savedSuccess ? (
+            <>
+              <Check className="w-4 h-4 text-emerald-400" />
+              <span>Запазено!</span>
+            </>
+          ) : (
+            <>
+              <Save className="w-4 h-4" />
+              <span>{saving ? "Запазване..." : "Запази промените"}</span>
+            </>
+          )}
+        </Button>
       </div>
 
       <form onSubmit={handleSavePricing} className="space-y-8">
@@ -67,7 +124,7 @@ export const PricingManager = () => {
                   type="number"
                   value={minRental}
                   onChange={(e) => setMinRental(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-brand-accent font-bold"
                 />
               </div>
               <div className="space-y-1">
@@ -78,7 +135,7 @@ export const PricingManager = () => {
                   type="number"
                   value={maxRental}
                   onChange={(e) => setMaxRental(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-brand-accent font-bold"
                 />
               </div>
             </div>
@@ -106,7 +163,7 @@ export const PricingManager = () => {
                   type="number"
                   value={minDesign}
                   onChange={(e) => setMinDesign(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-brand-accent font-bold"
                 />
               </div>
               <div className="space-y-1">
@@ -117,7 +174,7 @@ export const PricingManager = () => {
                   type="number"
                   value={maxDesign}
                   onChange={(e) => setMaxDesign(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-brand-accent font-bold"
                 />
               </div>
             </div>
@@ -145,7 +202,7 @@ export const PricingManager = () => {
                   type="number"
                   value={freeDistance}
                   onChange={(e) => setFreeDistance(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-brand-accent font-bold"
                 />
               </div>
               <div className="space-y-1">
@@ -156,18 +213,11 @@ export const PricingManager = () => {
                   type="text"
                   value={ratePerKm}
                   onChange={(e) => setRatePerKm(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-brand-accent font-bold"
                 />
               </div>
             </div>
           </Card>
-        </div>
-
-        <div className="flex justify-end">
-          <Button variant="primary" size="lg" type="submit" className="flex items-center space-x-2">
-            <Save className="w-4 h-4" />
-            <span>Запази промените в цените</span>
-          </Button>
         </div>
       </form>
     </div>

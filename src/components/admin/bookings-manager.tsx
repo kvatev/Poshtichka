@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Search,
   Filter,
@@ -83,6 +83,17 @@ export const BookingsManager = () => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedBooking, setSelectedBooking] = useState<BookingRecord | null>(null);
 
+  useEffect(() => {
+    fetch("/api/bookings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setBookings(data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const filteredBookings = bookings.filter((b) => {
     const matchesSearch =
       b.fullName.toLowerCase().includes(search.toLowerCase()) ||
@@ -93,12 +104,22 @@ export const BookingsManager = () => {
     return matchesSearch && matchesStatus;
   });
 
-  const handleUpdateStatus = (id: string, newStatus: BookingRecord["status"]) => {
+  const handleUpdateStatus = async (id: string, newStatus: BookingRecord["status"]) => {
     setBookings((prev) =>
       prev.map((b) => (b.id === id ? { ...b, status: newStatus } : b))
     );
     if (selectedBooking && selectedBooking.id === id) {
       setSelectedBooking({ ...selectedBooking, status: newStatus });
+    }
+
+    try {
+      await fetch("/api/bookings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: newStatus }),
+      });
+    } catch (err) {
+      console.error("Update status error:", err);
     }
   };
 

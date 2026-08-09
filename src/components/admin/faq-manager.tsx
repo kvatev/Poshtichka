@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { Plus, Edit2, Trash2, HelpCircle, Save, X } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Plus, Edit2, Trash2, HelpCircle, Save, X, Check } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -48,9 +48,43 @@ export const FAQManager = () => {
   const [faqs, setFaqs] = useState<FAQItem[]>(initialFaqs);
   const [editingItem, setEditingItem] = useState<FAQItem | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const [formQuestion, setFormQuestion] = useState("");
   const [formAnswer, setFormAnswer] = useState("");
+
+  useEffect(() => {
+    fetch("/api/content")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.faq && Array.isArray(data.faq) && data.faq.length > 0) {
+          setFaqs(data.faq);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleGlobalSave = async () => {
+    setSaving(true);
+    setSaved(false);
+    try {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("poshtichka_content_faq_items", JSON.stringify(faqs));
+      }
+      await fetch("/api/admin/content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: "faq_items", value: faqs }),
+      });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      console.error("Save FAQs error:", err);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const handleOpenAdd = () => {
     setFormQuestion("");
@@ -66,7 +100,7 @@ export const FAQManager = () => {
     setIsAddingNew(false);
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSaveItem = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formQuestion.trim() || !formAnswer.trim()) return;
 
@@ -109,15 +143,38 @@ export const FAQManager = () => {
             Добавяне, редактиране и премахване на въпроси и отговори
           </p>
         </div>
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={handleOpenAdd}
-          className="flex items-center space-x-2"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Добави нов въпрос</span>
-        </Button>
+
+        <div className="flex items-center space-x-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleOpenAdd}
+            className="flex items-center space-x-2"
+          >
+            <Plus className="w-4 h-4 text-brand-accent" />
+            <span>Добави нов въпрос</span>
+          </Button>
+
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={handleGlobalSave}
+            disabled={saving}
+            className="flex items-center space-x-2 shrink-0 cursor-pointer shadow-md hover:shadow-lg transition-all"
+          >
+            {saved ? (
+              <>
+                <Check className="w-4 h-4 text-emerald-400" />
+                <span>Запазено!</span>
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4" />
+                <span>{saving ? "Запазване..." : "Запази ЧЗВ"}</span>
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       {/* FAQ Form (Add or Edit) */}
@@ -138,7 +195,7 @@ export const FAQManager = () => {
             </button>
           </div>
 
-          <form onSubmit={handleSave} className="space-y-4">
+          <form onSubmit={handleSaveItem} className="space-y-4">
             <div className="space-y-1">
               <label className="text-xs font-semibold text-brand-dark">
                 Въпрос *
