@@ -24,12 +24,12 @@ export const HeroSection = () => {
       </div>
 
       {/* Hero Content */}
-      <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6 text-white px-4 sm:px-6">
+      <div className="relative z-10 max-w-6xl mx-auto text-center space-y-6 text-white px-4 sm:px-6">
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-wide uppercase leading-tight drop-shadow-lg text-white"
+          className="font-display text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-wider uppercase leading-tight drop-shadow-lg text-white sm:whitespace-nowrap"
         >
           Всеки гост си тръгва със спомен
         </motion.h1>
