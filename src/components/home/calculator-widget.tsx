@@ -30,12 +30,13 @@ export const CalculatorWidget = () => {
   // Math Logic for standard events:
   // Base rental up to 50 guests: 350 €
   // Extra guests: ~0.50 € / guest
-  // Initials: +25 €
+  // Initials: +50 €
   const extraGuestsCost = Math.max(0, numericGuests - 50) * 0.5;
-  const initialsCost = addInitials ? 25 : 0;
+  const initialsCost = addInitials ? 50 : 0;
 
   const minPrice = Math.round(350 + extraGuestsCost + transportCost + initialsCost);
   const maxPrice = Math.round(450 + (extraGuestsCost * 1.2) + transportCost + initialsCost + 25);
+
 
   return (
     <section className="py-16 sm:py-24 bg-brand-cream relative">
@@ -170,10 +171,10 @@ export const CalculatorWidget = () => {
               )}
             </div>
 
-            {/* Custom Checkbox: Add Initials */}
+            {/* Custom Checkbox: Add Initials (+50 EUR) */}
             <div className="space-y-3 pt-4 flex flex-col items-center">
               <h3 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
-                ДОБАВЯНЕ НА ИНИЦИАЛИ
+                ДОБАВЯНЕ НА ИНИЦИАЛИ (+50 €)
               </h3>
               <button
                 type="button"
@@ -187,6 +188,7 @@ export const CalculatorWidget = () => {
                 <Check className="w-6 h-6 stroke-[3]" />
               </button>
             </div>
+
 
             {/* CTA Button */}
             <div className="pt-4">
