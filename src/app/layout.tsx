@@ -83,6 +83,9 @@ export default function RootLayout({
   return (
     <html lang="bg" className={`${displayFont.variable} ${inter.variable}`}>
       <head>
+        <link rel="icon" href="/media/logos/Logo.png" type="image/png" sizes="any" />
+        <link rel="shortcut icon" href="/media/logos/Logo.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/media/logos/Logo.png" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
