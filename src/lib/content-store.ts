@@ -205,10 +205,10 @@ export const defaultSeoSettings: SeoSettings = {
 };
 
 export const defaultHomepageConfig: HomepageConfig = {
-  heroTitleLine1: "Всеки гост си тръгва",
-  heroTitleHighlight: "със спомен",
-  heroSubtitle: "Персонализирани подаръци, създадени на живо по време на Вашето събитие чрез специально проектирана бутикова машина.",
-  primaryCtaText: "Запазете дата за събитие",
+  heroTitleLine1: "Всеки гост си тръгва със спомен",
+  heroTitleHighlight: "",
+  heroSubtitle: "Персонализирани подаръци, създадени по ваша идея!",
+  primaryCtaText: "Разбери повече",
   secondaryCtaText: "Разгледайте галерията",
   heroImageUrl: "/media/Main Page/Main Banner.png",
   heroVideoUrl: "",
