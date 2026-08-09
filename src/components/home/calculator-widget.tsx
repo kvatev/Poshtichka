@@ -5,22 +5,23 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Check, Sparkles, MessageCircle } from "lucide-react";
 
-const GUEST_STEPS = [70, 100, 150];
+const GUEST_STEPS = [70, 100, 150, "150+"] as const;
 
 export const CalculatorWidget = () => {
   const [stepIndex, setStepIndex] = useState<number>(1); // Default: index 1 (100 guests)
   const [distance, setDistance] = useState<number>(100);
   const [addInitials, setAddInitials] = useState<boolean>(false);
 
-  const guests = GUEST_STEPS[stepIndex];
-  const isLargeEvent = guests >= 150;
+  const currentStep = GUEST_STEPS[stepIndex];
+  const isLargeEvent = currentStep === "150+";
+  const numericGuests = typeof currentStep === "number" ? currentStep : 150;
 
-  // Math Logic for standard events (70 or 100 guests):
+  // Math Logic for standard events (70, 100 or 150 guests):
   // Base rental up to 50 guests: 350 €
   // Extra guests: ~0.50 € / guest
   // Distance: first 50km FREE, then 0.23 € / km
   // Initials: +25 €
-  const extraGuestsCost = Math.max(0, guests - 50) * 0.5;
+  const extraGuestsCost = Math.max(0, numericGuests - 50) * 0.5;
   const transportCost = Math.max(0, distance - 50) * 0.23;
   const initialsCost = addInitials ? 25 : 0;
 
@@ -50,11 +51,11 @@ export const CalculatorWidget = () => {
               </p>
             </div>
 
-            {/* Slider 1: Guests (Exact Steps: 70, 100, 150+) */}
+            {/* Slider 1: Guests (Exact 4 Steps: 70, 100, 150, 150+) */}
             <div className="space-y-4 pt-4">
               <div className="flex items-center justify-center space-x-2">
                 <h3 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
-                  БРОЙ ГОСТИ: {isLargeEvent ? "150+ (Голямо събитие)" : `${guests} гости`}
+                  БРОЙ ГОСТИ: {isLargeEvent ? "150+ (Голямо събитие)" : `${numericGuests} гости`}
                 </h3>
               </div>
 
@@ -62,7 +63,7 @@ export const CalculatorWidget = () => {
                 <input
                   type="range"
                   min={0}
-                  max={2}
+                  max={3}
                   step={1}
                   value={stepIndex}
                   onChange={(e) => setStepIndex(Number(e.target.value))}
@@ -85,6 +86,12 @@ export const CalculatorWidget = () => {
                     onClick={() => setStepIndex(2)}
                     className={`cursor-pointer ${stepIndex === 2 ? "text-[#00b4b6] font-bold scale-110" : ""}`}
                   >
+                    150
+                  </span>
+                  <span
+                    onClick={() => setStepIndex(3)}
+                    className={`cursor-pointer ${stepIndex === 3 ? "text-[#00b4b6] font-bold scale-110" : ""}`}
+                  >
                     150+
                   </span>
                 </div>
@@ -102,7 +109,7 @@ export const CalculatorWidget = () => {
                     <span>Индивидуална оферта за над 150 гости!</span>
                   </div>
                   <p className="text-xs sm:text-sm text-[#2d3a37]/90 italic">
-                    За мащабни събития с над 150 гости изготвяме преференциални пакети с допълнителен екип и индивидуални условия.
+                    За събития с над 150 гости изготвяме преференциални пакети с допълнителен екип и индивидуални условия.
                   </p>
                 </motion.div>
               )}
@@ -156,7 +163,7 @@ export const CalculatorWidget = () => {
             {/* CTA Button */}
             <div className="pt-4">
               <Link
-                href={`/booking?guests=${isLargeEvent ? "150+" : guests}&distance=${distance}&initials=${addInitials}`}
+                href={`/booking?guests=${isLargeEvent ? "150+" : numericGuests}&distance=${distance}&initials=${addInitials}`}
                 className="inline-flex items-center space-x-2 bg-[#00b4b6] hover:bg-[#009da0] text-white font-display text-lg sm:text-xl font-bold uppercase tracking-wider px-10 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
               >
                 <MessageCircle className="w-5 h-5" />
@@ -196,6 +203,7 @@ export const CalculatorWidget = () => {
     </section>
   );
 };
+
 
 
 
