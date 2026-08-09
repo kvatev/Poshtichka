@@ -17,13 +17,28 @@ export const TopBar = () => {
   );
 
   useEffect(() => {
+    // 1. Client-side localStorage fallback for instant sync
+    try {
+      const stored = localStorage.getItem("poshtichka_content_homepage_config");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.topBarPhrases && Array.isArray(parsed.topBarPhrases) && parsed.topBarPhrases.length > 0) {
+          setPhrases(parsed.topBarPhrases);
+        }
+        if (typeof parsed.topBarSpeedSeconds === "number" && parsed.topBarSpeedSeconds > 0) {
+          setSpeedSeconds(parsed.topBarSpeedSeconds);
+        }
+      }
+    } catch {}
+
+    // 2. Fetch live config from server API
     fetch("/api/content")
       .then((res) => res.json())
       .then((data) => {
-        if (data.homepage?.topBarPhrases && Array.isArray(data.homepage.topBarPhrases)) {
+        if (data.homepage?.topBarPhrases && Array.isArray(data.homepage.topBarPhrases) && data.homepage.topBarPhrases.length > 0) {
           setPhrases(data.homepage.topBarPhrases);
         }
-        if (data.homepage?.topBarSpeedSeconds) {
+        if (data.homepage?.topBarSpeedSeconds && Number(data.homepage.topBarSpeedSeconds) > 0) {
           setSpeedSeconds(Number(data.homepage.topBarSpeedSeconds));
         }
       })
@@ -37,11 +52,12 @@ export const TopBar = () => {
     <div className="bg-[#00b4b6] text-white py-2.5 px-4 text-xs sm:text-sm font-sans tracking-wider font-semibold overflow-hidden uppercase border-b border-white/10 select-none group">
       <div className="flex overflow-hidden whitespace-nowrap relative w-full">
         <motion.div
+          key={`marquee-${speedSeconds}-${phrases.length}`}
           animate={{ x: ["0%", "-50%"] }}
           transition={{
             repeat: Infinity,
             ease: "linear",
-            duration: Math.max(3, speedSeconds * 2),
+            duration: Math.max(2, speedSeconds),
           }}
           className="inline-flex items-center space-x-8 shrink-0 pr-8"
         >

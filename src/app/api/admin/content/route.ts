@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 // Server-side in-memory cache for ultra-fast instant updates
@@ -39,6 +40,11 @@ export async function POST(request: Request) {
     } catch (dbErr) {
       console.warn("Database save notice:", dbErr);
     }
+
+    // Purge Next.js cache so the public website updates instantly
+    try {
+      revalidatePath("/", "layout");
+    } catch {}
 
     return NextResponse.json({
       success: true,
