@@ -21,11 +21,11 @@ export const Header = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-[#f9f6f0]/95 backdrop-blur-md border-b border-[#00b4b6]/20 transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4 flex flex-col items-center justify-center space-y-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-8 flex flex-col items-center justify-center space-y-6 sm:space-y-8">
         {/* Top Centered Logo */}
         <div className="w-full flex items-center justify-between lg:justify-center relative">
           <Link href="/" className="group flex justify-center mx-auto">
-            <div className="relative w-48 sm:w-60 h-12 sm:h-14">
+            <div className="relative w-52 sm:w-64 h-14 sm:h-16">
               <Image
                 src="/media/logos/Logo.png"
                 alt="Пощичка от драсканици"
@@ -46,8 +46,8 @@ export const Header = () => {
           </button>
         </div>
 
-        {/* Desktop Nav Links Centered Below Logo */}
-        <nav className="hidden lg:flex items-center justify-center space-x-8 sm:space-x-12 pt-1 font-stampatello">
+        {/* Desktop Nav Links Centered Below Logo with Spacious Padding */}
+        <nav className="hidden lg:flex items-center justify-center space-x-10 sm:space-x-14 pt-3 font-stampatello">
           {navLinks.map((link) => (
             <Link
               key={link.href}
