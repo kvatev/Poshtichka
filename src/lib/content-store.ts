@@ -46,7 +46,10 @@ export interface HomepageConfig {
   faqTitle: string;
   finalCtaTitle: string;
   finalCtaSubtitle: string;
+  topBarPhrases?: string[];
+  topBarSpeedSeconds?: number;
 }
+
 
 export interface WebsiteSectionText {
   id: string;
@@ -171,7 +174,14 @@ export const defaultHomepageConfig: HomepageConfig = {
   faqTitle: "Често задавани въпроси",
   finalCtaTitle: "Готови ли сте да създадем незабравим спомен?",
   finalCtaSubtitle: "Датите за сватбения сезон се запълват бързо. Свържете се с нас, за да проверим наличността за Вашето събитие.",
+  topBarPhrases: [
+    "✦ БЕЗПЛАТЕН ТРАНСПОРТ ДО 50 КМ ОТ БУРГАС",
+    "РЕЗЕРВИРАЙТЕ ВАШАТА ДАТА СЕГА",
+    "ИНТЕРАКТИВНО ПРЕЖИВЯВАНЕ ЗА ВАШЕТО СЪБИТИЕ ✦",
+  ],
+  topBarSpeedSeconds: 15,
 };
+
 
 export const defaultPopups: PromoPopup[] = [
   {

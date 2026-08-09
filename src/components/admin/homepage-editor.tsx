@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Save, Check, Sparkles, Layout, Image as ImageIcon, Video } from "lucide-react";
+import { Save, Check, Sparkles, Layout, Image as ImageIcon, Video, Clock, Type, Plus, Trash2 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { HomepageConfig, defaultHomepageConfig } from "@/lib/content-store";
@@ -161,6 +162,98 @@ export const HomepageEditor = () => {
         </div>
       </Card>
 
+      {/* Top Bar Ticker Editor Section */}
+      <Card className="p-6 sm:p-8 space-y-6 bg-white border border-brand-primary/20 shadow-sm">
+        <div className="flex items-center justify-between border-b border-brand-primary/10 pb-4">
+          <div className="flex items-center space-x-2">
+            <Clock className="w-5 h-5 text-brand-accent" />
+            <h3 className="font-serif text-xl font-bold text-brand-dark">
+              Динамична Лента с Известия (Top Bar Banner)
+            </h3>
+          </div>
+          <span className="text-xs text-brand-dark/60 italic">Автоматично плъзгащ се текст</span>
+        </div>
+
+        {/* Speed in Seconds */}
+        <div className="space-y-1 max-w-xs">
+          <label className="text-xs font-semibold text-brand-dark flex items-center space-x-1">
+            <Clock className="w-4 h-4 text-brand-accent" />
+            <span>Време на един пълен цикъл / Скорост (в секунди)</span>
+          </label>
+          <div className="flex items-center space-x-2">
+            <input
+              type="number"
+              min={3}
+              max={60}
+              value={config.topBarSpeedSeconds || 15}
+              onChange={(e) =>
+                setConfig({
+                  ...config,
+                  topBarSpeedSeconds: Math.max(3, Number(e.target.value) || 15),
+                })
+              }
+              className="w-28 px-4 py-2 rounded-xl border border-brand-primary/30 text-sm font-sans text-brand-dark focus:ring-2 focus:ring-brand-accent bg-brand-bg/40 font-bold"
+            />
+            <span className="text-xs text-brand-dark/70">сек. (по-малко = по-бързо)</span>
+          </div>
+        </div>
+
+        {/* Phrases List Editor */}
+        <div className="space-y-3 pt-2">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-semibold text-brand-dark flex items-center space-x-1">
+              <Type className="w-4 h-4 text-brand-accent" />
+              <span>Изречения и текстове в движещата се лента</span>
+            </label>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const currentPhrases = config.topBarPhrases || [];
+                setConfig({
+                  ...config,
+                  topBarPhrases: [...currentPhrases, "НОВО ИЗВЕСТИЕ ЗА СЪБИТИЕТО"],
+                });
+              }}
+              className="flex items-center space-x-1 text-xs"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Добави изречение</span>
+            </Button>
+          </div>
+
+          <div className="space-y-2">
+            {(config.topBarPhrases || []).map((phrase, idx) => (
+              <div key={idx} className="flex items-center space-x-2">
+                <input
+                  type="text"
+                  value={phrase}
+                  onChange={(e) => {
+                    const newPhrases = [...(config.topBarPhrases || [])];
+                    newPhrases[idx] = e.target.value;
+                    setConfig({ ...config, topBarPhrases: newPhrases });
+                  }}
+                  placeholder="Въведете изречение..."
+                  className="flex-1 px-4 py-2 rounded-xl border border-brand-primary/30 text-sm font-sans text-brand-dark focus:ring-2 focus:ring-brand-accent bg-brand-bg/40"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newPhrases = (config.topBarPhrases || []).filter((_, i) => i !== idx);
+                    setConfig({ ...config, topBarPhrases: newPhrases });
+                  }}
+                  className="p-2 rounded-xl text-red-500 hover:bg-red-50 transition-colors"
+                  title="Премахни"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Card>
+
       {/* Section Headings Form */}
       <Card className="p-6 sm:p-8 space-y-6 bg-white border border-brand-primary/20 shadow-sm">
         <div className="flex items-center space-x-2 border-b border-brand-primary/10 pb-4">
@@ -169,6 +262,7 @@ export const HomepageEditor = () => {
             Заглавия на Секциите в Homepage
           </h3>
         </div>
+
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-1">
