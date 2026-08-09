@@ -3,88 +3,44 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Star } from "lucide-react";
 
-const testimonials = [
-  {
-    id: 1,
-    name: "МАРИЯ И ИВАН",
-    role: "Сватбено събитие",
-    text: "Страхотно изживяване! Гостите ни бяха абсолютно очаровани от картичките и жетоните. Незабравим спомен от нашата сватба!",
-  },
-  {
-    id: 2,
-    name: "DEVTECH TEAM",
-    role: "Корпоративно парти",
-    text: "Изключително професионално отношение. Пощичка беше главната атракция на нашия фирмен юбилей!",
-  },
-  {
-    id: 3,
-    name: "ЕМИЛИЯ И ИВАЙЛО",
-    role: "Сватбено събитие",
-    text: "Гостите ни не спряха да се снимат и да си печатат картички. Най-добрият подарък за нашия празничен ден!",
-  },
+const testimonialImages = [
+  { id: "nikol-daniel", name: "Никол и Даниел", image: "/media/Main Page/testimonial-nikol-daniel.png" },
+  { id: "maya-niko", name: "Мая и Нико", image: "/media/Main Page/testimonial-maya-niko.png" },
+  { id: "ralica-zhelyo", name: "Ралица и Жельо", image: "/media/Main Page/testimonial-ralica-zhelyo.png" },
+  { id: "krisi-viktor", name: "Криси и Виктор", image: "/media/Main Page/testimonial-krisi-viktor.png" },
+  { id: "marina-ivan", name: "Марина и Иван", image: "/media/Main Page/testimonial-marina-ivan.png" },
 ];
 
 export const TestimonialsSection = () => {
   return (
-    <section className="py-20 sm:py-28 bg-brand-cream border-b border-[#00b4b6]/20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-12">
-        {/* Section Title */}
+    <section className="py-16 sm:py-24 bg-brand-cream border-b border-[#00b4b6]/20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-10">
         <div className="text-center space-y-3 max-w-3xl mx-auto">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold uppercase tracking-wide text-brand-dark">
+          <h2 className="font-display text-3xl sm:text-5xl font-bold uppercase tracking-wide text-[#00b4b6]">
             ОТЗИВИ И ВПЕЧАТЛЕНИЯ
           </h2>
-          <p className="font-sans text-sm sm:text-base text-brand-dark/70 font-light">
-            Какво споделят младоженците и корпоративните ни клиенти за преживяването с Пощичка.
-          </p>
         </div>
 
-        {/* Testimonials Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map((item, idx) => (
+        {/* 5 Testimonial Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          {testimonialImages.map((item, idx) => (
             <motion.div
               key={item.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: idx * 0.15 }}
-              className="bg-white rounded-3xl p-8 border border-[#00b4b6]/30 shadow-lg flex flex-col justify-between space-y-6 relative hover:shadow-xl transition-shadow"
+              transition={{ duration: 0.5, delay: idx * 0.1 }}
+              className="flex justify-center group"
             >
-              <div className="space-y-4">
-                {/* 5 Stars */}
-                <div className="flex space-x-1 text-amber-400">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 fill-current" />
-                  ))}
-                </div>
-
-                <p className="font-sans text-sm sm:text-base text-brand-dark/90 leading-relaxed italic">
-                  "{item.text}"
-                </p>
-              </div>
-
-              {/* Bottom Author & Hand-Heart Graphic */}
-              <div className="pt-4 border-t border-[#00b4b6]/15 flex items-end justify-between">
-                <div>
-                  <h4 className="font-display text-xl font-bold uppercase tracking-wider text-brand-dark">
-                    {item.name}
-                  </h4>
-                  <span className="font-sans text-xs text-[#00b4b6] font-medium block">
-                    {item.role}
-                  </span>
-                </div>
-
-                {/* Hand Heart Doodle Graphic - Strict Path: /media/Main Page/heart-hands.png */}
-                <div className="relative w-12 h-12">
-                  <Image
-                    src="/media/Main Page/heart-hands.png"
-                    alt="Сърце от ръце"
-                    fill
-                    className="object-contain opacity-80"
-                    unoptimized
-                  />
-                </div>
+              <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-md group-hover:shadow-xl transition-all duration-300">
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  fill
+                  className="object-contain group-hover:scale-105 transition-transform duration-500"
+                  unoptimized
+                />
               </div>
             </motion.div>
           ))}
@@ -93,3 +49,4 @@ export const TestimonialsSection = () => {
     </section>
   );
 };
+
