@@ -15,13 +15,13 @@ export const CalculatorWidget = () => {
 
   const currentStep = GUEST_STEPS[stepIndex];
   const isLargeEvent = currentStep === "150+";
-  const isFarLocation = distance > 450;
+  const isFarLocation = distance >= 450;
   const needsInquiry = isLargeEvent || isFarLocation;
 
   const numericGuests = typeof currentStep === "number" ? currentStep : 150;
 
   // STRICT DISTANCE MATHEMATICS:
-  // 1. Slider value (distance) = one-way distance from Burgas (starts at 50km)
+  // 1. Slider value (distance) = one-way distance from Burgas (50 km to 450 km)
   // 2. twoWayDistance = distance * 2
   // 3. First 50 km one-way (100 km two-way) is FREE
   // 4. chargeableDistance = Math.max(0, twoWayDistance - 100)
@@ -125,7 +125,7 @@ export const CalculatorWidget = () => {
               )}
             </div>
 
-            {/* Slider 2: Distance from Burgas (Starts at min=50, step=10) */}
+            {/* Slider 2: Distance from Burgas (min=50, max=450, step=10, 5 linear labels) */}
             <div className="space-y-3 pt-4">
               <h3 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
                 ЛОКАЦИЯ ОТ ГРАД БУРГАС: {isFarLocation ? "НАД 450 КМ (ПО ЗАПИТВАНЕ)" : `${distance} КМ (${distance * 2} КМ ДВУПОСОЧНО)`}
@@ -134,18 +134,18 @@ export const CalculatorWidget = () => {
                 <input
                   type="range"
                   min={50}
-                  max={460}
+                  max={450}
                   step={10}
                   value={distance}
                   onChange={(e) => setDistance(Number(e.target.value))}
                   className="w-full h-3 bg-[#cdeef0] rounded-lg appearance-none cursor-pointer accent-[#00b4b6]"
                 />
                 <div className="flex justify-between text-xs sm:text-sm font-semibold text-[#2d3a37]/70 mt-2 px-1">
-                  <span>50 км</span>
-                  <span>150 км</span>
-                  <span>300 км</span>
-                  <span>450 км</span>
-                  <span className={isFarLocation ? "text-[#00b4b6] font-bold" : ""}>450+ км</span>
+                  <span onClick={() => setDistance(50)} className="cursor-pointer hover:text-[#00b4b6]">50 км</span>
+                  <span onClick={() => setDistance(150)} className="cursor-pointer hover:text-[#00b4b6]">150 км</span>
+                  <span onClick={() => setDistance(250)} className="cursor-pointer hover:text-[#00b4b6]">250 км</span>
+                  <span onClick={() => setDistance(350)} className="cursor-pointer hover:text-[#00b4b6]">350 км</span>
+                  <span onClick={() => setDistance(450)} className={`cursor-pointer hover:text-[#00b4b6] ${isFarLocation ? "text-[#00b4b6] font-bold" : ""}`}>450+ км</span>
                 </div>
               </div>
 
