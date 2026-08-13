@@ -34,7 +34,7 @@ export const CheckDateCTA = () => {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="flex-1 text-center flex flex-col items-center space-y-4 max-w-2xl"
         >
-          <h2 className="font-stampatello text-2xl sm:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-white leading-tight">
+          <h2 className="font-salongbeach text-2xl sm:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-white leading-tight">
             ЧУДИТЕ СЕ ДАЛИ ДАТАТА ВИ Е СВОБОДНА?
           </h2>
 
@@ -46,7 +46,7 @@ export const CheckDateCTA = () => {
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-4 relative">
             <Link
               href="/calendar"
-              className="inline-flex items-center justify-center px-9 py-4 rounded-full border-2 border-white bg-white/10 hover:bg-white hover:text-[#00b4b6] backdrop-blur-sm text-white font-stampatello text-lg sm:text-xl font-bold uppercase tracking-wider transition-all duration-300 shadow-xl group cursor-pointer"
+              className="inline-flex items-center justify-center px-9 py-4 rounded-full border-2 border-white bg-white/10 hover:bg-white hover:text-[#00b4b6] backdrop-blur-sm text-white font-salongbeach text-lg sm:text-xl font-bold uppercase tracking-wider transition-all duration-300 shadow-xl group cursor-pointer"
             >
               <span>ПРОВЕРЕТЕ ТУК</span>
             </Link>
