@@ -34,8 +34,8 @@ const includedItems = [
 
 export const WhatsIncluded = () => {
   return (
-    <section className="w-full bg-[#00b4b6] text-white py-16 sm:py-24 lg:py-32 px-4 sm:px-8 lg:px-12 overflow-hidden select-none border-t border-white/20">
-      <div className="max-w-[1400px] mx-auto space-y-12 sm:space-y-16 lg:space-y-20">
+    <section className="w-full bg-[#00b4b6] text-white py-16 sm:py-24 md:py-28 lg:py-32 xl:py-36 px-4 sm:px-8 md:px-10 lg:px-12 overflow-hidden select-none border-t border-white/20">
+      <div className="max-w-[1500px] mx-auto space-y-12 sm:space-y-16 lg:space-y-24">
         {/* Title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -44,13 +44,13 @@ export const WhatsIncluded = () => {
           transition={{ duration: 0.6 }}
           className="text-center space-y-3"
         >
-          <h2 className="font-stampatello text-3xl sm:text-5xl lg:text-6xl font-bold uppercase tracking-wider text-white">
+          <h2 className="font-stampatello text-3xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl font-bold uppercase tracking-wider text-white">
             КАКВО Е ВКЛЮЧЕНО В УСЛУГАТА?
           </h2>
         </motion.div>
 
         {/* 5-Column Responsive Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 sm:gap-6 md:gap-8 lg:gap-12 xl:gap-14 items-start">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 sm:gap-6 md:gap-8 lg:gap-12 xl:gap-16 items-start">
           {includedItems.map((item, idx) => (
             <motion.div
               key={idx}
@@ -58,18 +58,21 @@ export const WhatsIncluded = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="flex flex-col items-center text-center space-y-4 lg:space-y-6 group"
+              className="flex flex-col items-center text-center space-y-4 md:space-y-6 lg:space-y-8 group"
             >
-              <div className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-44 lg:h-44 xl:w-48 xl:h-48 flex items-center justify-center p-1">
+              {/* Significantly Scaled Icon Box for Desktop */}
+              <div className="relative w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 xl:w-56 xl:h-56 flex items-center justify-center p-1">
                 <Image
                   src={item.icon}
                   alt={item.alt}
-                  width={200}
-                  height={200}
+                  width={240}
+                  height={240}
                   className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
-              <p className="font-stampatello text-sm sm:text-base md:text-lg lg:text-xl text-white/95 leading-relaxed font-medium px-1 sm:px-2">
+
+              {/* Scaled Text Label */}
+              <p className="font-stampatello text-base sm:text-lg md:text-xl lg:text-2xl text-white/95 leading-relaxed font-medium px-1 sm:px-2">
                 {item.text}
               </p>
             </motion.div>
