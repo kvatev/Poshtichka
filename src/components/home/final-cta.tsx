@@ -27,13 +27,13 @@ export const FinalCTA = () => {
 
   return (
     <section className="relative w-full py-20 sm:py-32 flex items-center justify-center overflow-hidden bg-brand-dark px-4">
-      {/* Background Image */}
+      {/* Background Image: Right-aligned focus on mobile (object-[80%_center]), centered on desktop (md:object-center) */}
       <div className="absolute inset-0 z-0">
         <Image
           src="/media/Main Page/final-cta-bg.png"
           alt="Пощичка незабравим спомен"
           fill
-          className="object-cover object-center opacity-85"
+          className="object-cover object-[80%_center] md:object-center opacity-85"
           unoptimized
         />
         <div className="absolute inset-0 bg-black/20" />
@@ -46,7 +46,7 @@ export const FinalCTA = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="font-display text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-wider leading-tight text-white sm:whitespace-nowrap"
+          className="font-salongbeach text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-center leading-tight text-white"
         >
           {title}
         </motion.h2>
@@ -79,4 +79,3 @@ export const FinalCTA = () => {
     </section>
   );
 };
-
