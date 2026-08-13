@@ -58,7 +58,7 @@ export const Footer = () => {
                 aria-label="Facebook"
               >
                 <Image
-                  src="/media/facebook.png"
+                  src="/media/Main Page/facebook.png"
                   alt="Facebook"
                   width={24}
                   height={24}
@@ -75,7 +75,7 @@ export const Footer = () => {
                 aria-label="Instagram"
               >
                 <Image
-                  src="/media/instagram.png"
+                  src="/media/Main Page/instagram.png"
                   alt="Instagram"
                   width={24}
                   height={24}
@@ -89,7 +89,7 @@ export const Footer = () => {
           <div className="flex flex-col items-center md:items-end justify-center">
             <Link href="/" className="group block">
               <Image
-                src="/media/poshtichka-booth-heart.png"
+                src="/media/Main Page/poshtichka-booth-heart.png"
                 alt="Пощичка машина"
                 width={240}
                 height={340}

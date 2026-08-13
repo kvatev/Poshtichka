@@ -6,27 +6,27 @@ import { motion } from "framer-motion";
 
 const includedItems = [
   {
-    icon: "/media/feature-design.png",
+    icon: "/media/Main Page/feature-design.png",
     alt: "Индивидуален дизайн",
     text: "Дизайн изготвен от графичен дизайнер, с 5 годишен опит в сферата.",
   },
   {
-    icon: "/media/feature-printer.png",
+    icon: "/media/Main Page/feature-printer.png",
     alt: "Висококачествен печат",
     text: "Висококачествен печат върху луксозни картони.",
   },
   {
-    icon: "/media/feature-jar.png",
+    icon: "/media/Main Page/feature-jar.png",
     alt: "Буркан с жетони",
     text: "Буркан със жетони, съобразен с бройката на вашите гости.",
   },
   {
-    icon: "/media/feature-setup.png",
+    icon: "/media/Main Page/feature-setup.png",
     alt: "Помощна маса и декорация",
     text: "Помощна маса, рамка с постер, пулверизатор за татуировки.",
   },
   {
-    icon: "/media/feature-transport.png",
+    icon: "/media/Main Page/feature-transport.png",
     alt: "Транспорт и асистенти",
     text: "Двама служители за транспорт, монтаж и съдействие на гостите.",
   },

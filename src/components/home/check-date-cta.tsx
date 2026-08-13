@@ -18,7 +18,7 @@ export const CheckDateCTA = () => {
           className="flex-shrink-0 flex items-center justify-center"
         >
           <Image
-            src="/media/Asset 34@2x.png"
+            src="/media/Main Page/Asset 34@2x.png"
             alt="Пощичка печат"
             width={180}
             height={180}
@@ -54,7 +54,7 @@ export const CheckDateCTA = () => {
             {/* Curly Arrow pointing to button */}
             <div className="hidden sm:block absolute -right-16 top-1/2 -translate-y-1/2">
               <Image
-                src="/media/curly-arrow-left.png"
+                src="/media/Main Page/curly-arrow-left.png"
                 alt="Стрелка"
                 width={60}
                 height={60}
@@ -73,7 +73,7 @@ export const CheckDateCTA = () => {
           className="flex-shrink-0 flex items-center justify-center"
         >
           <Image
-            src="/media/poshtichka-booth-blank.png"
+            src="/media/Main Page/poshtichka-booth-blank.png"
             alt="Пощичка машина"
             width={220}
             height={320}
