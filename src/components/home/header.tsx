@@ -21,11 +21,11 @@ export const Header = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-[#f9f6f0]/95 backdrop-blur-md border-b border-[#00b4b6]/20 transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-8 flex flex-col items-center justify-center space-y-6 sm:space-y-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-5 flex flex-col items-center justify-center space-y-3 lg:space-y-6">
         {/* Top Centered Logo */}
         <div className="w-full flex items-center justify-between lg:justify-center relative">
           <Link href="/" className="group flex justify-center mx-auto">
-            <div className="relative w-52 sm:w-64 h-14 sm:h-16">
+            <div className="relative w-44 sm:w-64 h-12 sm:h-16">
               <Image
                 src="/media/logos/Logo.png"
                 alt="Пощичка от драсканици"
@@ -36,18 +36,18 @@ export const Header = () => {
             </div>
           </Link>
 
-          {/* Mobile Menu Toggle Button (Absolute positioning for mobile) */}
+          {/* Mobile Menu Toggle Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden absolute right-0 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-white border border-[#00b4b6]/30 text-[#182b2c] hover:bg-[#00b4b6]/10 transition-colors"
+            className="lg:hidden absolute right-0 top-1/2 -translate-y-1/2 p-2.5 rounded-xl bg-white border border-[#00b4b6]/30 text-[#182b2c] hover:bg-[#00b4b6]/10 active:scale-95 transition-all shadow-sm"
             aria-label="Превключи меню"
           >
             {mobileMenuOpen ? <X className="w-6 h-6 text-[#00b4b6]" /> : <Menu className="w-6 h-6 text-[#182b2c]" />}
           </button>
         </div>
 
-        {/* Desktop Nav Links Centered Below Logo with Spacious Padding */}
-        <nav className="hidden lg:flex items-center justify-center space-x-10 sm:space-x-14 pt-3 font-stampatello">
+        {/* Desktop Nav Links Centered Below Logo */}
+        <nav className="hidden lg:flex items-center justify-center space-x-10 sm:space-x-14 pt-2 font-stampatello">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -86,7 +86,7 @@ export const Header = () => {
               <Link
                 href="/booking"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-3 rounded-full bg-[#00b4b6] text-white font-sans text-sm font-semibold uppercase tracking-wider hover:bg-[#008b8d] transition-all flex items-center justify-center space-x-2 shadow-sm"
+                className="w-full py-3.5 rounded-full bg-[#00b4b6] text-white font-sans text-sm font-semibold uppercase tracking-wider hover:bg-[#008b8d] transition-all flex items-center justify-center space-x-2 shadow-sm"
               >
                 <Calendar className="w-4 h-4" />
                 <span>Резервирай събитие</span>
@@ -98,4 +98,3 @@ export const Header = () => {
     </header>
   );
 };
-

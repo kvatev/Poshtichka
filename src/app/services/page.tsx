@@ -57,37 +57,37 @@ const servicesList = [
 export default function ServicesPage() {
   return (
     <PageWrapper>
-      <div className="space-y-24 sm:space-y-32 pb-24">
+      <div className="space-y-16 sm:space-y-24 md:space-y-32 pb-24">
         {/* Header */}
-        <section className="bg-brand-secondary/40 py-16 sm:py-24 border-b border-brand-primary/20">
-          <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
+        <section className="bg-brand-secondary/40 py-12 sm:py-20 border-b border-brand-primary/20">
+          <div className="max-w-4xl mx-auto px-4 text-center space-y-4 sm:space-y-6">
             <span className="text-xs uppercase tracking-widest text-[#00b4b6] font-semibold">
               Нашите Услуги
             </span>
-            <h1 className="font-display text-4xl sm:text-6xl font-bold text-brand-dark">
-              Преживяване, съобразено с <br />
+            <h1 className="font-salongbeach text-3xl sm:text-5xl md:text-6xl font-bold text-brand-dark leading-tight">
+              Преживяване, съобразено с <br className="hidden sm:inline" />
               <span className="text-[#00b4b6] italic font-normal">Вашия специален повод</span>
             </h1>
-            <p className="text-brand-dark/80 text-lg sm:text-xl font-sans max-w-2xl mx-auto font-light leading-relaxed">
+            <p className="text-brand-dark/80 text-base sm:text-xl font-sans max-w-2xl mx-auto font-light leading-relaxed">
               Всяко събитие получава напълно индивидуален подход — от графичния дизайн до избора на продуктите в машината.
             </p>
           </div>
         </section>
 
         {/* Detailed Services */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-8 space-y-20">
+        <section className="max-w-7xl mx-auto px-4 sm:px-8 space-y-16 sm:space-y-20">
           {servicesList.map((service, index) => (
             <div
               key={index}
-              className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ${
+              className={`grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center ${
                 index % 2 === 1 ? "lg:flex-row-reverse" : ""
               }`}
             >
-              <div className={`space-y-6 ${index % 2 === 1 ? "lg:order-2" : ""}`}>
+              <div className={`space-y-4 sm:space-y-6 ${index % 2 === 1 ? "lg:order-2" : ""}`}>
                 <span className="text-xs uppercase tracking-widest text-[#00b4b6] font-semibold">
                   {service.subtitle}
                 </span>
-                <h2 className="font-display text-3xl sm:text-4xl font-bold text-brand-dark">
+                <h2 className="font-salongbeach text-2xl sm:text-4xl font-bold text-brand-dark leading-tight">
                   {service.title}
                 </h2>
                 <p className="text-brand-dark/80 font-sans text-base sm:text-lg leading-relaxed">
@@ -114,7 +114,7 @@ export default function ServicesPage() {
                 </div>
               </div>
 
-              <div className={`relative h-80 sm:h-96 rounded-3xl overflow-hidden shadow-2xl border border-brand-primary/30 ${index % 2 === 1 ? "lg:order-1" : ""}`}>
+              <div className={`relative h-64 sm:h-80 md:h-96 rounded-3xl overflow-hidden shadow-2xl border border-brand-primary/30 ${index % 2 === 1 ? "lg:order-1" : ""}`}>
                 <Image
                   src={service.image}
                   alt={service.alt}
@@ -127,61 +127,67 @@ export default function ServicesPage() {
         </section>
 
         {/* Pricing Breakdown */}
-        <section className="bg-brand-cream py-20">
+        <section className="bg-brand-cream py-16 sm:py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-12">
             <div className="text-center max-w-3xl mx-auto space-y-4">
               <span className="text-xs uppercase tracking-widest text-[#00b4b6] font-semibold">
                 Прозрачно формиране на цената
               </span>
-              <h2 className="font-display text-3xl sm:text-5xl font-bold text-brand-dark">
+              <h2 className="font-salongbeach text-3xl sm:text-5xl font-bold text-brand-dark">
                 Какво включва пакетът?
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Card className="space-y-4 p-8">
-                <div className="w-12 h-12 rounded-2xl bg-[#00b4b6]/10 flex items-center justify-center text-[#00b4b6]">
-                  <Sparkles className="w-6 h-6" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-stretch">
+              <Card className="h-auto min-h-full flex flex-col justify-between space-y-4 p-6 sm:p-8">
+                <div className="space-y-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#00b4b6]/10 flex items-center justify-center text-[#00b4b6]">
+                    <Sparkles className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-salongbeach text-2xl font-bold text-brand-dark">
+                    Наем на машината
+                  </h3>
+                  <p className="text-[#00b4b6] font-display font-bold text-2xl">
+                    350€ – 500€
+                  </p>
+                  <p className="text-sm text-brand-dark/75 font-sans leading-relaxed">
+                    Включва бутиковата машина за целия времетраене на събитието, монети-жетони за гостите и пълен комплект от избрани печатни продукти.
+                  </p>
                 </div>
-                <h3 className="font-display text-2xl font-bold text-brand-dark">
-                  Наем на машината
-                </h3>
-                <p className="text-[#00b4b6] font-display font-bold text-2xl">
-                  350€ – 500€
-                </p>
-                <p className="text-sm text-brand-dark/75 font-sans leading-relaxed">
-                  Включва бутиковата машина за целия времетраене на събитието, монети-жетони за гостите и пълен комплект от избрани печатни продукти.
-                </p>
               </Card>
 
-              <Card className="space-y-4 p-8">
-                <div className="w-12 h-12 rounded-2xl bg-[#00b4b6]/10 flex items-center justify-center text-[#00b4b6]">
-                  <Palette className="w-6 h-6" />
+              <Card className="h-auto min-h-full flex flex-col justify-between space-y-4 p-6 sm:p-8">
+                <div className="space-y-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#00b4b6]/10 flex items-center justify-center text-[#00b4b6]">
+                    <Palette className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-salongbeach text-2xl font-bold text-brand-dark">
+                    Графичен дизайн
+                  </h3>
+                  <p className="text-[#00b4b6] font-display font-bold text-2xl">
+                    25€ – 50€
+                  </p>
+                  <p className="text-sm text-brand-dark/75 font-sans leading-relaxed">
+                    Индивидуално авторско оформление от графичен дизайнер с вашите имена, дати или лого. Включва до 3 кръга от корекции.
+                  </p>
                 </div>
-                <h3 className="font-display text-2xl font-bold text-brand-dark">
-                  Графичен дизайн
-                </h3>
-                <p className="text-[#00b4b6] font-display font-bold text-2xl">
-                  25€ – 50€
-                </p>
-                <p className="text-sm text-brand-dark/75 font-sans leading-relaxed">
-                  Индивидуално авторско оформление от графичен дизайнер с вашите имена, дати или лого. Включва до 3 кръга от корекции.
-                </p>
               </Card>
 
-              <Card className="space-y-4 p-8">
-                <div className="w-12 h-12 rounded-2xl bg-[#00b4b6]/10 flex items-center justify-center text-[#00b4b6]">
-                  <Truck className="w-6 h-6" />
+              <Card className="h-auto min-h-full flex flex-col justify-between space-y-4 p-6 sm:p-8">
+                <div className="space-y-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#00b4b6]/10 flex items-center justify-center text-[#00b4b6]">
+                    <Truck className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-salongbeach text-2xl font-bold text-brand-dark">
+                    Транспорт
+                  </h3>
+                  <p className="text-[#00b4b6] font-display font-bold text-2xl">
+                    0€ (първите 50 км)
+                  </p>
+                  <p className="text-sm text-brand-dark/75 font-sans leading-relaxed">
+                    Базирани сме в Бургас. Първите 50 км са напълно безплатни, след което се таксува 0.23 €/км до Вашето локация.
+                  </p>
                 </div>
-                <h3 className="font-display text-2xl font-bold text-brand-dark">
-                  Транспорт
-                </h3>
-                <p className="text-[#00b4b6] font-display font-bold text-2xl">
-                  0€ (първите 50 км)
-                </p>
-                <p className="text-sm text-brand-dark/75 font-sans leading-relaxed">
-                  Базирани сме в Бургас. Първите 50 км са напълно безплатни, след което се таксува 0.23 €/км до Вашето локация.
-                </p>
               </Card>
             </div>
           </div>
@@ -189,7 +195,7 @@ export default function ServicesPage() {
 
         {/* CTA */}
         <section className="max-w-4xl mx-auto text-center px-4 space-y-6">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-brand-dark">
+          <h2 className="font-salongbeach text-3xl sm:text-5xl font-bold text-brand-dark">
             Имате специфично виждане за събитието?
           </h2>
           <p className="text-brand-dark/80 font-sans text-lg">
@@ -206,4 +212,3 @@ export default function ServicesPage() {
     </PageWrapper>
   );
 }
-

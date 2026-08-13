@@ -12,10 +12,9 @@ export const TopBar = () => {
       "ИНТЕРАКТИВНО ПРЕЖИВЯВАНЕ ЗА ВАШЕТО СЪБИТИЕ ✦",
     ]
   );
-  const [speedSeconds, setSpeedSeconds] = useState<number>(35); // Slowed down for smooth readability
+  const [speedSeconds, setSpeedSeconds] = useState<number>(35);
 
   useEffect(() => {
-    // 1. Client-side localStorage fallback for instant sync
     try {
       const stored = localStorage.getItem("poshtichka_content_homepage_config");
       if (stored) {
@@ -24,12 +23,11 @@ export const TopBar = () => {
           setPhrases(parsed.topBarPhrases);
         }
         if (typeof parsed.topBarSpeedSeconds === "number" && parsed.topBarSpeedSeconds > 0) {
-          setSpeedSeconds(parsed.topBarSpeedSeconds * 2); // Scale up speed duration for comfortable reading
+          setSpeedSeconds(parsed.topBarSpeedSeconds * 2);
         }
       }
     } catch {}
 
-    // 2. Fetch live config from server API
     fetch("/api/content")
       .then((res) => res.json())
       .then((data) => {
@@ -43,12 +41,11 @@ export const TopBar = () => {
       .catch(() => {});
   }, []);
 
-  // Duplicate items 4x for continuous seamless loop
   const marqueeItems = [...phrases, ...phrases, ...phrases, ...phrases];
 
   return (
-    <div className="bg-[#00b4b6] text-white py-2.5 px-4 text-xs sm:text-sm font-sans tracking-wider font-semibold overflow-hidden uppercase border-b border-white/10 select-none group">
-      <div className="flex overflow-hidden whitespace-nowrap relative w-full">
+    <div className="w-full max-w-[100vw] bg-[#00b4b6] text-white py-2.5 px-4 text-xs sm:text-sm font-sans tracking-wider font-semibold overflow-hidden uppercase border-b border-white/10 select-none group">
+      <div className="flex overflow-hidden whitespace-nowrap relative w-full max-w-[100vw]">
         <motion.div
           key={`marquee-${speedSeconds}-${phrases.length}`}
           animate={{ x: ["0%", "-50%"] }}
