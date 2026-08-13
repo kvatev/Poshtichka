@@ -24,8 +24,7 @@ const steps = [
 
 export const HowItWorks = () => {
   return (
-    <section className="py-16 sm:py-24 bg-brand-cream relative">
-
+    <section className="py-16 sm:py-24 bg-brand-cream relative select-none">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-12">
         {/* Section Heading */}
         <div className="text-center space-y-4 max-w-3xl mx-auto">
@@ -34,8 +33,8 @@ export const HowItWorks = () => {
           </h2>
         </div>
 
-        {/* 3 Step Cards - Render PNG graphics directly without outer white frames */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-center">
+        {/* 3 Step Cards - Strictly Identical Dimensions */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 items-stretch justify-items-center w-full">
           {steps.map((step, idx) => (
             <motion.div
               key={step.id}
@@ -43,14 +42,15 @@ export const HowItWorks = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: idx * 0.15 }}
-              className="group relative w-full flex justify-center items-center"
+              className="group relative w-full h-full flex flex-col justify-between items-center"
             >
-              <div className="relative w-full aspect-[4/5] flex justify-center items-center">
+              {/* Uniform Strict Card Image Container */}
+              <div className="relative w-full h-[420px] sm:h-[480px] md:h-[500px] lg:h-[560px] aspect-[4/5] flex items-center justify-center overflow-hidden rounded-3xl shadow-sm border border-transparent group-hover:shadow-md transition-all duration-300">
                 <Image
                   src={step.image}
                   alt={step.title}
                   fill
-                  className="object-contain group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   unoptimized
                 />
               </div>
@@ -61,6 +61,3 @@ export const HowItWorks = () => {
     </section>
   );
 };
-
-
-
