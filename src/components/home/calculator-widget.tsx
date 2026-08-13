@@ -6,10 +6,11 @@ import { motion } from "framer-motion";
 import { Check, Sparkles, MessageCircle } from "lucide-react";
 
 const GUEST_STEPS = [70, 100, 150, "150+"] as const;
+const PRICE_PER_KM = 0.23;
 
 export const CalculatorWidget = () => {
   const [stepIndex, setStepIndex] = useState<number>(1); // Default: index 1 (100 guests)
-  const [distance, setDistance] = useState<number>(100); // Distance in 1 direction (km)
+  const [distance, setDistance] = useState<number>(100); // One-way distance in km (Burgas)
   const [addInitials, setAddInitials] = useState<boolean>(false);
 
   const currentStep = GUEST_STEPS[stepIndex];
@@ -19,27 +20,26 @@ export const CalculatorWidget = () => {
 
   const numericGuests = typeof currentStep === "number" ? currentStep : 150;
 
-  // Round-trip kilometer calculation (двупосочен пробег = 2 * distance):
-  // First 50km in 1 direction (100km round-trip) is FREE!
-  // Billable round-trip km = Math.max(0, (distance - 50) * 2)
-  // Transport cost = billable km * 0.23 € / km
-  const totalRoundTripKm = distance * 2;
-  const billableRoundTripKm = Math.max(0, (distance - 50) * 2);
-  const transportCost = billableRoundTripKm * 0.23;
+  // STRICT DISTANCE MATHEMATICS:
+  // 1. Slider value = one-way distance
+  // 2. twoWayDistance = sliderValue * 2
+  // 3. First 50 km one-way (100 km two-way) is FREE
+  // 4. chargeableDistance = Math.max(0, twoWayDistance - 100)
+  // 5. travelCost = chargeableDistance * PRICE_PER_KM
+  const twoWayDistance = distance * 2;
+  const chargeableDistance = Math.max(0, twoWayDistance - 100);
+  const travelCost = chargeableDistance * PRICE_PER_KM;
 
-  // Math Logic for standard events:
-  // Base rental up to 50 guests: 350 €
-  // Extra guests: ~0.50 € / guest
-  // Initials: +50 €
+  // BASE EVENT PRICING & ADD-ONS:
   const extraGuestsCost = Math.max(0, numericGuests - 50) * 0.5;
   const initialsCost = addInitials ? 50 : 0;
+  const basePrice = 350 + extraGuestsCost;
 
-  const minPrice = Math.round(350 + extraGuestsCost + transportCost + initialsCost);
-  const maxPrice = Math.round(450 + (extraGuestsCost * 1.2) + transportCost + initialsCost + 25);
-
+  const minPrice = Math.round(basePrice + travelCost + initialsCost);
+  const maxPrice = Math.round(basePrice * 1.2 + travelCost + initialsCost + 25);
 
   return (
-    <section className="py-16 sm:py-24 bg-brand-cream relative">
+    <section className="py-16 sm:py-24 bg-brand-cream relative select-none">
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         {/* Outer Bordered Card */}
         <motion.div
@@ -65,7 +65,7 @@ export const CalculatorWidget = () => {
             <div className="space-y-4 pt-4">
               <div className="flex items-center justify-center space-x-2">
                 <h3 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
-                  БРОЙ ГОСТИ: {isLargeEvent ? "150+ (Голямо събитие)" : `${numericGuests} гости`}
+                  БРОЙ ГОСТИ: {isLargeEvent ? "150+ (ГОЛЯМО СЪБИТИЕ)" : `${numericGuests} ГОСТИ`}
                 </h3>
               </div>
 
@@ -125,10 +125,10 @@ export const CalculatorWidget = () => {
               )}
             </div>
 
-            {/* Slider 2: Distance from Burgas (Up to 450 km, >450 = Inquiry, Double km for round-trip) */}
+            {/* Slider 2: Distance from Burgas (One-way distance, displaying two-way in parentheses) */}
             <div className="space-y-3 pt-4">
               <h3 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
-                ЛОКАЦИЯ ОТ ГРАД БУРГАС: {isFarLocation ? "Над 450 км (По запитване)" : `${distance} км (${totalRoundTripKm} км двупосочно)`}
+                ЛОКАЦИЯ ОТ ГРАД БУРГАС: {isFarLocation ? "НАД 450 КМ (ПО ЗАПИТВАНЕ)" : `${distance} КМ (${twoWayDistance} КМ ДВУПОСОЧНО)`}
               </h3>
               <div className="relative px-2">
                 <input
@@ -149,7 +149,7 @@ export const CalculatorWidget = () => {
                 </div>
               </div>
 
-              {/* Notice for 450+ km */}
+              {/* Notice for 450+ km vs Standard Explanation */}
               {isFarLocation ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
@@ -166,7 +166,7 @@ export const CalculatorWidget = () => {
                 </motion.div>
               ) : (
                 <p className="text-xs sm:text-sm text-[#00b4b6] font-medium italic pt-1">
-                  * Километрите се изчисляват двупосочно (отиване и връщане от Бургас). Първите 50 км в посока (100 км двупосочно) са безплатни!
+                  * Километрите се изчисляват двупосочно (отиване и връщане от Бургас). Първите 50 км в посока (100 км двупосочно) са напълно безплатни!
                 </p>
               )}
             </div>
@@ -179,7 +179,7 @@ export const CalculatorWidget = () => {
               <button
                 type="button"
                 onClick={() => setAddInitials(!addInitials)}
-                className={`w-10 h-10 rounded-xl border-2 transition-all flex items-center justify-center ${
+                className={`w-10 h-10 rounded-xl border-2 transition-all flex items-center justify-center cursor-pointer ${
                   addInitials
                     ? "bg-[#00b4b6] border-[#00b4b6] text-white shadow-md scale-105"
                     : "bg-[#cdeef0]/50 border-[#00b4b6]/40 text-transparent hover:border-[#00b4b6]"
@@ -188,7 +188,6 @@ export const CalculatorWidget = () => {
                 <Check className="w-6 h-6 stroke-[3]" />
               </button>
             </div>
-
 
             {/* CTA Button */}
             <div className="pt-4">
@@ -227,7 +226,7 @@ export const CalculatorWidget = () => {
                   {minPrice} € – {maxPrice} €
                 </div>
                 <p className="text-xs sm:text-sm text-white/70 font-light max-w-lg mx-auto leading-relaxed">
-                  * Включва отиване и връщане ({totalRoundTripKm} км двупосочно). Крайната оферта се потвърждава след връзка с нас.
+                  * Включва отиване и връщане ({twoWayDistance} км двупосочно). Крайната оферта се потвърждава след връзка с нас.
                 </p>
               </>
             )}
@@ -237,8 +236,3 @@ export const CalculatorWidget = () => {
     </section>
   );
 };
-
-
-
-
-
