@@ -25,15 +25,23 @@ export const CalculatorWidget = () => {
   // 2. twoWayDistance = distance * 2
   // 3. First 50 km one-way (100 km two-way) is FREE
   // 4. chargeableDistance = Math.max(0, twoWayDistance - 100)
-  // 5. travelCost = chargeableDistance * PRICE_PER_KM
+  // 5. travelCost = chargeableDistance * PRICE_PER_KM (0.23 €/km)
   const twoWayDistance = distance * 2;
   const chargeableDistance = Math.max(0, twoWayDistance - 100);
   const travelCost = chargeableDistance * PRICE_PER_KM;
 
-  // BASE EVENT PRICING & ADD-ONS:
-  const extraGuestsCost = Math.max(0, numericGuests - 50) * 0.5;
+  // BASE GUEST PRICING MAPPING:
+  // 70 guests = 330 €
+  // 100 guests = 350 €
+  // 150 guests = 380 €
+  const getGuestBasePrice = (idx: number): number => {
+    if (idx === 0) return 330;
+    if (idx === 1) return 350;
+    return 380;
+  };
+
+  const basePrice = getGuestBasePrice(stepIndex);
   const initialsCost = addInitials ? 50 : 0;
-  const basePrice = 350 + extraGuestsCost;
 
   const minPrice = Math.round(basePrice + travelCost + initialsCost);
   const maxPrice = Math.round(basePrice * 1.2 + travelCost + initialsCost + 25);

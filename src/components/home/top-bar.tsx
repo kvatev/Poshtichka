@@ -12,9 +12,7 @@ export const TopBar = () => {
       "ИНТЕРАКТИВНО ПРЕЖИВЯВАНЕ ЗА ВАШЕТО СЪБИТИЕ ✦",
     ]
   );
-  const [speedSeconds, setSpeedSeconds] = useState<number>(
-    defaultHomepageConfig.topBarSpeedSeconds || 15
-  );
+  const [speedSeconds, setSpeedSeconds] = useState<number>(35); // Slowed down for smooth readability
 
   useEffect(() => {
     // 1. Client-side localStorage fallback for instant sync
@@ -26,7 +24,7 @@ export const TopBar = () => {
           setPhrases(parsed.topBarPhrases);
         }
         if (typeof parsed.topBarSpeedSeconds === "number" && parsed.topBarSpeedSeconds > 0) {
-          setSpeedSeconds(parsed.topBarSpeedSeconds);
+          setSpeedSeconds(parsed.topBarSpeedSeconds * 2); // Scale up speed duration for comfortable reading
         }
       }
     } catch {}
@@ -39,7 +37,7 @@ export const TopBar = () => {
           setPhrases(data.homepage.topBarPhrases);
         }
         if (data.homepage?.topBarSpeedSeconds && Number(data.homepage.topBarSpeedSeconds) > 0) {
-          setSpeedSeconds(Number(data.homepage.topBarSpeedSeconds));
+          setSpeedSeconds(Number(data.homepage.topBarSpeedSeconds) * 2);
         }
       })
       .catch(() => {});
@@ -57,7 +55,7 @@ export const TopBar = () => {
           transition={{
             repeat: Infinity,
             ease: "linear",
-            duration: Math.max(2, speedSeconds),
+            duration: Math.max(30, speedSeconds),
           }}
           className="inline-flex items-center space-x-8 shrink-0 pr-8"
         >
@@ -72,4 +70,3 @@ export const TopBar = () => {
     </div>
   );
 };
-
