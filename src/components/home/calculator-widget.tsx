@@ -21,8 +21,8 @@ export const CalculatorWidget = () => {
   const numericGuests = typeof currentStep === "number" ? currentStep : 150;
 
   // STRICT DISTANCE MATHEMATICS:
-  // 1. Slider value = one-way distance
-  // 2. twoWayDistance = sliderValue * 2
+  // 1. Slider value (distance) = one-way distance from Burgas
+  // 2. twoWayDistance = distance * 2
   // 3. First 50 km one-way (100 km two-way) is FREE
   // 4. chargeableDistance = Math.max(0, twoWayDistance - 100)
   // 5. travelCost = chargeableDistance * PRICE_PER_KM
@@ -128,7 +128,7 @@ export const CalculatorWidget = () => {
             {/* Slider 2: Distance from Burgas (One-way distance, displaying two-way in parentheses) */}
             <div className="space-y-3 pt-4">
               <h3 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
-                ЛОКАЦИЯ ОТ ГРАД БУРГАС: {isFarLocation ? "НАД 450 КМ (ПО ЗАПИТВАНЕ)" : `${distance} КМ (${twoWayDistance} КМ ДВУПОСОЧНО)`}
+                ЛОКАЦИЯ ОТ ГРАД БУРГАС: {isFarLocation ? "НАД 450 КМ (ПО ЗАПИТВАНЕ)" : `${distance} КМ (${distance * 2} КМ ДВУПОСОЧНО)`}
               </h3>
               <div className="relative px-2">
                 <input
@@ -166,7 +166,7 @@ export const CalculatorWidget = () => {
                 </motion.div>
               ) : (
                 <p className="text-xs sm:text-sm text-[#00b4b6] font-medium italic pt-1">
-                  * Километрите се изчисляват двупосочно (отиване и връщане от Бургас). Първите 50 км в посока (100 км двупосочно) са напълно безплатни!
+                  *Километрите се изчисляват двупосочно (отиване и връщане от Бургас). Първите 50 км в посока (общо 100 км двупосочно) са безплатни!
                 </p>
               )}
             </div>
@@ -226,7 +226,7 @@ export const CalculatorWidget = () => {
                   {minPrice} € – {maxPrice} €
                 </div>
                 <p className="text-xs sm:text-sm text-white/70 font-light max-w-lg mx-auto leading-relaxed">
-                  * Включва отиване и връщане ({twoWayDistance} км двупосочно). Крайната оферта се потвърждава след връзка с нас.
+                  * Включва отиване и връщане ({distance * 2} км двупосочно). Крайната оферта се потвърждава след връзка с нас.
                 </p>
               </>
             )}
