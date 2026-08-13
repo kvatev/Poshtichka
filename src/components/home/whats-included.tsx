@@ -7,35 +7,30 @@ import { motion } from "framer-motion";
 const includedItems = [
   {
     icon: "/media/Main Page/feature-design.png",
-    alt: "Индивидуален дизайн",
-    text: "Дизайн изготвен от графичен дизайнер, с 5 годишен опит в сферата.",
+    alt: "Индивидуален дизайн - Дизайн изготвен от графичен дизайнер, с 5 годишен опит в сферата.",
   },
   {
     icon: "/media/Main Page/feature-printer.png",
-    alt: "Висококачествен печат",
-    text: "Висококачествен печат върху луксозни картони.",
+    alt: "Висококачествен печат - Висококачествен печат върху луксозни картони.",
   },
   {
     icon: "/media/Main Page/feature-jar.png",
-    alt: "Буркан с жетони",
-    text: "Буркан със жетони, съобразен с бройката на вашите гости.",
+    alt: "Буркан с жетони - Буркан със жетони, съобразен с бройката на вашите гости.",
   },
   {
     icon: "/media/Main Page/feature-setup.png",
-    alt: "Помощна маса и декорация",
-    text: "Помощна маса, рамка с постер, пулверизатор за татуировки.",
+    alt: "Помощна маса и декорация - Помощна маса, рамка с постер, пулверизатор за татуировки.",
   },
   {
     icon: "/media/Main Page/feature-transport.png",
-    alt: "Транспорт и асистенти",
-    text: "Двама служители за транспорт, монтаж и съдействие на гостите.",
+    alt: "Транспорт и асистенти - Двама служители за транспорт, монтаж и съдействие на гостите.",
   },
 ];
 
 export const WhatsIncluded = () => {
   return (
     <section className="w-full bg-[#00b4b6] text-white py-16 sm:py-24 md:py-28 lg:py-32 xl:py-36 px-4 sm:px-8 md:px-10 lg:px-12 overflow-hidden select-none border-t border-white/20">
-      <div className="max-w-[1500px] mx-auto space-y-12 sm:space-y-16 lg:space-y-24">
+      <div className="max-w-[1600px] mx-auto space-y-12 sm:space-y-16 lg:space-y-24">
         {/* Title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -50,7 +45,7 @@ export const WhatsIncluded = () => {
         </motion.div>
 
         {/* 5-Column Responsive Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 sm:gap-6 md:gap-8 lg:gap-12 xl:gap-16 items-start">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 sm:gap-10 md:gap-6 lg:gap-10 xl:gap-12 items-center justify-items-center">
           {includedItems.map((item, idx) => (
             <motion.div
               key={idx}
@@ -58,23 +53,18 @@ export const WhatsIncluded = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="flex flex-col items-center text-center space-y-4 md:space-y-6 lg:space-y-8 group"
+              className="flex flex-col items-center text-center group w-full"
             >
-              {/* Significantly Scaled Icon Box for Desktop */}
-              <div className="relative w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 xl:w-56 xl:h-56 flex items-center justify-center p-1">
+              {/* Scaled Image Container for Legibility */}
+              <div className="relative w-56 sm:w-64 md:w-48 lg:w-64 xl:w-72 aspect-square flex items-center justify-center p-2 mx-auto">
                 <Image
                   src={item.icon}
                   alt={item.alt}
-                  width={240}
-                  height={240}
+                  width={350}
+                  height={350}
                   className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
-
-              {/* Scaled Text Label */}
-              <p className="font-stampatello text-base sm:text-lg md:text-xl lg:text-2xl text-white/95 leading-relaxed font-medium px-1 sm:px-2">
-                {item.text}
-              </p>
             </motion.div>
           ))}
         </div>
