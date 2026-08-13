@@ -61,7 +61,7 @@ export const CalculatorWidget = () => {
           <div className="p-8 sm:p-12 space-y-8 text-center">
             {/* Title & Subtitle */}
             <div className="space-y-2">
-              <h2 className="font-display text-3xl sm:text-5xl font-bold uppercase tracking-wide text-[#2d3a37]">
+              <h2 className="font-salongbeach text-3xl md:text-5xl font-bold uppercase tracking-wider text-[#2d3a37] text-center leading-tight">
                 КАЛКУЛАТОР
               </h2>
               <p className="font-sans text-base sm:text-lg text-[#2d3a37]/80 italic">
@@ -189,7 +189,7 @@ export const CalculatorWidget = () => {
                 onClick={() => setAddInitials(!addInitials)}
                 className={`w-10 h-10 rounded-xl border-2 transition-all flex items-center justify-center cursor-pointer ${
                   addInitials
-                    ? "bg-[#00b4b6] border-[#00b4b6] text-white shadow-md scale-105"
+                    ? "bg-[#00b4b6] border-[#00b4b6] text-[#2d3a37] shadow-md scale-105"
                     : "bg-[#cdeef0]/50 border-[#00b4b6]/40 text-transparent hover:border-[#00b4b6]"
                 }`}
               >

@@ -34,7 +34,7 @@ export const CheckDateCTA = () => {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="flex-1 text-center flex flex-col items-center justify-center space-y-3 sm:space-y-4 max-w-2xl lg:max-w-3xl"
         >
-          <h2 className="font-salongbeach text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold uppercase tracking-wider text-white leading-tight">
+          <h2 className="font-salongbeach text-3xl md:text-5xl font-bold uppercase tracking-wider text-white leading-tight text-center">
             ЧУДИТЕ СЕ ДАЛИ ДАТАТА ВИ Е СВОБОДНА?
           </h2>
 

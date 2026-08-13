@@ -47,7 +47,7 @@ export const TestimonialsSection = () => {
     <section className="py-16 sm:py-24 bg-brand-cream relative overflow-hidden w-full select-none">
       {/* Section Heading (Centered) */}
       <div className="text-center space-y-3 max-w-3xl mx-auto px-4 mb-10">
-        <h2 className="font-display text-3xl sm:text-5xl font-bold uppercase tracking-wide text-[#00b4b6]">
+        <h2 className="font-salongbeach text-3xl md:text-5xl font-bold uppercase tracking-wider text-[#00b4b6] text-center leading-tight">
           ОТЗИВИ И ВПЕЧАТЛЕНИЯ
         </h2>
       </div>
