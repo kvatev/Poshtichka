@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Check, Sparkles, MessageCircle } from "lucide-react";
+import { Check, Sparkles } from "lucide-react";
 
 const GUEST_STEPS = [70, 100, 150, "150+"] as const;
 const PRICE_PER_KM = 0.23;
@@ -65,7 +65,7 @@ export const CalculatorWidget = () => {
                 КАЛКУЛАТОР
               </h2>
               <p className="font-sans text-base sm:text-lg text-[#2d3a37]/80 italic">
-                Изчислете ориентировъчна цена за Вашето събитие!
+                Изчислете цена за Вашето събитие!
               </p>
             </div>
 
@@ -197,13 +197,12 @@ export const CalculatorWidget = () => {
               </button>
             </div>
 
-            {/* CTA Button */}
+            {/* CTA Button without icon element */}
             <div className="pt-4">
               <Link
                 href={`/booking?guests=${isLargeEvent ? "150+" : numericGuests}&distance=${isFarLocation ? "450+" : distance}&initials=${addInitials}`}
-                className="inline-flex items-center space-x-2 bg-[#00b4b6] hover:bg-[#009da0] text-white font-display text-lg sm:text-xl font-bold uppercase tracking-wider px-10 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center bg-[#00b4b6] hover:bg-[#009da0] text-white font-display text-lg sm:text-xl font-bold uppercase tracking-wider px-10 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
               >
-                <MessageCircle className="w-5 h-5" />
                 <span>{needsInquiry ? "ПОИСКАЙ ИНДИВИДУАЛНА ОФЕРТА" : "ИЗПРАТИ ЗАПИТВАНЕ"}</span>
               </Link>
             </div>
@@ -212,7 +211,7 @@ export const CalculatorWidget = () => {
           {/* Dark Bottom Box: Result Price */}
           <div className="bg-[#2d3a37] text-white px-6 py-8 text-center space-y-3">
             <p className="font-sans text-base sm:text-lg font-light text-white/90">
-              {needsInquiry ? "Специална такса за вашето събитие:" : "Ориентировъчна цена:"}
+              {needsInquiry ? "Специална такса за вашето събитие:" : "Крайна цена:"}
             </p>
 
             {needsInquiry ? (
