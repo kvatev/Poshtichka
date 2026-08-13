@@ -31,7 +31,7 @@ export const WhatsIncluded = () => {
   return (
     <section className="w-full bg-[#00b4b6] text-white py-16 sm:py-24 md:py-28 lg:py-32 xl:py-36 px-4 sm:px-8 md:px-10 lg:px-12 overflow-hidden select-none border-t border-white/20">
       <div className="max-w-[1600px] mx-auto space-y-12 sm:space-y-16 lg:space-y-24">
-        {/* Title */}
+        {/* Title rendered as live HTML text in Sa Long Beach font */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -39,7 +39,7 @@ export const WhatsIncluded = () => {
           transition={{ duration: 0.6 }}
           className="text-center space-y-3"
         >
-          <h2 className="font-stampatello text-3xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl font-bold uppercase tracking-wider text-white">
+          <h2 className="font-salongbeach text-3xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl font-bold uppercase tracking-wider text-white">
             КАКВО Е ВКЛЮЧЕНО В УСЛУГАТА?
           </h2>
         </motion.div>
