@@ -43,8 +43,8 @@ export const CalculatorWidget = () => {
   const basePrice = getGuestBasePrice(stepIndex);
   const initialsCost = addInitials ? 50 : 0;
 
-  const minPrice = Math.round(basePrice + travelCost + initialsCost);
-  const maxPrice = Math.round(basePrice * 1.2 + travelCost + initialsCost + 25);
+  // SINGLE EXACT TOTAL PRICE: Base Price + Add-ons + Travel Cost
+  const totalPrice = Math.round(basePrice + travelCost + initialsCost);
 
   return (
     <section className="py-16 sm:py-24 bg-brand-cream relative select-none">
@@ -230,7 +230,7 @@ export const CalculatorWidget = () => {
             ) : (
               <>
                 <div className="font-display text-4xl sm:text-6xl font-bold tracking-wider text-white">
-                  {minPrice} € – {maxPrice} €
+                  {totalPrice} €
                 </div>
                 <p className="text-xs sm:text-sm text-white/70 font-light max-w-lg mx-auto leading-relaxed">
                   * Включва отиване и връщане ({distance * 2} км двупосочно). Крайната оферта се потвърждава след връзка с нас.
