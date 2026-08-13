@@ -4,101 +4,106 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+const quickLinks = [
+  { href: "/services", label: "Услуги" },
+  { href: "/gallery", label: "Галерия" },
+  { href: "/about", label: "За нас" },
+  { href: "/calendar", label: "Календар" },
+  { href: "/faq", label: "ЧЗВ" },
+  { href: "/contact", label: "Контакти" },
+];
+
 export const Footer = () => {
   return (
-    <footer className="bg-[#00b4b6] text-white pt-0 pb-0 relative overflow-hidden font-sans select-none border-t border-white/20">
-      {/* Container maintaining the exact 3841 / 1116 aspect ratio of footer-banner.png */}
-      <div className="relative w-full aspect-[3841/1116] min-h-[220px] max-w-[100vw] overflow-hidden">
-        {/* 1. 4K High Quality Vector Graphic Background Banner */}
-        <Image
-          src="/media/Main Page/footer-banner.png"
-          alt="Пощичка Футър"
-          fill
-          className="object-contain object-center"
-          priority
-          unoptimized
-        />
+    <footer className="bg-[#00b4b6] text-white pt-16 pb-8 border-t border-white/20 font-sans select-none">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-12">
+        {/* Main 3-Column Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 items-start">
+          {/* Column 1: Quick Links */}
+          <div className="space-y-4 text-center md:text-left">
+            <h3 className="font-stampatello text-2xl font-bold uppercase tracking-wider text-white border-b border-white/30 pb-2 inline-block md:block">
+              БЪРЗИ ВРЪЗКИ
+            </h3>
+            <ul className="space-y-2.5 pt-2">
+              {quickLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="font-stampatello text-base sm:text-lg text-white/90 hover:text-white transition-colors duration-200 hover:underline inline-block"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        {/* 2. Invisible Hotspot Overlay Layer (No translucent boxes, pure clickable targets) */}
-        
-        {/* Quick Links Column (Left Area - Under "БЪРЗИ ВРЪЗКИ") */}
-        {/* Услуги */}
-        <Link
-          href="/services"
-          className="absolute left-[6%] top-[25%] w-[18%] h-[8%] cursor-pointer transition-opacity hover:opacity-75"
-          title="Услуги"
-          aria-label="Услуги"
-        />
-        {/* Галерия */}
-        <Link
-          href="/gallery"
-          className="absolute left-[6%] top-[34%] w-[18%] h-[8%] cursor-pointer transition-opacity hover:opacity-75"
-          title="Галерия"
-          aria-label="Галерия"
-        />
-        {/* За нас */}
-        <Link
-          href="/about"
-          className="absolute left-[6%] top-[43%] w-[18%] h-[8%] cursor-pointer transition-opacity hover:opacity-75"
-          title="За нас"
-          aria-label="За нас"
-        />
-        {/* Календар */}
-        <Link
-          href="/calendar"
-          className="absolute left-[6%] top-[52%] w-[18%] h-[8%] cursor-pointer transition-opacity hover:opacity-75"
-          title="Календар заетост"
-          aria-label="Календар заетост"
-        />
-        {/* ЧЗВ */}
-        <Link
-          href="/faq"
-          className="absolute left-[6%] top-[61%] w-[18%] h-[8%] cursor-pointer transition-opacity hover:opacity-75"
-          title="Често Задавани Въпроси"
-          aria-label="Често Задавани Въпроси"
-        />
-        {/* Контакти */}
-        <Link
-          href="/contact"
-          className="absolute left-[6%] top-[70%] w-[18%] h-[8%] cursor-pointer transition-opacity hover:opacity-75"
-          title="Контакти"
-          aria-label="Контакти"
-        />
+          {/* Column 2: About Poshtichka & Socials */}
+          <div className="space-y-5 text-center md:text-left">
+            <h3 className="font-stampatello text-2xl font-bold uppercase tracking-wider text-white border-b border-white/30 pb-2 inline-block md:block">
+              ЗА ПОЩИЧКА
+            </h3>
+            <p className="font-stampatello text-base sm:text-lg text-white/95 leading-relaxed font-light pt-2">
+              Интерактивно преживяване на живо по време на Вашето събитие. Всеки гост си тръгва с персонализиран спомен, създаден с любов.
+            </p>
 
-        {/* Social Media Channels (Center Area - Under "ЗА ПОЩИЧКА") */}
-        {/* Facebook Icon */}
-        <a
-          href="https://www.facebook.com/poshtichka"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute left-[46%] top-[69%] w-[3.2%] h-[8%] cursor-pointer transition-opacity hover:opacity-75"
-          title="Facebook - Poshtichka"
-          aria-label="Facebook"
-        />
-        {/* Instagram Icon */}
-        <a
-          href="https://www.instagram.com/poshtichka/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute left-[49.5%] top-[69%] w-[3.5%] h-[8%] cursor-pointer transition-opacity hover:opacity-75"
-          title="Instagram - Poshtichka"
-          aria-label="Instagram"
-        />
+            {/* Social Media Icons */}
+            <div className="pt-2 flex items-center justify-center md:justify-start space-x-4">
+              <a
+                href="https://www.facebook.com/poshtichka"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/40 flex items-center justify-center transition-transform hover:scale-110"
+                title="Facebook - Poshtichka"
+                aria-label="Facebook"
+              >
+                <Image
+                  src="/media/facebook.png"
+                  alt="Facebook"
+                  width={24}
+                  height={24}
+                  className="w-5 h-5 object-contain"
+                />
+              </a>
 
-        {/* Vending Machine Graphic / Home Link (Right Area) */}
-        <Link
-          href="/"
-          className="absolute left-[75%] top-[10%] w-[20%] h-[80%] cursor-pointer transition-opacity hover:opacity-90"
-          title="Начало - Пощичка"
-          aria-label="Начало"
-        />
+              <a
+                href="https://www.instagram.com/poshtichka/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/40 flex items-center justify-center transition-transform hover:scale-110"
+                title="Instagram - Poshtichka"
+                aria-label="Instagram"
+              >
+                <Image
+                  src="/media/instagram.png"
+                  alt="Instagram"
+                  width={24}
+                  height={24}
+                  className="w-5 h-5 object-contain"
+                />
+              </a>
+            </div>
+          </div>
+
+          {/* Column 3: Vending Booth Graphic */}
+          <div className="flex flex-col items-center md:items-end justify-center">
+            <Link href="/" className="group block">
+              <Image
+                src="/media/poshtichka-booth-heart.png"
+                alt="Пощичка машина"
+                width={240}
+                height={340}
+                className="w-44 sm:w-56 h-auto object-contain group-hover:scale-105 transition-transform duration-300"
+              />
+            </Link>
+          </div>
+        </div>
+
+        {/* Bottom Bar: Copyright */}
+        <div className="border-t border-white/20 pt-6 text-center text-xs sm:text-sm text-white/80 font-sans">
+          <p>© {new Date().getFullYear()} Пощичка. Всички права запазени.</p>
+        </div>
       </div>
     </footer>
   );
 };
-
-
-
-
-
-

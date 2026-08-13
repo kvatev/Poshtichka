@@ -4,29 +4,78 @@ import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
+const includedItems = [
+  {
+    icon: "/media/feature-design.png",
+    alt: "Индивидуален дизайн",
+    text: "Дизайн изготвен от графичен дизайнер, с 5 годишен опит в сферата.",
+  },
+  {
+    icon: "/media/feature-printer.png",
+    alt: "Висококачествен печат",
+    text: "Висококачествен печат върху луксозни картони.",
+  },
+  {
+    icon: "/media/feature-jar.png",
+    alt: "Буркан с жетони",
+    text: "Буркан със жетони, съобразен с бройката на вашите гости.",
+  },
+  {
+    icon: "/media/feature-setup.png",
+    alt: "Помощна маса и декорация",
+    text: "Помощна маса, рамка с постер, пулверизатор за татуировки.",
+  },
+  {
+    icon: "/media/feature-transport.png",
+    alt: "Транспорт и асистенти",
+    text: "Двама служители за транспорт, монтаж и съдействие на гостите.",
+  },
+];
+
 export const WhatsIncluded = () => {
   return (
-    <section className="w-full bg-[#00b4b6] py-0 overflow-hidden leading-none">
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="w-full flex justify-center items-center"
-      >
-        <Image
-          src="/media/Main Page/whats-included-banner.png"
-          alt="Какво е включено в услугата?"
-          width={3841}
-          height={1092}
-          className="w-full h-auto object-cover block"
-          priority
-          unoptimized
-        />
-      </motion.div>
+    <section className="w-full bg-[#00b4b6] text-white py-16 sm:py-24 px-4 sm:px-8 overflow-hidden select-none border-t border-white/20">
+      <div className="max-w-7xl mx-auto space-y-12 sm:space-y-16">
+        {/* Title */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center space-y-3"
+        >
+          <h2 className="font-stampatello text-3xl sm:text-5xl font-bold uppercase tracking-wider text-white">
+            КАКВО Е ВКЛЮЧЕНО В УСЛУГАТА?
+          </h2>
+        </motion.div>
+
+        {/* 5-Column Responsive Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 sm:gap-6 items-start">
+          {includedItems.map((item, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: idx * 0.1 }}
+              className="flex flex-col items-center text-center space-y-4 group"
+            >
+              <div className="relative w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center p-1">
+                <Image
+                  src={item.icon}
+                  alt={item.alt}
+                  width={140}
+                  height={140}
+                  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <p className="font-stampatello text-sm sm:text-base text-white/95 leading-relaxed font-medium px-2">
+                {item.text}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 };
-
-
-
