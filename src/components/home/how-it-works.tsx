@@ -33,7 +33,7 @@ export const HowItWorks = () => {
           </h2>
         </div>
 
-        {/* 3 Step Cards - 100% Identical Edge-to-Edge Dimensions */}
+        {/* 3 Step Cards - 100% Identical Uniform Sizing & Rounded Corners */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 items-stretch justify-items-center w-full">
           {steps.map((step, idx) => (
             <motion.div
@@ -44,8 +44,8 @@ export const HowItWorks = () => {
               transition={{ duration: 0.6, delay: idx * 0.15 }}
               className="group relative w-full h-full flex flex-col justify-center items-center"
             >
-              {/* Edge-to-Edge Image Container */}
-              <div className="relative w-full h-[420px] sm:h-[480px] md:h-[500px] lg:h-[560px] aspect-[4/5] overflow-hidden rounded-3xl p-0 m-0 shadow-sm hover:shadow-md transition-shadow duration-300">
+              {/* Uniform Rounded Image Container */}
+              <div className="relative w-full h-[420px] sm:h-[480px] md:h-[500px] lg:h-[560px] aspect-[4/5] overflow-hidden rounded-[2rem] p-0 m-0 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <Image
                   src={step.image}
                   alt={step.title}

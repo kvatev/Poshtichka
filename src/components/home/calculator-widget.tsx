@@ -10,7 +10,7 @@ const PRICE_PER_KM = 0.23;
 
 export const CalculatorWidget = () => {
   const [stepIndex, setStepIndex] = useState<number>(1); // Default: index 1 (100 guests)
-  const [distance, setDistance] = useState<number>(100); // One-way distance in km (Burgas)
+  const [distance, setDistance] = useState<number>(50); // Default: 50 km one-way (free threshold)
   const [addInitials, setAddInitials] = useState<boolean>(false);
 
   const currentStep = GUEST_STEPS[stepIndex];
@@ -21,7 +21,7 @@ export const CalculatorWidget = () => {
   const numericGuests = typeof currentStep === "number" ? currentStep : 150;
 
   // STRICT DISTANCE MATHEMATICS:
-  // 1. Slider value (distance) = one-way distance from Burgas
+  // 1. Slider value (distance) = one-way distance from Burgas (starts at 50km)
   // 2. twoWayDistance = distance * 2
   // 3. First 50 km one-way (100 km two-way) is FREE
   // 4. chargeableDistance = Math.max(0, twoWayDistance - 100)
@@ -125,7 +125,7 @@ export const CalculatorWidget = () => {
               )}
             </div>
 
-            {/* Slider 2: Distance from Burgas (One-way distance, displaying two-way in parentheses) */}
+            {/* Slider 2: Distance from Burgas (Starts at min=50, step=10) */}
             <div className="space-y-3 pt-4">
               <h3 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
                 ЛОКАЦИЯ ОТ ГРАД БУРГАС: {isFarLocation ? "НАД 450 КМ (ПО ЗАПИТВАНЕ)" : `${distance} КМ (${distance * 2} КМ ДВУПОСОЧНО)`}
@@ -133,7 +133,7 @@ export const CalculatorWidget = () => {
               <div className="relative px-2">
                 <input
                   type="range"
-                  min={0}
+                  min={50}
                   max={460}
                   step={10}
                   value={distance}
@@ -141,7 +141,7 @@ export const CalculatorWidget = () => {
                   className="w-full h-3 bg-[#cdeef0] rounded-lg appearance-none cursor-pointer accent-[#00b4b6]"
                 />
                 <div className="flex justify-between text-xs sm:text-sm font-semibold text-[#2d3a37]/70 mt-2 px-1">
-                  <span>0 км</span>
+                  <span>50 км</span>
                   <span>150 км</span>
                   <span>300 км</span>
                   <span>450 км</span>
