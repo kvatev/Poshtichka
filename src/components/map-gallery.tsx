@@ -326,10 +326,10 @@ export const MapGallery = () => {
         </div>
       </div>
 
-      {/* 4. Active City Title Section with Asset 83@2x.png icon */}
-      <div className="text-center space-y-2 px-4 pt-4">
+      {/* 4. Active City Title Section with Asset 83@2x.png icon (Centered) */}
+      <div className="text-center space-y-2 px-4 pt-4 max-w-3xl mx-auto flex flex-col items-center justify-center">
         <div className="flex justify-center">
-          <div className="relative w-10 sm:w-12 h-10 sm:h-12">
+          <div className="relative w-12 sm:w-14 h-12 sm:h-14">
             <Image
               src={encodeURI("/media/Галерия/Asset 83@2x.png")}
               alt="Иконка локация"
@@ -350,10 +350,10 @@ export const MapGallery = () => {
       </div>
 
       {/* 5. Active City Event Banner Section (Teal Background #00b4b6) */}
-      <section className="w-full bg-[#00b4b6] py-12 sm:py-16 px-4 sm:px-8">
-        <div className="max-w-6xl mx-auto">
+      <section className="w-full bg-[#00b4b6] py-12 sm:py-16 px-4 sm:px-8 flex justify-center">
+        <div className="max-w-6xl mx-auto w-full">
           {selectedCityEvents.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 justify-items-center">
+            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8">
               {selectedCityEvents.map((ev) => (
                 <div
                   key={ev.id}
@@ -361,7 +361,7 @@ export const MapGallery = () => {
                     setActiveModalEvent(ev);
                     setActiveLightboxIndex(0);
                   }}
-                  className="relative group w-full max-w-sm flex flex-col justify-between p-4 sm:p-5 hover:scale-[1.02] transition-all duration-300 cursor-pointer text-center min-h-[380px] sm:min-h-[420px]"
+                  className="relative group w-[300px] sm:w-[340px] md:w-[360px] h-[430px] sm:h-[480px] flex flex-col justify-between p-4 sm:p-5 hover:scale-[1.03] transition-all duration-300 cursor-pointer text-center mx-auto"
                 >
                   {/* Frame Graphic Overlay Asset 84@2x.png */}
                   <div className="absolute inset-0 w-full h-full pointer-events-none z-10">
@@ -369,13 +369,13 @@ export const MapGallery = () => {
                       src={encodeURI("/media/Галерия/Asset 84@2x.png")}
                       alt="Рамка"
                       fill
-                      className="object-fill drop-shadow-md"
+                      className="object-contain drop-shadow-lg"
                       unoptimized
                     />
                   </div>
 
-                  {/* Photo */}
-                  <div className="relative w-full h-60 sm:h-64 rounded-[24px] overflow-hidden z-0">
+                  {/* Photo inside top frame */}
+                  <div className="relative w-full h-[62%] rounded-[24px] overflow-hidden z-0 mt-1">
                     <Image
                       src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
                       alt={ev.eventName || ev.cityName}
@@ -385,15 +385,15 @@ export const MapGallery = () => {
                     />
                   </div>
 
-                  {/* Text Labels */}
-                  <div className="space-y-0.5 py-2 z-20">
-                    <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
+                  {/* Text Labels matching Screenshot 2 */}
+                  <div className="space-y-1 py-3 px-2 z-20 flex flex-col items-center justify-center">
+                    <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6] leading-snug">
                       {ev.eventName || `Пощичка в ${ev.cityName}`}
                     </h3>
-                    <p className="font-sans text-xs sm:text-sm text-[#182b2c]/80 line-clamp-1">
+                    <p className="font-sans text-xs sm:text-sm text-[#182b2c]/80 font-normal line-clamp-1">
                       {ev.venueName || `Комплекс в ${ev.cityName}`}
                     </p>
-                    <p className="font-sans text-[11px] text-[#00b4b6] font-medium">
+                    <p className="font-sans text-[11px] sm:text-xs text-[#00b4b6] font-medium">
                       {ev.eventType || "сватбено тържество"}
                     </p>
                   </div>
@@ -411,7 +411,7 @@ export const MapGallery = () => {
 
       {/* 6. ВСИЧКИ ЛОКАЦИИ Section with Asset 83@2x.png icon */}
       <div className="max-w-6xl mx-auto px-4 sm:px-8 space-y-10 pt-6">
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-2 flex flex-col items-center justify-center">
           <div className="flex justify-center">
             <div className="relative w-10 sm:w-12 h-10 sm:h-12">
               <Image
@@ -428,7 +428,7 @@ export const MapGallery = () => {
           </h2>
         </div>
 
-        {/* 3-Column Grid with Asset 84@2x.png frames */}
+        {/* 3-Column Grid matching Screenshot 2 proportional dimensions */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 justify-items-center">
           {events.map((ev) => (
             <div
@@ -437,7 +437,7 @@ export const MapGallery = () => {
                 setActiveModalEvent(ev);
                 setActiveLightboxIndex(0);
               }}
-              className="relative group w-full max-w-sm flex flex-col justify-between p-4 sm:p-5 hover:scale-[1.02] transition-all duration-300 cursor-pointer text-center min-h-[380px] sm:min-h-[420px]"
+              className="relative group w-[300px] sm:w-[340px] md:w-[360px] h-[430px] sm:h-[480px] flex flex-col justify-between p-4 sm:p-5 hover:scale-[1.03] transition-all duration-300 cursor-pointer text-center"
             >
               {/* Frame Graphic Overlay Asset 84@2x.png */}
               <div className="absolute inset-0 w-full h-full pointer-events-none z-10">
@@ -445,13 +445,13 @@ export const MapGallery = () => {
                   src={encodeURI("/media/Галерия/Asset 84@2x.png")}
                   alt="Рамка"
                   fill
-                  className="object-fill drop-shadow-md"
+                  className="object-contain drop-shadow-lg"
                   unoptimized
                 />
               </div>
 
               {/* Photo */}
-              <div className="relative w-full h-60 sm:h-64 rounded-[24px] overflow-hidden z-0">
+              <div className="relative w-full h-[62%] rounded-[24px] overflow-hidden z-0 mt-1">
                 <Image
                   src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
                   alt={ev.eventName || ev.cityName}
@@ -462,14 +462,14 @@ export const MapGallery = () => {
               </div>
 
               {/* Text Labels */}
-              <div className="space-y-0.5 py-2 z-20">
-                <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
+              <div className="space-y-1 py-3 px-2 z-20 flex flex-col items-center justify-center">
+                <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6] leading-snug">
                   {ev.eventName || `Пощичка в ${ev.cityName}`}
                 </h3>
-                <p className="font-sans text-xs sm:text-sm text-[#182b2c]/80 line-clamp-1">
+                <p className="font-sans text-xs sm:text-sm text-[#182b2c]/80 font-normal line-clamp-1">
                   {ev.venueName || `Събитие в ${ev.cityName}`}
                 </p>
-                <p className="font-sans text-[11px] text-[#00b4b6] font-medium">
+                <p className="font-sans text-[11px] sm:text-xs text-[#00b4b6] font-medium">
                   {ev.eventType || "сватбено тържество"}
                 </p>
               </div>
