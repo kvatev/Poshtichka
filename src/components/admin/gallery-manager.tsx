@@ -16,6 +16,7 @@ import {
   AlertTriangle,
   Building,
   Navigation,
+  Link as LinkIcon,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,48 @@ const bgCitiesPresets = [
   { name: "Варна", lat: 43.2141, lng: 27.9147 },
 ];
 
+/**
+ * Client-side automatic image loader and WebP converter.
+ * Converts PNG, JPG, or WEBP files to high-quality compressed WebP data URLs.
+ */
+const processFileToWebp = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const isWebp = file.type === "image/webp" || file.name.toLowerCase().endsWith(".webp");
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const src = e.target?.result as string;
+      if (!src) return reject(new Error("Грешка при четене на файла."));
+
+      if (isWebp) {
+        return resolve(src);
+      }
+
+      // Convert PNG/JPG to WebP via Canvas
+      const img = new window.Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.naturalWidth || img.width || 800;
+          canvas.height = img.naturalHeight || img.height || 600;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) return resolve(src);
+          ctx.drawImage(img, 0, 0);
+          const webpDataUrl = canvas.toDataURL("image/webp", 0.85);
+          resolve(webpDataUrl);
+        } catch {
+          resolve(src);
+        }
+      };
+      img.onerror = () => resolve(src);
+      img.src = src;
+    };
+
+    reader.onerror = () => reject(new Error("Неуспешно четене на снимката."));
+    reader.readAsDataURL(file);
+  });
+};
+
 export const GalleryManager = () => {
   const [items, setItems] = useState<EventLocation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,7 +86,7 @@ export const GalleryManager = () => {
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
-  // Form State - NO Category, NO Image URL text input!
+  // Form State
   const [eventName, setEventName] = useState("");
   const [cityName, setCityName] = useState("Созопол");
   const [venueName, setVenueName] = useState("");
@@ -51,6 +94,7 @@ export const GalleryManager = () => {
   const [latitude, setLatitude] = useState<number>(42.4175);
   const [longitude, setLongitude] = useState<number>(27.6958);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [customPathInput, setCustomPathInput] = useState("");
   const [description, setDescription] = useState("");
   const [eventDate, setEventDate] = useState("");
 
@@ -164,10 +208,8 @@ export const GalleryManager = () => {
     setEventType("сватбено тържество");
     setLatitude(42.4175);
     setLongitude(27.6958);
-    setGalleryImages([
-      "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
-      "/media/gallery/Tezza_2025_07_13_155324686.webp",
-    ]);
+    setGalleryImages([]); // Start clean with 0/4 images so user can upload theirs!
+    setCustomPathInput("");
     setDescription("");
     setEventDate(new Date().toISOString().split("T")[0]);
     setErrorMsg("");
@@ -183,7 +225,9 @@ export const GalleryManager = () => {
     setEventType(item.eventType || "сватбено тържество");
     setLatitude(item.latitude);
     setLongitude(item.longitude);
-    setGalleryImages(item.galleryImages && item.galleryImages.length > 0 ? item.galleryImages : [item.coverImage || ""]);
+    const existing = item.galleryImages && item.galleryImages.length > 0 ? item.galleryImages : [item.coverImage || ""];
+    setGalleryImages(existing.filter((img) => Boolean(img)));
+    setCustomPathInput("");
     setDescription(item.description || "");
     setEventDate(item.eventDate || new Date().toISOString().split("T")[0]);
     setErrorMsg("");
@@ -197,41 +241,46 @@ export const GalleryManager = () => {
     setLongitude(city.lng);
   };
 
-  // Strict WebP Image Upload (Strictly Max 4 WebP Photos)
-  const handleWebpUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Image Upload Handler with Automatic WebP Conversion & Max 4 Images limit
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
     setErrorMsg("");
 
-    const newWebpImages: string[] = [...galleryImages];
+    const currentCount = galleryImages.length;
+    const availableSlots = 4 - currentCount;
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const isWebp = file.type === "image/webp" || file.name.toLowerCase().endsWith(".webp");
-
-      if (!isWebp) {
-        setErrorMsg("Задължително е качването на снимки само във формат .webp! Моля, конвертирайте снимката.");
-        return;
-      }
-
-      if (newWebpImages.length >= 4) {
-        setErrorMsg("Можете да качите максимум до 4 снимки за едно събитие.");
-        break;
-      }
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const dataUrl = event.target?.result as string;
-        if (dataUrl) {
-          setGalleryImages((prev) => {
-            if (prev.length >= 4) return prev;
-            return [...prev, dataUrl];
-          });
-        }
-      };
-      reader.readAsDataURL(file);
+    if (availableSlots <= 0) {
+      setErrorMsg("Можете да качите максимум до 4 снимки за едно събитие.");
+      e.target.value = "";
+      return;
     }
+
+    const selectedFiles = Array.from(files).slice(0, availableSlots);
+
+    try {
+      const convertedDataUrls = await Promise.all(
+        selectedFiles.map((file) => processFileToWebp(file))
+      );
+
+      setGalleryImages((prev) => [...prev, ...convertedDataUrls].slice(0, 4));
+    } catch {
+      setErrorMsg("Възникна грешка при обработка на снимките.");
+    } finally {
+      e.target.value = ""; // Reset input so same file can be re-selected if needed
+    }
+  };
+
+  const handleAddCustomPath = () => {
+    if (!customPathInput.trim()) return;
+    if (galleryImages.length >= 4) {
+      setErrorMsg("Можете да добавите максимум до 4 снимки за едно събитие.");
+      return;
+    }
+
+    setGalleryImages((prev) => [...prev, customPathInput.trim()].slice(0, 4));
+    setCustomPathInput("");
   };
 
   const handleRemoveImage = (indexToRemove: number) => {
@@ -246,6 +295,10 @@ export const GalleryManager = () => {
     }
     if (!cityName.trim()) {
       setErrorMsg("Моля, изберете град/локация.");
+      return;
+    }
+    if (galleryImages.length === 0) {
+      setErrorMsg("Моля, качете поне 1 снимка за събитието.");
       return;
     }
 
@@ -276,7 +329,7 @@ export const GalleryManager = () => {
       });
 
       if (res.ok) {
-        setSuccessMsg(editingItem ? "Събитието бе обновено успешно!" : "Новото събитие бе добавено в галерията и картата!");
+        setSuccessMsg(editingItem ? "Събитието бе обновено успешно!" : "Новото събитие бе добавено в галерията!");
         fetchItems();
         setTimeout(() => {
           setShowModal(false);
@@ -314,7 +367,7 @@ export const GalleryManager = () => {
             Управление на Галерията & Събитията ({items.length})
           </h2>
           <p className="text-xs text-[#182b2c]/70 mt-1">
-            Добавяйте събития с точна локация на картата и до 4 задължителни .webp снимки!
+            Добавяйте събития с точна локация на картата и до 4 WebP снимки!
           </p>
         </div>
 
@@ -405,7 +458,7 @@ export const GalleryManager = () => {
         </div>
       )}
 
-      {/* Add / Edit Event Modal with Map Pin Picker & Strict WebP 4-Image Upload */}
+      {/* Add / Edit Event Modal with Map Pin Picker & Image Upload */}
       {showModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl border-2 border-[#00b4b6] max-w-2xl w-full p-6 sm:p-8 space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
@@ -422,7 +475,7 @@ export const GalleryManager = () => {
 
             {successMsg && (
               <div className="p-4 rounded-2xl bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center space-x-2 text-sm font-semibold">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
                 <span>{successMsg}</span>
               </div>
             )}
@@ -544,37 +597,59 @@ export const GalleryManager = () => {
                 </div>
               </div>
 
-              {/* Strict WebP Image Upload (Max 4 Photos) */}
-              <div className="space-y-2 pt-2 border-t border-gray-200">
+              {/* Image Upload Zone (Strict .WEBP, Max 4 Photos) */}
+              <div className="space-y-3 pt-2 border-t border-gray-200">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-semibold text-[#182b2c] flex items-center space-x-1">
                     <ImageIcon className="w-4 h-4 text-[#00b4b6]" />
-                    <span>Снимки за събитието (Задължително .WEBP, до 4 снимки) *</span>
+                    <span>Снимки за събитието (До 4 снимки) *</span>
                   </label>
                   <span className="text-[11px] font-bold text-[#00b4b6]">
                     {galleryImages.length} / 4 качени
                   </span>
                 </div>
 
-                {/* Upload Zone */}
+                {/* Upload Card Dropzone */}
                 {galleryImages.length < 4 && (
                   <label className="cursor-pointer border-2 border-dashed border-[#00b4b6]/50 bg-[#00b4b6]/5 hover:bg-[#00b4b6]/10 p-4 rounded-2xl flex flex-col items-center justify-center space-y-1.5 transition-colors text-center">
                     <Upload className="w-6 h-6 text-[#00b4b6]" />
                     <span className="text-xs font-bold text-[#182b2c]">
-                      Прикачи снимки във формат .WEBP
+                      Кликнете тук за да качите снимка от компютъра
                     </span>
                     <span className="text-[10px] text-[#182b2c]/60">
-                      (Само файлове с разширение .webp се допускат!)
+                      (Автоматично ги конвертира и съхранява в .WEBP формат)
                     </span>
                     <input
                       type="file"
-                      accept="image/webp,.webp"
+                      accept="image/*"
                       multiple
-                      onChange={handleWebpUpload}
+                      onChange={handleImageUpload}
                       className="hidden"
                     />
                   </label>
                 )}
+
+                {/* Optional Custom Image Path / URL Input */}
+                <div className="flex items-center space-x-2 pt-1">
+                  <div className="relative flex-grow">
+                    <input
+                      type="text"
+                      value={customPathInput}
+                      onChange={(e) => setCustomPathInput(e.target.value)}
+                      placeholder="Или въведете път към снимката (напр. /media/gallery/photo.webp)"
+                      className="w-full pl-8 pr-3 py-2 rounded-xl border border-[#00b4b6]/30 text-xs text-[#182b2c] focus:outline-none focus:ring-1 focus:ring-[#00b4b6]"
+                    />
+                    <LinkIcon className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleAddCustomPath}
+                    className="text-xs py-2 px-3 rounded-xl border-[#00b4b6] text-[#00b4b6] hover:bg-[#00b4b6]/10"
+                  >
+                    Добави
+                  </Button>
+                </div>
 
                 {/* WebP Thumbnails Grid (Up to 4) */}
                 {galleryImages.length > 0 && (
@@ -588,7 +663,7 @@ export const GalleryManager = () => {
                         <button
                           type="button"
                           onClick={() => handleRemoveImage(idx)}
-                          className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full opacity-90 hover:opacity-100 transition-opacity shadow-xs"
+                          className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full opacity-90 hover:opacity-100 transition-opacity shadow-xs cursor-pointer"
                           title="Премахни снимка"
                         >
                           <X className="w-3 h-3" />
