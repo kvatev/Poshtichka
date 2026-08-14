@@ -1,4 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 export interface ServiceItem {
@@ -138,6 +139,7 @@ export async function POST(req: NextRequest) {
     }
 
     mockServices = [...mockServices, newService];
+    try { revalidatePath("/services"); revalidatePath("/"); } catch {}
     return NextResponse.json({ success: true, service: newService });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : "Грешка при създаване на услуга.";
@@ -205,6 +207,7 @@ export async function PUT(req: NextRequest) {
       return s;
     });
 
+    try { revalidatePath("/services"); revalidatePath("/"); } catch {}
     return NextResponse.json({ success: true, service: updatedService || mockServices.find((s) => s.id === id) });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : "Грешка при редакция на услугата.";
@@ -232,6 +235,7 @@ export async function DELETE(req: NextRequest) {
     }
 
     mockServices = mockServices.filter((s) => s.id !== id);
+    try { revalidatePath("/services"); revalidatePath("/"); } catch {}
     return NextResponse.json({ success: true, id });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : "Грешка при изтриване на услугата.";

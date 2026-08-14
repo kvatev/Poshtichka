@@ -119,28 +119,43 @@ export const ServicesManager = () => {
     });
   };
 
-  // WebP Image Upload for Service Image
-  const handleWebpUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Auto-convert any image to WebP via HTML5 Canvas
+  const processFileToWebp = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new window.Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) { reject("Canvas not supported"); return; }
+          ctx.drawImage(img, 0, 0);
+          const webpDataUrl = canvas.toDataURL("image/webp", 0.85);
+          resolve(webpDataUrl);
+        };
+        img.onerror = () => reject("Image load error");
+        img.src = event.target?.result as string;
+      };
+      reader.onerror = () => reject("File read error");
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleWebpUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    const file = files[0];
-    const isWebp = file.type === "image/webp" || file.name.toLowerCase().endsWith(".webp");
-
-    if (!isWebp) {
-      setErrorMsg("Задължително е качването на снимка във формат .webp за бързина на сайта!");
-      return;
-    }
-
     setErrorMsg("");
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
-      if (dataUrl) {
-        setImage(dataUrl);
-      }
-    };
-    reader.readAsDataURL(file);
+    try {
+      const webpDataUrl = await processFileToWebp(files[0]);
+      setImage(webpDataUrl);
+    } catch {
+      setErrorMsg("Възникна грешка при обработка на снимката.");
+    } finally {
+      e.target.value = "";
+    }
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -437,11 +452,11 @@ export const ServicesManager = () => {
                   <label className="cursor-pointer border-2 border-dashed border-[#00b4b6]/50 bg-[#00b4b6]/5 hover:bg-[#00b4b6]/10 p-3.5 rounded-2xl flex flex-col items-center justify-center space-y-1 transition-colors text-center w-full">
                     <Upload className="w-5 h-5 text-[#00b4b6]" />
                     <span className="text-xs font-bold text-[#182b2c]">
-                      Прикачи снимка (.WEBP)
+                      Прикачи снимка
                     </span>
                     <input
                       type="file"
-                      accept="image/webp,.webp"
+                      accept="image/webp,image/jpeg,image/png,image/jpg,.webp,.jpg,.jpeg,.png"
                       onChange={handleWebpUpload}
                       className="hidden"
                     />

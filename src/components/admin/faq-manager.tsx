@@ -65,17 +65,17 @@ export const FAQManager = () => {
       .catch(() => {});
   }, []);
 
-  const handleGlobalSave = async () => {
+  const persistFaqs = async (faqList: FAQItem[]) => {
     setSaving(true);
     setSaved(false);
     try {
       if (typeof window !== "undefined") {
-        localStorage.setItem("poshtichka_content_faq_items", JSON.stringify(faqs));
+        localStorage.setItem("poshtichka_content_faq_items", JSON.stringify(faqList));
       }
       await fetch("/api/admin/content", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key: "faq_items", value: faqs }),
+        body: JSON.stringify({ key: "faq_items", value: faqList }),
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
@@ -84,6 +84,10 @@ export const FAQManager = () => {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleGlobalSave = async () => {
+    persistFaqs(faqs);
   };
 
   const handleOpenAdd = () => {
@@ -104,30 +108,37 @@ export const FAQManager = () => {
     e.preventDefault();
     if (!formQuestion.trim() || !formAnswer.trim()) return;
 
+    let updatedList = [...faqs];
+
     if (isAddingNew) {
       const newItem: FAQItem = {
         id: `faq-${Date.now()}`,
         question: formQuestion,
         answer: formAnswer,
       };
-      setFaqs([...faqs, newItem]);
+      updatedList = [...updatedList, newItem];
     } else if (editingItem) {
-      setFaqs(
-        faqs.map((f) =>
-          f.id === editingItem.id
-            ? { ...f, question: formQuestion, answer: formAnswer }
-            : f
-        )
+      updatedList = updatedList.map((f) =>
+        f.id === editingItem.id
+          ? { ...f, question: formQuestion, answer: formAnswer }
+          : f
       );
     }
 
+    setFaqs(updatedList);
     setIsAddingNew(false);
     setEditingItem(null);
+
+    // Auto-save to API
+    persistFaqs(updatedList);
   };
 
   const handleDelete = (id: string) => {
     if (confirm("Сигурни ли сте, че искате да изтриете този въпрос?")) {
-      setFaqs(faqs.filter((f) => f.id !== id));
+      const updatedList = faqs.filter((f) => f.id !== id);
+      setFaqs(updatedList);
+      // Auto-save to API
+      persistFaqs(updatedList);
     }
   };
 
