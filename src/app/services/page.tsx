@@ -150,19 +150,17 @@ export default function ServicesPage() {
                   </p>
                 )}
 
-                {/* Bullet List with Teal Circular Checkmarks */}
+                {/* Bullet List with Teal Circular Checkmarks matching Asset 88@2x.png */}
                 {service.features && service.features.length > 0 && (
-                  <ul className="space-y-3 pt-2">
+                  <ul className="space-y-3.5 pt-2">
                     {service.features.map((feat, i) => (
                       <li key={i} className="flex items-center space-x-3.5">
-                        {/* Teal Circular Checkmark Icon matching Asset 88@2x.png */}
-                        <div className="relative w-7 h-7 sm:w-8 sm:h-8 flex-shrink-0">
-                          <Image
-                            src={encodeURI(service.badgeAsset || "/media/Услуги/Asset 88@2x.png")}
+                        {/* Teal Circular Checkmark Icon Asset 88@2x.png */}
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0 relative flex items-center justify-center">
+                          <img
+                            src="/media/Услуги/Asset 88@2x.png"
                             alt="Отметка"
-                            fill
-                            className="object-contain"
-                            unoptimized
+                            className="w-full h-full object-contain pointer-events-none"
                           />
                         </div>
 

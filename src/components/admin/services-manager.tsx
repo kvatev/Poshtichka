@@ -283,12 +283,14 @@ export const ServicesManager = () => {
 
                 {/* Features List Preview */}
                 {srv.features && srv.features.length > 0 && (
-                  <ul className="space-y-1.5 pt-2">
+                  <ul className="space-y-2 pt-2">
                     {srv.features.map((f, i) => (
-                      <li key={i} className="flex items-center space-x-2 text-xs font-bold text-[#182b2c]">
-                        <span className="w-4 h-4 rounded-full bg-[#00b4b6] text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0">
-                          ✓
-                        </span>
+                      <li key={i} className="flex items-center space-x-2.5 text-xs font-bold text-[#182b2c]">
+                        <img
+                          src="/media/Услуги/Asset 88@2x.png"
+                          alt="Отметка"
+                          className="w-6 h-6 object-contain flex-shrink-0"
+                        />
                         <span className="font-salongbeach uppercase tracking-wider">{f}</span>
                       </li>
                     ))}
