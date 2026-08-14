@@ -61,7 +61,7 @@ export const CalculatorWidget = () => {
           <div className="p-5 sm:p-8 md:p-9 space-y-5 sm:space-y-6 text-center">
             {/* Title & Subtitle */}
             <div className="space-y-1">
-              <h2 className="font-salongbeach text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-[#2d3a37] text-center leading-tight">
+              <h2 className="font-salongbeach text-[28px] sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-[#2d3a37] text-center leading-tight">
                 КАЛКУЛАТОР
               </h2>
               <p className="font-sans text-sm sm:text-base text-[#2d3a37]/80 italic">

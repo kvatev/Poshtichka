@@ -29,7 +29,7 @@ export const HeroSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="font-salongbeach text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-wider uppercase leading-tight text-white whitespace-normal break-words max-w-4xl mx-auto"
+          className="font-salongbeach text-[28px] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-wider uppercase leading-tight text-white whitespace-normal break-words max-w-4xl mx-auto"
         >
           Всеки гост си тръгва със спомен
         </motion.h1>

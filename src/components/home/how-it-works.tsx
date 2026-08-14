@@ -28,7 +28,7 @@ export const HowItWorks = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-8 sm:space-y-10">
         {/* Section Heading */}
         <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <h2 className="font-salongbeach text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-[#00b4b6] text-center leading-tight">
+          <h2 className="font-salongbeach text-[28px] sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-[#00b4b6] text-center leading-tight">
             КАК РАБОТИ?
           </h2>
         </div>

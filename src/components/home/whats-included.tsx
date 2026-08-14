@@ -39,7 +39,7 @@ export const WhatsIncluded = () => {
           transition={{ duration: 0.6 }}
           className="text-center space-y-2"
         >
-          <h2 className="font-salongbeach text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-white text-center leading-tight">
+          <h2 className="font-salongbeach text-[28px] sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-white text-center leading-tight">
             КАКВО Е ВКЛЮЧЕНО В УСЛУГАТА?
           </h2>
         </motion.div>
