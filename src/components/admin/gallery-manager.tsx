@@ -17,6 +17,8 @@ import {
   Navigation,
   Link as LinkIcon,
   Check,
+  Search,
+  Loader2,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -114,6 +116,13 @@ export const GalleryManager = () => {
   const [editingTypeOldName, setEditingTypeOldName] = useState<string | null>(null);
   const [editingTypeNewName, setEditingTypeNewName] = useState("");
 
+  // Map Search & Geocoding State
+  const [mapSearchQuery, setMapSearchQuery] = useState("");
+  const [mapSearchResults, setMapSearchResults] = useState<
+    { display_name: string; lat: string; lon: string }[]
+  >([]);
+  const [isSearchingMap, setIsSearchingMap] = useState(false);
+
   // Form State
   const [eventName, setEventName] = useState("");
   const [cityName, setCityName] = useState("Созопол");
@@ -180,6 +189,79 @@ export const GalleryManager = () => {
     fetchEventTypes();
   }, []);
 
+  // Reverse Geocoding to auto-detect city/village name when clicking on map
+  const fetchReverseGeocodeCity = async (lat: number, lng: number) => {
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=bg`
+      );
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data && data.address) {
+        const rawCity =
+          data.address.city ||
+          data.address.town ||
+          data.address.village ||
+          data.address.municipality ||
+          data.address.county;
+        if (rawCity) {
+          const cleaned = rawCity.replace(/^(гр\.|с\.|община)\s+/i, "").trim();
+          if (cleaned) {
+            setCityName(cleaned);
+          }
+        }
+      }
+    } catch {}
+  };
+
+  // Map Search Autocomplete
+  const handleMapSearch = async (query: string) => {
+    setMapSearchQuery(query);
+    if (!query.trim() || query.length < 2) {
+      setMapSearchResults([]);
+      return;
+    }
+
+    setIsSearchingMap(true);
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          query
+        )}&countrycodes=bg&accept-language=bg&limit=5`
+      );
+      if (res.ok) {
+        const data = await res.json();
+        setMapSearchResults(data || []);
+      }
+    } catch {
+    } finally {
+      setIsSearchingMap(false);
+    }
+  };
+
+  const handleSelectSearchResult = (result: { display_name: string; lat: string; lon: string }) => {
+    const newLat = Number(Number(result.lat).toFixed(6));
+    const newLng = Number(Number(result.lon).toFixed(6));
+
+    setLatitude(newLat);
+    setLongitude(newLng);
+
+    const parts = result.display_name.split(",");
+    const cleanName = parts[0].replace(/^(гр\.|с\.|община)\s+/i, "").trim();
+
+    if (cleanName) {
+      setCityName(cleanName);
+    }
+
+    setMapSearchResults([]);
+    setMapSearchQuery(cleanName || result.display_name);
+
+    if (mapInstanceRef.current && markerInstanceRef.current) {
+      mapInstanceRef.current.setView([newLat, newLng], 12);
+      markerInstanceRef.current.setLatLng([newLat, newLng]);
+    }
+  };
+
   // Initialize modal map when modal opens
   useEffect(() => {
     if (!showModal) {
@@ -225,17 +307,27 @@ export const GalleryManager = () => {
             draggable: true,
           }).addTo(map);
 
-          marker.on("dragend", (e) => {
+          // Auto reverse geocode city name on drag
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          marker.on("dragend", (e: any) => {
             const latLng = e.target.getLatLng();
-            setLatitude(Number(latLng.lat.toFixed(6)));
-            setLongitude(Number(latLng.lng.toFixed(6)));
+            const newLat = Number(latLng.lat.toFixed(6));
+            const newLng = Number(latLng.lng.toFixed(6));
+            setLatitude(newLat);
+            setLongitude(newLng);
+            fetchReverseGeocodeCity(newLat, newLng);
           });
 
-          map.on("click", (e) => {
+          // Auto reverse geocode city name on click
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          map.on("click", (e: any) => {
             const { lat, lng } = e.latlng;
+            const newLat = Number(lat.toFixed(6));
+            const newLng = Number(lng.toFixed(6));
             marker.setLatLng([lat, lng]);
-            setLatitude(Number(lat.toFixed(6)));
-            setLongitude(Number(lng.toFixed(6)));
+            setLatitude(newLat);
+            setLongitude(newLng);
+            fetchReverseGeocodeCity(newLat, newLng);
           });
 
           mapInstanceRef.current = map;
@@ -270,6 +362,8 @@ export const GalleryManager = () => {
     setCustomPathInput("");
     setDescription("");
     setEventDate(new Date().toISOString().split("T")[0]);
+    setMapSearchQuery("");
+    setMapSearchResults([]);
     setErrorMsg("");
     setSuccessMsg("");
     setShowModal(true);
@@ -288,6 +382,8 @@ export const GalleryManager = () => {
     setCustomPathInput("");
     setDescription(item.description || "");
     setEventDate(item.eventDate || new Date().toISOString().split("T")[0]);
+    setMapSearchQuery("");
+    setMapSearchResults([]);
     setErrorMsg("");
     setSuccessMsg("");
     setShowModal(true);
@@ -644,7 +740,7 @@ export const GalleryManager = () => {
         </div>
       )}
 
-      {/* Add / Edit Event Modal with Map Pin Picker, Cities & Event Types Manager */}
+      {/* Add / Edit Event Modal with Interactive Map Search & Auto City Detection */}
       {showModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl border-2 border-[#00b4b6] max-w-2xl w-full p-6 sm:p-8 space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
@@ -701,7 +797,7 @@ export const GalleryManager = () => {
                     required
                     value={cityName}
                     onChange={(e) => setCityName(e.target.value)}
-                    placeholder="напр. Созопол, София, Русе"
+                    placeholder="напр. Созопол, София, Русе, с. Лозен"
                     className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
                   />
                 </div>
@@ -788,19 +884,54 @@ export const GalleryManager = () => {
                 </div>
               </div>
 
-              {/* Interactive Map Pin Selector inside Modal */}
+              {/* Interactive Map Search & Pin Selector with Auto Geocoding */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs font-semibold text-[#182b2c]">
                   <span className="flex items-center space-x-1">
                     <Navigation className="w-4 h-4 text-[#00b4b6] animate-pulse" />
-                    <span>Кликнете директно върху картата за локация</span>
+                    <span>Търсене на град/село или кликнете върху картата:</span>
                   </span>
                   <span className="font-mono text-[11px] text-[#00b4b6]">
                     📍 {latitude}, {longitude}
                   </span>
                 </div>
 
-                <div className="relative w-full h-44 rounded-2xl overflow-hidden border-2 border-[#00b4b6]/30 shadow-inner">
+                {/* Map Search Input Bar */}
+                <div className="relative z-30">
+                  <div className="relative">
+                    <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      value={mapSearchQuery}
+                      onChange={(e) => handleMapSearch(e.target.value)}
+                      placeholder="Търси град или село (напр. Банско, Сандански, с. Лозен)..."
+                      className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-[#00b4b6]/40 text-xs text-[#182b2c] bg-white shadow-xs focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
+                    />
+                    {isSearchingMap && (
+                      <Loader2 className="w-4 h-4 text-[#00b4b6] animate-spin absolute right-3 top-1/2 -translate-y-1/2" />
+                    )}
+                  </div>
+
+                  {/* Search Autocomplete Suggestions Dropdown */}
+                  {mapSearchResults.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl border border-[#00b4b6]/30 shadow-xl overflow-hidden z-40 max-h-48 overflow-y-auto">
+                      {mapSearchResults.map((res, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => handleSelectSearchResult(res)}
+                          className="w-full text-left px-4 py-2.5 text-xs text-[#182b2c] hover:bg-[#00b4b6]/10 border-b border-gray-100 last:border-0 flex items-center space-x-2 transition-colors cursor-pointer"
+                        >
+                          <MapPin className="w-3.5 h-3.5 text-[#00b4b6] flex-shrink-0" />
+                          <span className="truncate">{res.display_name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Map Container */}
+                <div className="relative w-full h-48 rounded-2xl overflow-hidden border-2 border-[#00b4b6]/30 shadow-inner z-0">
                   <div ref={mapContainerRef} className="w-full h-full" />
                 </div>
               </div>
