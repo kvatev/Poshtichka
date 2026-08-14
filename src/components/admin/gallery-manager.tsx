@@ -96,6 +96,19 @@ export const GalleryManager = () => {
   const [showAddCityInput, setShowAddCityInput] = useState(false);
   const [newCityName, setNewCityName] = useState("");
 
+  // Event Types Dropdown Saved Options State
+  const [savedEventTypes, setSavedEventTypes] = useState<string[]>([
+    "сватбено тържество",
+    "корпоративно събитие",
+    "рожден ден",
+    "кръщение",
+    "моминско парти",
+    "фестивал",
+    "маркетинг активация",
+    "частно парти",
+    "бебешко парти",
+  ]);
+
   // Form State
   const [eventName, setEventName] = useState("");
   const [cityName, setCityName] = useState("Созопол");
@@ -107,6 +120,12 @@ export const GalleryManager = () => {
   const [customPathInput, setCustomPathInput] = useState("");
   const [description, setDescription] = useState("");
   const [eventDate, setEventDate] = useState("");
+
+  // Combined list of event types for dropdown
+  const allEventTypes = React.useMemo(() => {
+    const fromItems = items.map((i) => i.eventType).filter((t): t is string => Boolean(t));
+    return Array.from(new Set([...savedEventTypes, ...fromItems])).filter((t): t is string => Boolean(t));
+  }, [savedEventTypes, items]);
 
   // Map Container Ref for Modal
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
@@ -368,6 +387,11 @@ export const GalleryManager = () => {
     setSaving(true);
     setErrorMsg("");
     setSuccessMsg("");
+
+    const trimmedEventType = eventType.trim();
+    if (trimmedEventType && !savedEventTypes.includes(trimmedEventType)) {
+      setSavedEventTypes((prev) => [...prev, trimmedEventType]);
+    }
 
     const payload = {
       id: editingItem?.id,
@@ -684,15 +708,41 @@ export const GalleryManager = () => {
 
               {/* Event Type & Date */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-[#182b2c]">Вид на събитието</label>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-[#182b2c]">
+                    Вид на събитието (Падащо меню или нов вид)
+                  </label>
                   <input
                     type="text"
+                    list="event-type-options"
                     value={eventType}
                     onChange={(e) => setEventType(e.target.value)}
-                    placeholder="напр. сватбено тържество, кръщение"
+                    placeholder="Изберете от падащото меню или въведете нов..."
                     className="w-full px-4 py-2.5 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
                   />
+                  <datalist id="event-type-options">
+                    {allEventTypes.map((type, idx) => (
+                      <option key={idx} value={type} />
+                    ))}
+                  </datalist>
+
+                  {/* Quick select pills */}
+                  <div className="flex flex-wrap gap-1 pt-1">
+                    {allEventTypes.map((type) => (
+                      <button
+                        key={type}
+                        type="button"
+                        onClick={() => setEventType(type || "")}
+                        className={`text-[10px] px-2 py-0.5 rounded-lg border transition-all cursor-pointer ${
+                          eventType === type
+                            ? "bg-[#00b4b6] text-white font-bold border-[#00b4b6]"
+                            : "bg-gray-50 border-gray-200 text-[#182b2c]/80 hover:bg-[#00b4b6]/10"
+                        }`}
+                      >
+                        {type}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="space-y-1">
