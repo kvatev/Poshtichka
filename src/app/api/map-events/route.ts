@@ -1,4 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { EventLocation } from "@/types/map-event";
 
@@ -266,6 +267,10 @@ export async function POST(req: NextRequest) {
     }
 
     mockMapEvents = [newEvent, ...mockMapEvents];
+    try {
+      revalidatePath("/gallery");
+      revalidatePath("/");
+    } catch {}
     return NextResponse.json({ success: true, event: newEvent });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : "Грешка при създаване на събитие.";
@@ -353,6 +358,11 @@ export async function PUT(req: NextRequest) {
       return ev;
     });
 
+    try {
+      revalidatePath("/gallery");
+      revalidatePath("/");
+    } catch {}
+
     return NextResponse.json({ success: true, event: updatedEvent || mockMapEvents.find((e) => e.id === id) });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : "Грешка при редакция на събитие.";
@@ -380,6 +390,11 @@ export async function DELETE(req: NextRequest) {
     }
 
     mockMapEvents = mockMapEvents.filter((ev) => ev.id !== id);
+    try {
+      revalidatePath("/gallery");
+      revalidatePath("/");
+    } catch {}
+
     return NextResponse.json({ success: true, id });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : "Грешка при изтриване на локацията.";

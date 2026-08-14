@@ -10,7 +10,6 @@ import {
   CheckCircle2,
   Save,
   X,
-  Calendar as CalendarIcon,
   MapPin,
   Upload,
   AlertTriangle,
@@ -22,22 +21,28 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { EventLocation } from "@/types/map-event";
 
-// Preset Bulgarian cities with default coordinates
-const bgCitiesPresets = [
-  { name: "Созопол", lat: 42.4175, lng: 27.6958 },
-  { name: "Каварна", lat: 43.4342, lng: 28.3392 },
-  { name: "София", lat: 42.6977, lng: 23.3219 },
-  { name: "Червен", lat: 43.6212, lng: 25.9961 },
-  { name: "Перущица", lat: 42.0567, lng: 24.5458 },
-  { name: "Велико Търново", lat: 43.0757, lng: 25.6172 },
-  { name: "Бургас", lat: 42.5048, lng: 27.4626 },
-  { name: "Пловдив", lat: 42.1354, lng: 24.7453 },
-  { name: "Варна", lat: 43.2141, lng: 27.9147 },
+export interface CityPreset {
+  id: string;
+  name: string;
+  lat: number;
+  lng: number;
+}
+
+// Preset Bulgarian cities fallback
+const defaultBgCitiesPresets: CityPreset[] = [
+  { id: "c1", name: "Созопол", lat: 42.4175, lng: 27.6958 },
+  { id: "c2", name: "Каварна", lat: 43.4342, lng: 28.3392 },
+  { id: "c3", name: "София", lat: 42.6977, lng: 23.3219 },
+  { id: "c4", name: "Червен", lat: 43.6212, lng: 25.9961 },
+  { id: "c5", name: "Перущица", lat: 42.0567, lng: 24.5458 },
+  { id: "c6", name: "Велико Търново", lat: 43.0757, lng: 25.6172 },
+  { id: "c7", name: "Бургас", lat: 42.5048, lng: 27.4626 },
+  { id: "c8", name: "Пловдив", lat: 42.1354, lng: 24.7453 },
+  { id: "c9", name: "Варна", lat: 43.2141, lng: 27.9147 },
 ];
 
 /**
  * Client-side automatic image loader and WebP converter.
- * Converts PNG, JPG, or WEBP files to high-quality compressed WebP data URLs.
  */
 const processFileToWebp = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -79,12 +84,17 @@ const processFileToWebp = (file: File): Promise<string> => {
 
 export const GalleryManager = () => {
   const [items, setItems] = useState<EventLocation[]>([]);
+  const [cities, setCities] = useState<CityPreset[]>(defaultBgCitiesPresets);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState<EventLocation | null>(null);
   const [saving, setSaving] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+
+  // City Management State
+  const [showAddCityInput, setShowAddCityInput] = useState(false);
+  const [newCityName, setNewCityName] = useState("");
 
   // Form State
   const [eventName, setEventName] = useState("");
@@ -118,8 +128,20 @@ export const GalleryManager = () => {
       .finally(() => setLoading(false));
   };
 
+  const fetchCities = () => {
+    fetch("/api/cities")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && Array.isArray(data.cities) && data.cities.length > 0) {
+          setCities(data.cities);
+        }
+      })
+      .catch(() => {});
+  };
+
   useEffect(() => {
     fetchItems();
+    fetchCities();
   }, []);
 
   // Initialize modal map when modal opens
@@ -208,7 +230,7 @@ export const GalleryManager = () => {
     setEventType("сватбено тържество");
     setLatitude(42.4175);
     setLongitude(27.6958);
-    setGalleryImages([]); // Start clean with 0/4 images so user can upload theirs!
+    setGalleryImages([]);
     setCustomPathInput("");
     setDescription("");
     setEventDate(new Date().toISOString().split("T")[0]);
@@ -235,13 +257,54 @@ export const GalleryManager = () => {
     setShowModal(true);
   };
 
-  const handleSelectCityPreset = (city: typeof bgCitiesPresets[0]) => {
+  const handleSelectCityPreset = (city: CityPreset) => {
     setCityName(city.name);
     setLatitude(city.lat);
     setLongitude(city.lng);
   };
 
-  // Image Upload Handler with Automatic WebP Conversion & Max 4 Images limit
+  const handleAddCity = async () => {
+    if (!newCityName.trim()) return;
+    const name = newCityName.trim();
+
+    try {
+      const res = await fetch("/api/cities", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, lat: latitude, lng: longitude }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.cities) setCities(data.cities);
+        setCityName(name);
+        setNewCityName("");
+        setShowAddCityInput(false);
+      }
+    } catch {
+      alert("Грешка при добавяне на град.");
+    }
+  };
+
+  const handleDeleteCity = async (e: React.MouseEvent, city: CityPreset) => {
+    e.stopPropagation();
+    if (!confirm(`Сигурни ли сте, че искате да изтриете ${city.name} от списъка с градове?`)) return;
+
+    try {
+      const res = await fetch(`/api/cities?id=${city.id}&name=${encodeURIComponent(city.name)}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.cities) setCities(data.cities);
+      }
+    } catch {
+      alert("Грешка при изтриване на град.");
+    }
+  };
+
+  // Image Upload Handler
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -268,7 +331,7 @@ export const GalleryManager = () => {
     } catch {
       setErrorMsg("Възникна грешка при обработка на снимките.");
     } finally {
-      e.target.value = ""; // Reset input so same file can be re-selected if needed
+      e.target.value = "";
     }
   };
 
@@ -367,7 +430,7 @@ export const GalleryManager = () => {
             Управление на Галерията & Събитията ({items.length})
           </h2>
           <p className="text-xs text-[#182b2c]/70 mt-1">
-            Добавяйте събития с точна локация на картата и до 4 WebP снимки!
+            Добавяйте и редактирайте събития и градове с точна локация на картата!
           </p>
         </div>
 
@@ -458,7 +521,7 @@ export const GalleryManager = () => {
         </div>
       )}
 
-      {/* Add / Edit Event Modal with Map Pin Picker & Image Upload */}
+      {/* Add / Edit Event Modal with Map Pin Picker & Dynamic City Presets */}
       {showModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl border-2 border-[#00b4b6] max-w-2xl w-full p-6 sm:p-8 space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
@@ -515,7 +578,7 @@ export const GalleryManager = () => {
                     required
                     value={cityName}
                     onChange={(e) => setCityName(e.target.value)}
-                    placeholder="напр. Созопол, София, Каварна"
+                    placeholder="напр. Созопол, София, Русе"
                     className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
                   />
                 </div>
@@ -535,24 +598,70 @@ export const GalleryManager = () => {
                 </div>
               </div>
 
-              {/* City Presets */}
-              <div className="space-y-1">
-                <span className="text-[11px] font-semibold text-[#182b2c]/70">Бърз избор на град:</span>
-                <div className="flex flex-wrap gap-1.5">
-                  {bgCitiesPresets.map((c) => (
-                    <button
-                      key={c.name}
+              {/* Dynamic City Presets Manager (Add & Delete Cities) */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-semibold text-[#182b2c]/80">
+                    Бърз избор на град (Кликнете за избор, X за изтриване):
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddCityInput(!showAddCityInput)}
+                    className="text-[11px] font-bold text-[#00b4b6] hover:underline flex items-center space-x-1 cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Добави нов град</span>
+                  </button>
+                </div>
+
+                {/* Inline Add City Form */}
+                {showAddCityInput && (
+                  <div className="flex items-center space-x-2 p-2 rounded-2xl bg-[#00b4b6]/10 border border-[#00b4b6]/30">
+                    <input
+                      type="text"
+                      value={newCityName}
+                      onChange={(e) => setNewCityName(e.target.value)}
+                      placeholder="Име на новия град (напр. Русе)"
+                      className="w-full px-3 py-1.5 rounded-xl border border-[#00b4b6]/40 text-xs text-[#182b2c]"
+                    />
+                    <Button
                       type="button"
-                      onClick={() => handleSelectCityPreset(c)}
-                      className={`text-xs px-2.5 py-1 rounded-xl border transition-all cursor-pointer ${
-                        cityName === c.name
-                          ? "bg-[#00b4b6] text-white font-bold border-[#00b4b6]"
-                          : "bg-white border-gray-300 text-[#182b2c] hover:bg-[#00b4b6]/10"
-                      }`}
+                      onClick={handleAddCity}
+                      className="bg-[#00b4b6] text-white text-xs px-3 py-1.5 rounded-xl font-bold shadow-xs cursor-pointer flex-shrink-0"
                     >
-                      {c.name}
-                    </button>
-                  ))}
+                      Запази град
+                    </Button>
+                  </div>
+                )}
+
+                {/* City Pills List with Delete Button */}
+                <div className="flex flex-wrap gap-1.5">
+                  {cities.map((c) => {
+                    const isSelected = cityName === c.name;
+                    return (
+                      <div
+                        key={c.id || c.name}
+                        onClick={() => handleSelectCityPreset(c)}
+                        className={`group relative text-xs px-3 py-1.5 rounded-xl border transition-all cursor-pointer flex items-center space-x-1.5 ${
+                          isSelected
+                            ? "bg-[#00b4b6] text-white font-bold border-[#00b4b6] shadow-xs"
+                            : "bg-white border-gray-300 text-[#182b2c] hover:bg-[#00b4b6]/10"
+                        }`}
+                      >
+                        <span>{c.name}</span>
+                        <button
+                          type="button"
+                          onClick={(e) => handleDeleteCity(e, c)}
+                          className={`p-0.5 rounded-full hover:bg-red-500 hover:text-white transition-colors ${
+                            isSelected ? "text-white/80" : "text-gray-400 hover:text-white"
+                          }`}
+                          title={`Изтрий ${c.name} от списъка`}
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 

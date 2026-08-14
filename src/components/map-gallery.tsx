@@ -160,6 +160,9 @@ const DEFAULT_LOCATIONS: EventLocation[] = [
 export const MapGallery = () => {
   const [events, setEvents] = useState<EventLocation[]>(DEFAULT_LOCATIONS);
   const [selectedCity, setSelectedCity] = useState<string>("Созопол");
+  const [cityPresets, setCityPresets] = useState<string[]>([
+    "Созопол", "Каварна", "София", "Червен", "Перущица", "Велико Търново", "Бургас", "Пловдив", "Варна"
+  ]);
   const [activeModalEvent, setActiveModalEvent] = useState<EventLocation | null>(null);
   const [activeLightboxIndex, setActiveLightboxIndex] = useState<number>(0);
 
@@ -169,7 +172,7 @@ export const MapGallery = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const markersRef = useRef<any[]>([]);
 
-  // Fetch API locations
+  // Fetch API locations & cities
   useEffect(() => {
     fetch("/api/map-events")
       .then((res) => (res.ok ? res.json() : null))
@@ -179,9 +182,21 @@ export const MapGallery = () => {
         }
       })
       .catch(() => {});
+
+    fetch("/api/cities")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && Array.isArray(data.cities) && data.cities.length > 0) {
+          setCityPresets(data.cities.map((c: { name: string }) => c.name));
+        }
+      })
+      .catch(() => {});
   }, []);
 
-  const cityNamesList = ["Созопол", "Каварна", "София", "Червен", "Перущица", "Велико Търново"];
+  const cityNamesList = useMemo(() => {
+    const fromEvents = events.map((e) => e.cityName).filter(Boolean);
+    return Array.from(new Set([...cityPresets, ...fromEvents]));
+  }, [cityPresets, events]);
 
   // Active events for the selected city
   const selectedCityEvents = useMemo(() => {
