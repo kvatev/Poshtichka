@@ -304,133 +304,145 @@ export const TestimonialsManager = () => {
 
       {/* Add / Edit Testimonial Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl border-2 border-[#00b4b6] max-w-xl w-full p-6 sm:p-8 space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 font-sans">
+          <div className="bg-white rounded-3xl border-2 border-[#00b4b6] max-w-xl w-full flex flex-col max-h-[90vh] shadow-2xl relative overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Modal Fixed Header */}
+            <div className="px-6 py-4 border-b border-[#00b4b6]/20 flex items-center justify-between flex-shrink-0 bg-white z-10">
+              <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
+                {editingItem ? "Редактиране на отзив" : "Добавяне на нов отзив"}
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                className="p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 cursor-pointer transition-colors"
+                title="Затвори"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
-            <h3 className="font-salongbeach text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
-              {editingItem ? "Редактиране на отзив" : "Добавяне на нов отзив"}
-            </h3>
-
-            {errorMsg && (
-              <div className="p-4 rounded-2xl bg-red-50 text-red-800 border border-red-200 flex items-center space-x-2 text-sm font-semibold">
-                <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0" />
-                <span>{errorMsg}</span>
-              </div>
-            )}
-
-            <form onSubmit={handleSaveModal} className="space-y-4 font-sans text-left">
-              {/* Client / Couple Name */}
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-[#182b2c]">
-                  Име на клиента / Младоженците (главни букви) *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="напр. НИКОЛ и ДАНИЕЛ, МАЯ и НИКО"
-                  className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6] font-salongbeach uppercase tracking-wider font-bold"
-                />
-              </div>
-
-              {/* Event Type / Subtitle */}
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-[#182b2c]">
-                  Повод / Град / Описание на събитието
-                </label>
-                <input
-                  type="text"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  placeholder="напр. Сватбено тържество в Бургас, Корпоративно парти"
-                  className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
-                />
-              </div>
-
-              {/* Quote / Testimonial Text */}
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-[#182b2c]">
-                  Текст на отзива / Коментар *
-                </label>
-                <textarea
-                  rows={4}
-                  required
-                  value={quote}
-                  onChange={(e) => setQuote(e.target.value)}
-                  placeholder="Напишете отзива на клиентите тук..."
-                  className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6] resize-none italic"
-                />
-              </div>
-
-              {/* Rating */}
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-[#182b2c]">Оценка (звезди)</label>
-                <select
-                  value={rating}
-                  onChange={(e) => setRating(Number(e.target.value))}
-                  className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6] cursor-pointer"
-                >
-                  <option value={5}>5 Звезди (★★★★★)</option>
-                  <option value={4}>4 Звезди (★★★★☆)</option>
-                  <option value={3}>3 Звезди (★★★☆☆)</option>
-                </select>
-              </div>
-
-              {/* Photo Upload (Strict .webp) */}
-              <div className="space-y-2 pt-2 border-t border-gray-200">
-                <label className="text-xs font-semibold text-[#182b2c]">
-                  Снимка / Аватар от събитието (JPG, PNG или WEBP)
-                </label>
-
-                <div className="flex items-center space-x-4">
-                  {avatarUrl && (
-                    <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-[#00b4b6] flex-shrink-0">
-                      <Image src={avatarUrl} alt="Аватар" fill className="object-cover" unoptimized />
-                    </div>
-                  )}
-
-                  <label className="cursor-pointer border-2 border-dashed border-[#00b4b6]/50 bg-[#00b4b6]/5 hover:bg-[#00b4b6]/10 p-3 rounded-2xl flex flex-col items-center justify-center space-y-1 transition-colors text-center w-full">
-                    <Upload className="w-5 h-5 text-[#00b4b6]" />
-                    <span className="text-xs font-bold text-[#182b2c]">
-                      Прикачи снимка
-                    </span>
-                    <input
-                      type="file"
-                      accept="image/webp,image/jpeg,image/png,image/jpg,.webp,.jpg,.jpeg,.png"
-                      onChange={handleWebpUpload}
-                      className="hidden"
-                    />
-                  </label>
+            {/* Modal Scrollable Body */}
+            <div className="px-6 py-5 overflow-y-auto custom-modal-scroll flex-1 space-y-4">
+              {errorMsg && (
+                <div className="p-4 rounded-2xl bg-red-50 text-red-800 border border-red-200 flex items-center space-x-2 text-sm font-semibold">
+                  <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                  <span>{errorMsg}</span>
                 </div>
-              </div>
+              )}
 
-              {/* Actions */}
-              <div className="pt-3 flex justify-end space-x-3 border-t border-gray-100">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setShowModal(false)}
-                  className="rounded-full"
-                >
-                  Отказ
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={saving}
-                  className="bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-base font-bold uppercase tracking-wider px-6 py-2.5 rounded-full shadow-md cursor-pointer flex items-center space-x-2"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>{saving ? "Запазване..." : "Запази отзива"}</span>
-                </Button>
-              </div>
-            </form>
+              <form id="testimonial-form" onSubmit={handleSaveModal} className="space-y-4 font-sans text-left">
+                {/* Client / Couple Name */}
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-[#182b2c]">
+                    Име на клиента / Младоженците (главни букви) *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="напр. НИКОЛ и ДАНИЕЛ, МАЯ и НИКО"
+                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6] font-salongbeach uppercase tracking-wider font-bold"
+                  />
+                </div>
+
+                {/* Event Type / Subtitle */}
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-[#182b2c]">
+                    Повод / Град / Описание на събитието
+                  </label>
+                  <input
+                    type="text"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    placeholder="напр. Сватбено тържество в Созопол"
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
+                  />
+                </div>
+
+                {/* Rating (1-5 Stars) */}
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-[#182b2c]">Оценка</label>
+                  <div className="flex items-center space-x-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setRating(star)}
+                        className="p-1 text-amber-400 hover:scale-125 transition-transform cursor-pointer"
+                      >
+                        <Star
+                          className={`w-6 h-6 ${
+                            star <= rating ? "fill-amber-400 text-amber-400" : "text-gray-300"
+                          }`}
+                        />
+                      </button>
+                    ))}
+                    <span className="text-xs text-[#182b2c]/70 ml-2 font-bold">{rating} от 5 звезди</span>
+                  </div>
+                </div>
+
+                {/* Review Text */}
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-[#182b2c]">Текст на отзива *</label>
+                  <textarea
+                    rows={4}
+                    required
+                    value={quote}
+                    onChange={(e) => setQuote(e.target.value)}
+                    placeholder="Напишете отзива от клиента..."
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6] resize-none"
+                  />
+                </div>
+
+                {/* Photo Upload */}
+                <div className="space-y-2 pt-2 border-t border-gray-200">
+                  <label className="text-xs font-semibold text-[#182b2c]">
+                    Снимка / Аватар от събитието (JPG, PNG или WEBP)
+                  </label>
+
+                  <div className="flex items-center space-x-4">
+                    {avatarUrl && (
+                      <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-[#00b4b6] flex-shrink-0 bg-gray-100 shadow-inner">
+                        <Image src={avatarUrl} alt="Preview" fill className="object-cover" unoptimized />
+                      </div>
+                    )}
+
+                    <label className="cursor-pointer border-2 border-dashed border-[#00b4b6]/50 bg-[#00b4b6]/5 hover:bg-[#00b4b6]/10 p-3 rounded-2xl flex flex-col items-center justify-center space-y-1 transition-colors text-center w-full">
+                      <Upload className="w-5 h-5 text-[#00b4b6]" />
+                      <span className="text-xs font-bold text-[#182b2c]">Прикачи снимка</span>
+                      <input
+                        type="file"
+                        accept="image/webp,image/jpeg,image/png,image/jpg,.webp,.jpg,.jpeg,.png"
+                        onChange={handleWebpUpload}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            {/* Modal Fixed Footer */}
+            <div className="px-6 py-4 bg-[#f9f6f0]/80 border-t border-[#00b4b6]/20 flex justify-end space-x-3 flex-shrink-0">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowModal(false)}
+                className="rounded-full cursor-pointer px-5"
+              >
+                Отказ
+              </Button>
+              <Button
+                type="submit"
+                form="testimonial-form"
+                disabled={saving}
+                className="bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-base font-bold uppercase tracking-wider px-6 py-2.5 rounded-full shadow-md cursor-pointer flex items-center space-x-2"
+              >
+                <Save className="w-4 h-4" />
+                <span>{saving ? "Запазване..." : "Запази отзива"}</span>
+              </Button>
+            </div>
           </div>
         </div>
       )}

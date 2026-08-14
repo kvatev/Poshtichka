@@ -319,189 +319,197 @@ export const ServicesManager = () => {
 
       {/* Add / Edit Service Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl border-2 border-[#00b4b6] max-w-2xl w-full p-6 sm:p-8 space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 font-sans">
+          <div className="bg-white rounded-3xl border-2 border-[#00b4b6] max-w-2xl w-full flex flex-col max-h-[90vh] shadow-2xl relative overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Modal Fixed Header */}
+            <div className="px-6 py-4 border-b border-[#00b4b6]/20 flex items-center justify-between flex-shrink-0 bg-white z-10">
+              <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
+                {editingService ? "Редактиране на услуга" : "Добавяне на нова услуга"}
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                className="p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 cursor-pointer transition-colors"
+                title="Затвори"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
-            <h3 className="font-salongbeach text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
-              {editingService ? "Редактиране на услуга" : "Добавяне на нова услуга"}
-            </h3>
+            {/* Modal Scrollable Body */}
+            <div className="px-6 py-5 overflow-y-auto custom-modal-scroll flex-1 space-y-4">
+              {successMsg && (
+                <div className="p-4 rounded-2xl bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center space-x-2 text-sm font-semibold">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                  <span>{successMsg}</span>
+                </div>
+              )}
 
-            {successMsg && (
-              <div className="p-4 rounded-2xl bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center space-x-2 text-sm font-semibold">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                <span>{successMsg}</span>
-              </div>
-            )}
+              {errorMsg && (
+                <div className="p-4 rounded-2xl bg-red-50 text-red-800 border border-red-200 flex items-center space-x-2 text-sm font-semibold">
+                  <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                  <span>{errorMsg}</span>
+                </div>
+              )}
 
-            {errorMsg && (
-              <div className="p-4 rounded-2xl bg-red-50 text-red-800 border border-red-200 flex items-center space-x-2 text-sm font-semibold">
-                <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0" />
-                <span>{errorMsg}</span>
-              </div>
-            )}
-
-            <form onSubmit={handleSave} className="space-y-4 font-sans text-left">
-              {/* Title */}
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-[#182b2c]">
-                  Заглавие на услугата (главни букви) *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="напр. ВЕНДИНГ МАШИНА, ТАБЛО С МАРКИ"
-                  className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6] font-salongbeach uppercase tracking-wider"
-                />
-              </div>
-
-              {/* Subtitle */}
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-[#182b2c]">
-                  Подзаглавие / Подходящо за
-                </label>
-                <input
-                  type="text"
-                  value={subtitle}
-                  onChange={(e) => setSubtitle(e.target.value)}
-                  placeholder="подходящо за сватбено тържество, кръщение, юбилей, корпоративно събитие"
-                  className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
-                />
-              </div>
-
-              {/* Description */}
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-[#182b2c]">
-                  Описание на услугата
-                </label>
-                <textarea
-                  rows={3}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Подарете на гостите си момент на радост и изненада..."
-                  className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6] resize-none"
-                />
-              </div>
-
-              {/* Features List / Bullets */}
-              <div className="space-y-2 pt-2 border-t border-gray-200">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-semibold text-[#182b2c] flex items-center space-x-1">
-                    <ListPlus className="w-4 h-4 text-[#00b4b6]" />
-                    <span>Списък с включени предимства (бюлети със сини отметки)</span>
+              <form id="service-form" onSubmit={handleSave} className="space-y-4 font-sans text-left">
+                {/* Title */}
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-[#182b2c]">
+                    Заглавие на услугата (главни букви) *
                   </label>
-                  <button
-                    type="button"
-                    onClick={handleAddFeatureField}
-                    className="text-xs font-bold text-[#00b4b6] hover:underline flex items-center space-x-1 cursor-pointer"
-                  >
-                    <Plus className="w-3.5 h-3.5" />
-                    <span>Добави предимство</span>
-                  </button>
+                  <input
+                    type="text"
+                    required
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="напр. ВЕНДИНГ МАШИНА, ТАБЛО С МАРКИ"
+                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6] font-salongbeach uppercase tracking-wider"
+                  />
                 </div>
 
-                <div className="space-y-2">
-                  {features.map((feat, idx) => (
-                    <div key={idx} className="flex items-center space-x-2">
-                      <span className="w-6 h-6 rounded-full bg-[#00b4b6]/15 text-[#00b4b6] font-bold text-xs flex items-center justify-center flex-shrink-0">
-                        {idx + 1}
+                {/* Subtitle */}
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-[#182b2c]">
+                    Подзаглавие / Подходящо за
+                  </label>
+                  <input
+                    type="text"
+                    value={subtitle}
+                    onChange={(e) => setSubtitle(e.target.value)}
+                    placeholder="подходящо за сватбено тържество, кръщение, юбилей, корпоративно събитие"
+                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
+                  />
+                </div>
+
+                {/* Description */}
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-[#182b2c]">
+                    Описание на услугата
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Подарете на гостите си момент на радост и изненада..."
+                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6] resize-none"
+                  />
+                </div>
+
+                {/* Features List / Bullets */}
+                <div className="space-y-2 pt-2 border-t border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-[#182b2c] flex items-center space-x-1">
+                      <ListPlus className="w-4 h-4 text-[#00b4b6]" />
+                      <span>Списък с включени предимства (бюлети със сини отметки)</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleAddFeatureField}
+                      className="text-xs font-bold text-[#00b4b6] hover:underline flex items-center space-x-1 cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Добави предимство</span>
+                    </button>
+                  </div>
+
+                  <div className="space-y-2">
+                    {features.map((feat, idx) => (
+                      <div key={idx} className="flex items-center space-x-2">
+                        <span className="w-6 h-6 rounded-full bg-[#00b4b6]/15 text-[#00b4b6] font-bold text-xs flex items-center justify-center flex-shrink-0">
+                          {idx + 1}
+                        </span>
+                        <input
+                          type="text"
+                          value={feat}
+                          onChange={(e) => handleFeatureChange(idx, e.target.value)}
+                          placeholder="напр. НАЕМ НА ВЕНДИНГ МАШИНА ЗА КОНКРЕТНИ ЧАСОВЕ"
+                          className="w-full px-3.5 py-2.5 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
+                        />
+                        {features.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveFeatureField(idx)}
+                            className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                            title="Премахни"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Service Main Image (Strict .webp) */}
+                <div className="space-y-2 pt-2 border-t border-gray-200">
+                  <label className="text-xs font-semibold text-[#182b2c] flex items-center space-x-1">
+                    <ImageIcon className="w-4 h-4 text-[#00b4b6]" />
+                    <span>Снимка на услугата (Задължително .WEBP) *</span>
+                  </label>
+
+                  <div className="flex items-center space-x-4">
+                    {image && (
+                      <div className="relative w-24 h-24 rounded-2xl overflow-hidden border-2 border-[#00b4b6]/40 flex-shrink-0">
+                        <Image src={image} alt="Преглед" fill className="object-cover" unoptimized />
+                      </div>
+                    )}
+
+                    <label className="cursor-pointer border-2 border-dashed border-[#00b4b6]/50 bg-[#00b4b6]/5 hover:bg-[#00b4b6]/10 p-3.5 rounded-2xl flex flex-col items-center justify-center space-y-1 transition-colors text-center w-full">
+                      <Upload className="w-5 h-5 text-[#00b4b6]" />
+                      <span className="text-xs font-bold text-[#182b2c]">
+                        Прикачи снимка
                       </span>
                       <input
-                        type="text"
-                        value={feat}
-                        onChange={(e) => handleFeatureChange(idx, e.target.value)}
-                        placeholder="напр. НАЕМ НА ВЕНДИНГ МАШИНА ЗА КОНКРЕТНИ ЧАСОВЕ"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
+                        type="file"
+                        accept="image/webp,image/jpeg,image/png,image/jpg,.webp,.jpg,.jpeg,.png"
+                        onChange={handleWebpUpload}
+                        className="hidden"
                       />
-                      {features.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveFeatureField(idx)}
-                          className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
-                          title="Премахни"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                  ))}
+                    </label>
+                  </div>
                 </div>
-              </div>
 
-              {/* Service Main Image (Strict .webp) */}
-              <div className="space-y-2 pt-2 border-t border-gray-200">
-                <label className="text-xs font-semibold text-[#182b2c] flex items-center space-x-1">
-                  <ImageIcon className="w-4 h-4 text-[#00b4b6]" />
-                  <span>Снимка на услугата (Задължително .WEBP) *</span>
-                </label>
-
-                <div className="flex items-center space-x-4">
-                  {image && (
-                    <div className="relative w-24 h-24 rounded-2xl overflow-hidden border-2 border-[#00b4b6]/40 flex-shrink-0">
-                      <Image src={image} alt="Преглед" fill className="object-cover" unoptimized />
-                    </div>
-                  )}
-
-                  <label className="cursor-pointer border-2 border-dashed border-[#00b4b6]/50 bg-[#00b4b6]/5 hover:bg-[#00b4b6]/10 p-3.5 rounded-2xl flex flex-col items-center justify-center space-y-1 transition-colors text-center w-full">
-                    <Upload className="w-5 h-5 text-[#00b4b6]" />
-                    <span className="text-xs font-bold text-[#182b2c]">
-                      Прикачи снимка
-                    </span>
-                    <input
-                      type="file"
-                      accept="image/webp,image/jpeg,image/png,image/jpg,.webp,.jpg,.jpeg,.png"
-                      onChange={handleWebpUpload}
-                      className="hidden"
-                    />
+                {/* Badge Icon Asset */}
+                <div className="space-y-1 pt-2">
+                  <label className="text-xs font-semibold text-[#182b2c]">
+                    Декоративен елемент / Значка от папка Услуги
                   </label>
+                  <select
+                    value={badgeAsset}
+                    onChange={(e) => setBadgeAsset(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6] cursor-pointer"
+                  >
+                    {availableAssets.map((a) => (
+                      <option key={a.path} value={a.path}>
+                        {a.label}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-              </div>
+              </form>
+            </div>
 
-              {/* Badge Icon Asset */}
-              <div className="space-y-1 pt-2">
-                <label className="text-xs font-semibold text-[#182b2c]">
-                  Декоративен елемент / Значка от папка Услуги
-                </label>
-                <select
-                  value={badgeAsset}
-                  onChange={(e) => setBadgeAsset(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6] cursor-pointer"
-                >
-                  {availableAssets.map((a) => (
-                    <option key={a.path} value={a.path}>
-                      {a.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Actions */}
-              <div className="pt-3 flex justify-end space-x-3 border-t border-gray-100">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setShowModal(false)}
-                  className="rounded-full"
-                >
-                  Отказ
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={saving}
-                  className="bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-base font-bold uppercase tracking-wider px-6 py-2.5 rounded-full shadow-md cursor-pointer flex items-center space-x-2"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>{saving ? "Запазване..." : "Запази услугата"}</span>
-                </Button>
-              </div>
-            </form>
+            {/* Modal Fixed Footer */}
+            <div className="px-6 py-4 bg-[#f9f6f0]/80 border-t border-[#00b4b6]/20 flex justify-end space-x-3 flex-shrink-0">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowModal(false)}
+                className="rounded-full cursor-pointer px-5"
+              >
+                Отказ
+              </Button>
+              <Button
+                type="submit"
+                form="service-form"
+                disabled={saving}
+                className="bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-base font-bold uppercase tracking-wider px-6 py-2.5 rounded-full shadow-md cursor-pointer flex items-center space-x-2"
+              >
+                <Save className="w-4 h-4" />
+                <span>{saving ? "Запазване..." : "Запази услугата"}</span>
+              </Button>
+            </div>
           </div>
         </div>
       )}

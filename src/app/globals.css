@@ -69,22 +69,29 @@
   border: 1px solid rgba(0, 180, 182, 0.2);
 }
 
-/* Custom scrollbar */
+/* Sleek, contained custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f9f6f0;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #00b4b6;
-  border-radius: 4px;
+  background: rgba(0, 180, 182, 0.35);
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #008b8d;
+  background: rgba(0, 180, 182, 0.7);
+}
+
+/* Modal Inner Scrollbar */
+.custom-modal-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 180, 182, 0.4) transparent;
 }
 
 /* Hide Leaflet map attribution bar and controls */

@@ -799,36 +799,42 @@ export const GalleryManager = () => {
 
       {/* Add / Edit Event Modal with Interactive Map Search & Auto City Detection */}
       {showModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl border-2 border-[#00b4b6] max-w-2xl w-full p-6 sm:p-8 space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 font-sans">
+          <div className="bg-white rounded-3xl border-2 border-[#00b4b6] max-w-2xl w-full flex flex-col max-h-[90vh] shadow-2xl relative overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Modal Fixed Header */}
+            <div className="px-6 py-4 border-b border-[#00b4b6]/20 flex items-center justify-between flex-shrink-0 bg-white z-10">
+              <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
+                {editingItem ? "Редактиране на събитие" : "Добавяне на ново събитие"}
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                className="p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 cursor-pointer transition-colors"
+                title="Затвори"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
-            <h3 className="font-salongbeach text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
-              {editingItem ? "Редактиране на събитие" : "Добавяне на ново събитие"}
-            </h3>
+            {/* Modal Scrollable Body */}
+            <div className="px-6 py-5 overflow-y-auto custom-modal-scroll flex-1 space-y-4">
+              {successMsg && (
+                <div className="p-4 rounded-2xl bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center space-x-2 text-sm font-semibold">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                  <span>{successMsg}</span>
+                </div>
+              )}
 
-            {successMsg && (
-              <div className="p-4 rounded-2xl bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center space-x-2 text-sm font-semibold">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-                <span>{successMsg}</span>
-              </div>
-            )}
+              {errorMsg && (
+                <div className="p-4 rounded-2xl bg-red-50 text-red-800 border border-red-200 flex items-center space-x-2 text-sm font-semibold">
+                  <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                  <span>{errorMsg}</span>
+                </div>
+              )}
 
-            {errorMsg && (
-              <div className="p-4 rounded-2xl bg-red-50 text-red-800 border border-red-200 flex items-center space-x-2 text-sm font-semibold">
-                <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0" />
-                <span>{errorMsg}</span>
-              </div>
-            )}
-
-            <form onSubmit={handleSave} className="space-y-4 font-sans text-left">
-              {/* Event Name / Title */}
-              <div className="space-y-1">
+              <form id="event-modal-form" onSubmit={handleSave} className="space-y-4 font-sans text-left">
+                {/* Event Name / Title */}
+                <div className="space-y-1">
                 <label className="text-xs font-semibold text-[#182b2c]">
                   Име на събитието / Заглавие *
                 </label>
@@ -1227,30 +1233,32 @@ export const GalleryManager = () => {
                   className="w-full px-4 py-2.5 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6] resize-none"
                 />
               </div>
-
-              {/* Actions */}
-              <div className="pt-3 flex justify-end space-x-3 border-t border-gray-100">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setShowModal(false)}
-                  className="rounded-full"
-                >
-                  Отказ
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={saving}
-                  className="bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-base font-bold uppercase tracking-wider px-6 py-2.5 rounded-full shadow-md cursor-pointer flex items-center space-x-2"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>{saving ? "Запазване..." : "Запази събитието"}</span>
-                </Button>
-              </div>
             </form>
           </div>
+
+          {/* Modal Fixed Footer */}
+          <div className="px-6 py-4 bg-[#f9f6f0]/80 border-t border-[#00b4b6]/20 flex justify-end space-x-3 flex-shrink-0">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowModal(false)}
+              className="rounded-full cursor-pointer px-5"
+            >
+              Отказ
+            </Button>
+            <Button
+              type="submit"
+              form="event-modal-form"
+              disabled={saving}
+              className="bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-base font-bold uppercase tracking-wider px-6 py-2.5 rounded-full shadow-md cursor-pointer flex items-center space-x-2"
+            >
+              <Save className="w-4 h-4" />
+              <span>{saving ? "Запазване..." : "Запази събитието"}</span>
+            </Button>
+          </div>
         </div>
-      )}
+      </div>
+    )}
     </div>
   );
 };
