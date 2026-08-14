@@ -353,7 +353,7 @@ export const MapGallery = () => {
       <section className="w-full bg-[#00b4b6] py-12 sm:py-16 px-4 sm:px-8">
         <div className="max-w-6xl mx-auto">
           {selectedCityEvents.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 justify-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 justify-items-center">
               {selectedCityEvents.map((ev) => (
                 <div
                   key={ev.id}
@@ -361,9 +361,21 @@ export const MapGallery = () => {
                     setActiveModalEvent(ev);
                     setActiveLightboxIndex(0);
                   }}
-                  className="bg-[#f9f6f0] rounded-[32px] p-3 shadow-xl border-2 border-white/80 text-center flex flex-col justify-between space-y-3 hover:scale-[1.02] transition-all duration-300 cursor-pointer"
+                  className="relative group w-full max-w-sm flex flex-col justify-between p-4 sm:p-5 hover:scale-[1.02] transition-all duration-300 cursor-pointer text-center min-h-[380px] sm:min-h-[420px]"
                 >
-                  <div className="relative w-full h-64 sm:h-72 rounded-[24px] overflow-hidden">
+                  {/* Frame Graphic Overlay Asset 84@2x.png */}
+                  <div className="absolute inset-0 w-full h-full pointer-events-none z-10">
+                    <Image
+                      src={encodeURI("/media/Галерия/Asset 84@2x.png")}
+                      alt="Рамка"
+                      fill
+                      className="object-fill drop-shadow-md"
+                      unoptimized
+                    />
+                  </div>
+
+                  {/* Photo */}
+                  <div className="relative w-full h-60 sm:h-64 rounded-[24px] overflow-hidden z-0">
                     <Image
                       src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
                       alt={ev.eventName || ev.cityName}
@@ -373,11 +385,12 @@ export const MapGallery = () => {
                     />
                   </div>
 
-                  <div className="space-y-1 pb-1">
+                  {/* Text Labels */}
+                  <div className="space-y-0.5 py-2 z-20">
                     <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
                       {ev.eventName || `Пощичка в ${ev.cityName}`}
                     </h3>
-                    <p className="font-sans text-xs sm:text-sm text-[#182b2c]/80">
+                    <p className="font-sans text-xs sm:text-sm text-[#182b2c]/80 line-clamp-1">
                       {ev.venueName || `Комплекс в ${ev.cityName}`}
                     </p>
                     <p className="font-sans text-[11px] text-[#00b4b6] font-medium">
@@ -415,7 +428,7 @@ export const MapGallery = () => {
           </h2>
         </div>
 
-        {/* 3-Column Grid matching Screenshot 1 layout */}
+        {/* 3-Column Grid with Asset 84@2x.png frames */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 justify-items-center">
           {events.map((ev) => (
             <div
@@ -424,9 +437,21 @@ export const MapGallery = () => {
                 setActiveModalEvent(ev);
                 setActiveLightboxIndex(0);
               }}
-              className="bg-[#f9f6f0] rounded-[32px] p-3 shadow-md border-2 border-[#182b2c]/15 text-center flex flex-col justify-between space-y-3 w-full max-w-sm hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer"
+              className="relative group w-full max-w-sm flex flex-col justify-between p-4 sm:p-5 hover:scale-[1.02] transition-all duration-300 cursor-pointer text-center min-h-[380px] sm:min-h-[420px]"
             >
-              <div className="relative w-full h-64 sm:h-72 rounded-[24px] overflow-hidden">
+              {/* Frame Graphic Overlay Asset 84@2x.png */}
+              <div className="absolute inset-0 w-full h-full pointer-events-none z-10">
+                <Image
+                  src={encodeURI("/media/Галерия/Asset 84@2x.png")}
+                  alt="Рамка"
+                  fill
+                  className="object-fill drop-shadow-md"
+                  unoptimized
+                />
+              </div>
+
+              {/* Photo */}
+              <div className="relative w-full h-60 sm:h-64 rounded-[24px] overflow-hidden z-0">
                 <Image
                   src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
                   alt={ev.eventName || ev.cityName}
@@ -436,11 +461,12 @@ export const MapGallery = () => {
                 />
               </div>
 
-              <div className="space-y-1 pb-1">
+              {/* Text Labels */}
+              <div className="space-y-0.5 py-2 z-20">
                 <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
                   {ev.eventName || `Пощичка в ${ev.cityName}`}
                 </h3>
-                <p className="font-sans text-xs sm:text-sm text-[#182b2c]/80">
+                <p className="font-sans text-xs sm:text-sm text-[#182b2c]/80 line-clamp-1">
                   {ev.venueName || `Събитие в ${ev.cityName}`}
                 </p>
                 <p className="font-sans text-[11px] text-[#00b4b6] font-medium">
