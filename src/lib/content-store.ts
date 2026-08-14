@@ -87,6 +87,7 @@ export interface TestimonialItem {
   quote: string;
   role?: string;
   rating?: number;
+  image?: string;
 }
 
 export const defaultTestimonials: TestimonialItem[] = [
