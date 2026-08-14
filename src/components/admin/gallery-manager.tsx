@@ -16,6 +16,7 @@ import {
   Building,
   Navigation,
   Link as LinkIcon,
+  Check,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -96,7 +97,7 @@ export const GalleryManager = () => {
   const [showAddCityInput, setShowAddCityInput] = useState(false);
   const [newCityName, setNewCityName] = useState("");
 
-  // Event Types Dropdown Saved Options State
+  // Event Types Management State
   const [savedEventTypes, setSavedEventTypes] = useState<string[]>([
     "сватбено тържество",
     "корпоративно събитие",
@@ -108,6 +109,10 @@ export const GalleryManager = () => {
     "частно парти",
     "бебешко парти",
   ]);
+  const [showAddTypeInput, setShowAddTypeInput] = useState(false);
+  const [newTypeName, setNewTypeName] = useState("");
+  const [editingTypeOldName, setEditingTypeOldName] = useState<string | null>(null);
+  const [editingTypeNewName, setEditingTypeNewName] = useState("");
 
   // Form State
   const [eventName, setEventName] = useState("");
@@ -158,9 +163,21 @@ export const GalleryManager = () => {
       .catch(() => {});
   };
 
+  const fetchEventTypes = () => {
+    fetch("/api/event-types")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && Array.isArray(data.types) && data.types.length > 0) {
+          setSavedEventTypes(data.types);
+        }
+      })
+      .catch(() => {});
+  };
+
   useEffect(() => {
     fetchItems();
     fetchCities();
+    fetchEventTypes();
   }, []);
 
   // Initialize modal map when modal opens
@@ -323,6 +340,79 @@ export const GalleryManager = () => {
     }
   };
 
+  // Event Type Management Functions
+  const handleAddEventType = async () => {
+    if (!newTypeName.trim()) return;
+    const name = newTypeName.trim();
+
+    try {
+      const res = await fetch("/api/event-types", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.types) setSavedEventTypes(data.types);
+        setEventType(name);
+        setNewTypeName("");
+        setShowAddTypeInput(false);
+      }
+    } catch {
+      alert("Грешка при добавяне на нов вид събитие.");
+    }
+  };
+
+  const handleStartEditType = (e: React.MouseEvent, type: string) => {
+    e.stopPropagation();
+    setEditingTypeOldName(type);
+    setEditingTypeNewName(type);
+  };
+
+  const handleSaveEditType = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!editingTypeOldName || !editingTypeNewName.trim()) return;
+    const newName = editingTypeNewName.trim();
+
+    try {
+      const res = await fetch("/api/event-types", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ oldName: editingTypeOldName, newName }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.types) setSavedEventTypes(data.types);
+        if (eventType === editingTypeOldName) setEventType(newName);
+        setEditingTypeOldName(null);
+        setEditingTypeNewName("");
+      }
+    } catch {
+      alert("Грешка при редакция на вида събитие.");
+    }
+  };
+
+  const handleDeleteEventType = async (e: React.MouseEvent, type: string) => {
+    e.stopPropagation();
+    if (!confirm(`Сигурни ли сте, че искате да изтриете вида събитие "${type}"?`)) return;
+
+    try {
+      const res = await fetch(`/api/event-types?name=${encodeURIComponent(type)}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.types) setSavedEventTypes(data.types);
+        if (eventType === type) setEventType("");
+      }
+    } catch {
+      alert("Грешка при изтриване на вида събитие.");
+    }
+  };
+
   // Image Upload Handler
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -390,7 +480,16 @@ export const GalleryManager = () => {
 
     const trimmedEventType = eventType.trim();
     if (trimmedEventType && !savedEventTypes.includes(trimmedEventType)) {
-      setSavedEventTypes((prev) => [...prev, trimmedEventType]);
+      fetch("/api/event-types", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: trimmedEventType }),
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data && data.types) setSavedEventTypes(data.types);
+        })
+        .catch(() => {});
     }
 
     const payload = {
@@ -398,7 +497,7 @@ export const GalleryManager = () => {
       eventName: eventName.trim(),
       cityName: cityName.trim(),
       venueName: venueName.trim(),
-      eventType: eventType.trim(),
+      eventType: trimmedEventType,
       latitude,
       longitude,
       coverImage: galleryImages[0] || "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
@@ -454,7 +553,7 @@ export const GalleryManager = () => {
             Управление на Галерията & Събитията ({items.length})
           </h2>
           <p className="text-xs text-[#182b2c]/70 mt-1">
-            Добавяйте и редактирайте събития и градове с точна локация на картата!
+            Добавяйте и редактирайте събития, градове и видове събития с точна локация на картата!
           </p>
         </div>
 
@@ -545,7 +644,7 @@ export const GalleryManager = () => {
         </div>
       )}
 
-      {/* Add / Edit Event Modal with Map Pin Picker & Dynamic City Presets */}
+      {/* Add / Edit Event Modal with Map Pin Picker, Cities & Event Types Manager */}
       {showModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl border-2 border-[#00b4b6] max-w-2xl w-full p-6 sm:p-8 space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
@@ -708,10 +807,42 @@ export const GalleryManager = () => {
 
               {/* Event Type & Date */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#182b2c]">
-                    Вид на събитието (Падащо меню или нов вид)
-                  </label>
+                {/* Event Type with Add, Edit, Delete Controls */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-[#182b2c]">
+                      Вид на събитието (Падащо меню или нов)
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setShowAddTypeInput(!showAddTypeInput)}
+                      className="text-[11px] font-bold text-[#00b4b6] hover:underline flex items-center space-x-1 cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Добави нов вид</span>
+                    </button>
+                  </div>
+
+                  {/* Inline Add Event Type Form */}
+                  {showAddTypeInput && (
+                    <div className="flex items-center space-x-2 p-2 rounded-2xl bg-[#00b4b6]/10 border border-[#00b4b6]/30">
+                      <input
+                        type="text"
+                        value={newTypeName}
+                        onChange={(e) => setNewTypeName(e.target.value)}
+                        placeholder="Име на нов вид събитие (напр. Абитуриентски бал)"
+                        className="w-full px-3 py-1.5 rounded-xl border border-[#00b4b6]/40 text-xs text-[#182b2c]"
+                      />
+                      <Button
+                        type="button"
+                        onClick={handleAddEventType}
+                        className="bg-[#00b4b6] text-white text-xs px-3 py-1.5 rounded-xl font-bold shadow-xs cursor-pointer flex-shrink-0"
+                      >
+                        Запази
+                      </Button>
+                    </div>
+                  )}
+
                   <input
                     type="text"
                     list="event-type-options"
@@ -726,22 +857,79 @@ export const GalleryManager = () => {
                     ))}
                   </datalist>
 
-                  {/* Quick select pills */}
-                  <div className="flex flex-wrap gap-1 pt-1">
-                    {allEventTypes.map((type) => (
-                      <button
-                        key={type}
-                        type="button"
-                        onClick={() => setEventType(type || "")}
-                        className={`text-[10px] px-2 py-0.5 rounded-lg border transition-all cursor-pointer ${
-                          eventType === type
-                            ? "bg-[#00b4b6] text-white font-bold border-[#00b4b6]"
-                            : "bg-gray-50 border-gray-200 text-[#182b2c]/80 hover:bg-[#00b4b6]/10"
-                        }`}
-                      >
-                        {type}
-                      </button>
-                    ))}
+                  {/* Interactive Editable Event Type Pills (Click to Select, Edit ✏️, Delete ❌) */}
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {allEventTypes.map((type) => {
+                      const isSelected = eventType === type;
+                      const isEditing = editingTypeOldName === type;
+
+                      if (isEditing) {
+                        return (
+                          <div key={type} className="flex items-center space-x-1 bg-amber-50 p-1 rounded-xl border border-amber-300">
+                            <input
+                              type="text"
+                              value={editingTypeNewName}
+                              onChange={(e) => setEditingTypeNewName(e.target.value)}
+                              className="px-2 py-0.5 text-xs rounded-lg border border-amber-400 focus:outline-none"
+                              autoFocus
+                            />
+                            <button
+                              type="button"
+                              onClick={handleSaveEditType}
+                              className="p-1 rounded-lg bg-emerald-500 text-white hover:bg-emerald-600 cursor-pointer"
+                              title="Запази редакцията"
+                            >
+                              <Check className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setEditingTypeOldName(null)}
+                              className="p-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 cursor-pointer"
+                              title="Отказ"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div
+                          key={type}
+                          onClick={() => setEventType(type)}
+                          className={`group text-xs px-2.5 py-1 rounded-xl border transition-all cursor-pointer flex items-center space-x-1.5 ${
+                            isSelected
+                              ? "bg-[#00b4b6] text-white font-bold border-[#00b4b6] shadow-xs"
+                              : "bg-white border-gray-300 text-[#182b2c] hover:bg-[#00b4b6]/10"
+                          }`}
+                        >
+                          <span>{type}</span>
+
+                          <div className="flex items-center space-x-0.5">
+                            <button
+                              type="button"
+                              onClick={(e) => handleStartEditType(e, type)}
+                              className={`p-0.5 rounded-full hover:bg-amber-400 hover:text-white transition-colors ${
+                                isSelected ? "text-white/80" : "text-gray-400 hover:text-white"
+                              }`}
+                              title={`Редактирай "${type}"`}
+                            >
+                              <Edit2 className="w-3 h-3" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(e) => handleDeleteEventType(e, type)}
+                              className={`p-0.5 rounded-full hover:bg-red-500 hover:text-white transition-colors ${
+                                isSelected ? "text-white/80" : "text-gray-400 hover:text-white"
+                              }`}
+                              title={`Изтрий "${type}"`}
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
 
