@@ -574,6 +574,20 @@ export const GalleryManager = () => {
     setErrorMsg("");
     setSuccessMsg("");
 
+    const trimmedCity = cityName.trim();
+    if (trimmedCity && !cities.some((c) => c.name.toLowerCase() === trimmedCity.toLowerCase())) {
+      fetch("/api/cities", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: trimmedCity, lat: latitude, lng: longitude }),
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data && data.cities) setCities(data.cities);
+        })
+        .catch(() => {});
+    }
+
     const trimmedEventType = eventType.trim();
     if (trimmedEventType && !savedEventTypes.includes(trimmedEventType)) {
       fetch("/api/event-types", {

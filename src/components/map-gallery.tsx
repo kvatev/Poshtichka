@@ -205,7 +205,7 @@ export const MapGallery = () => {
     );
   }, [events, selectedCity]);
 
-  // Leaflet Map Initialization with Asset 82@2x.png pins
+  // Leaflet Map Initialization with Asset 82@2x.png pins (ScrollWheelZoom Enabled + Dynamic Events Markers)
   useEffect(() => {
     let isMounted = true;
 
@@ -222,7 +222,7 @@ export const MapGallery = () => {
 
       if (!mapInstanceRef.current) {
         const map = L.map(mapContainerRef.current, {
-          scrollWheelZoom: false,
+          scrollWheelZoom: true,
           zoomControl: true,
           attributionControl: false,
         }).setView([42.75, 25.5], 7);
@@ -244,22 +244,19 @@ export const MapGallery = () => {
         popupAnchor: [0, -44],
       });
 
-      const cityCoordsMap: Record<string, [number, number]> = {
-        "Созопол": [42.4175, 27.6958],
-        "Каварна": [43.4342, 28.3392],
-        "София": [42.6977, 23.3219],
-        "Червен": [43.6212, 25.9961],
-        "Перущица": [42.0567, 24.5458],
-        "Велико Търново": [43.0757, 25.6172],
-      };
+      // Render markers for all dynamic event locations
+      events.forEach((ev) => {
+        if (!ev.latitude || !ev.longitude) return;
 
-      Object.entries(cityCoordsMap).forEach(([cityName, coords]) => {
+        const coords: [number, number] = [ev.latitude, ev.longitude];
+        const label = ev.eventName ? `<b>${ev.eventName}</b><br/><span style="font-size:11px">${ev.cityName}</span>` : `<b>${ev.cityName}</b>`;
+
         const marker = L.marker(coords, { icon: customBoothIcon })
           .addTo(mapInstanceRef.current)
-          .bindTooltip(`<b>${cityName}</b>`, { direction: "top", offset: [0, -10] });
+          .bindTooltip(label, { direction: "top", offset: [0, -10] });
 
         marker.on("click", () => {
-          setSelectedCity(cityName);
+          setSelectedCity(ev.cityName);
           if (mapInstanceRef.current) {
             mapInstanceRef.current.panTo(coords);
           }
@@ -272,24 +269,18 @@ export const MapGallery = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [events]);
 
   // Center map on selected city
   useEffect(() => {
-    if (!mapInstanceRef.current) return;
-    const cityCoordsMap: Record<string, [number, number]> = {
-      "Созопол": [42.4175, 27.6958],
-      "Каварна": [43.4342, 28.3392],
-      "София": [42.6977, 23.3219],
-      "Червен": [43.6212, 25.9961],
-      "Перущица": [42.0567, 24.5458],
-      "Велико Търново": [43.0757, 25.6172],
-    };
-    const coords = cityCoordsMap[selectedCity];
-    if (coords) {
-      mapInstanceRef.current.panTo(coords);
+    if (!mapInstanceRef.current || !selectedCity) return;
+    const match = events.find(
+      (e) => e.cityName.toLowerCase().trim() === selectedCity.toLowerCase().trim()
+    );
+    if (match && match.latitude && match.longitude) {
+      mapInstanceRef.current.panTo([match.latitude, match.longitude]);
     }
-  }, [selectedCity]);
+  }, [selectedCity, events]);
 
   return (
     <div className="space-y-12 sm:space-y-16 py-6 font-sans select-none bg-[#f9f6f0]">
