@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 export const WhatIsPoshtichka = () => {
   return (
-    <section className="py-12 sm:py-20 bg-brand-cream relative overflow-hidden flex justify-center items-center">
+    <section className="pt-2 sm:pt-4 pb-8 sm:pb-12 bg-brand-cream relative overflow-hidden flex justify-center items-center">
       <div className="w-full max-w-7xl mx-auto px-2 sm:px-6 flex flex-col items-center justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
@@ -29,5 +29,3 @@ export const WhatIsPoshtichka = () => {
     </section>
   );
 };
-
-

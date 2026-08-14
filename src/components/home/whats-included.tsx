@@ -29,23 +29,23 @@ const includedItems = [
 
 export const WhatsIncluded = () => {
   return (
-    <section className="w-full bg-[#00b4b6] text-white py-16 sm:py-24 md:py-28 lg:py-32 xl:py-36 px-4 sm:px-8 md:px-10 lg:px-12 overflow-hidden select-none border-t border-white/20">
-      <div className="max-w-[1600px] mx-auto space-y-12 sm:space-y-16 lg:space-y-24">
+    <section className="w-full bg-[#00b4b6] text-white py-8 sm:py-12 md:py-14 lg:py-16 px-4 sm:px-8 md:px-10 lg:px-12 overflow-hidden select-none border-t border-white/20">
+      <div className="max-w-[1600px] mx-auto space-y-6 sm:space-y-8 md:space-y-10">
         {/* Title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center space-y-3"
+          className="text-center space-y-2"
         >
-          <h2 className="font-salongbeach text-3xl md:text-5xl font-bold uppercase tracking-wider text-white text-center leading-tight">
+          <h2 className="font-salongbeach text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-white text-center leading-tight">
             КАКВО Е ВКЛЮЧЕНО В УСЛУГАТА?
           </h2>
         </motion.div>
 
-        {/* 5-Column Responsive Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 sm:gap-10 md:gap-6 lg:gap-10 xl:gap-12 items-center justify-items-center">
+        {/* 5-Column Compact Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6 sm:gap-8 md:gap-4 lg:gap-6 items-center justify-items-center">
           {includedItems.map((item, idx) => (
             <motion.div
               key={idx}
@@ -55,13 +55,13 @@ export const WhatsIncluded = () => {
               transition={{ duration: 0.5, delay: idx * 0.1 }}
               className="flex flex-col items-center text-center group w-full"
             >
-              {/* Scaled Image Container for Legibility */}
-              <div className="relative w-56 sm:w-64 md:w-48 lg:w-64 xl:w-72 aspect-square flex items-center justify-center p-2 mx-auto">
+              {/* Compact Image Container */}
+              <div className="relative w-44 sm:w-56 md:w-44 lg:w-56 xl:w-60 aspect-square flex items-center justify-center p-2 mx-auto">
                 <Image
                   src={item.icon}
                   alt={item.alt}
-                  width={350}
-                  height={350}
+                  width={320}
+                  height={320}
                   className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                 />
               </div>

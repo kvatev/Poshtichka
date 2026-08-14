@@ -47,7 +47,7 @@ export const CalculatorWidget = () => {
   const totalPrice = Math.round(basePrice + travelCost + initialsCost);
 
   return (
-    <section className="py-16 sm:py-24 bg-brand-cream relative select-none">
+    <section className="pt-3 sm:pt-5 pb-12 sm:pb-16 bg-brand-cream relative select-none">
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         {/* Outer Bordered Card */}
         <motion.div
@@ -61,7 +61,7 @@ export const CalculatorWidget = () => {
           <div className="p-8 sm:p-12 space-y-8 text-center">
             {/* Title & Subtitle */}
             <div className="space-y-2">
-              <h2 className="font-salongbeach text-3xl md:text-5xl font-bold uppercase tracking-wider text-[#2d3a37] text-center leading-tight">
+              <h2 className="font-salongbeach text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-[#2d3a37] text-center leading-tight">
                 КАЛКУЛАТОР
               </h2>
               <p className="font-sans text-base sm:text-lg text-[#2d3a37]/80 italic">

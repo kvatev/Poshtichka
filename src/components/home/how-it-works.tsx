@@ -24,17 +24,17 @@ const steps = [
 
 export const HowItWorks = () => {
   return (
-    <section className="py-16 sm:py-24 bg-brand-cream relative select-none">
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-12">
+    <section className="pt-10 sm:pt-14 pb-3 sm:pb-5 bg-brand-cream relative select-none">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-8 sm:space-y-10">
         {/* Section Heading */}
         <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <h2 className="font-salongbeach text-3xl md:text-5xl font-bold uppercase tracking-wider text-[#00b4b6] text-center leading-tight">
+          <h2 className="font-salongbeach text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-[#00b4b6] text-center leading-tight">
             КАК РАБОТИ?
           </h2>
         </div>
 
-        {/* 3 Step Cards - 100% Identical Uniform Sizing & Rounded Corners */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 items-stretch justify-items-center w-full">
+        {/* 3 Step Cards - 100% Identical Uniform Sizing Without Hover Effects */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 items-start justify-items-center w-full">
           {steps.map((step, idx) => (
             <motion.div
               key={step.id}
@@ -42,15 +42,16 @@ export const HowItWorks = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: idx * 0.15 }}
-              className="group relative w-full h-full flex flex-col justify-center items-center"
+              className="relative w-full flex flex-col justify-center items-center"
             >
-              {/* Uniform Rounded Image Container */}
-              <div className="relative w-full h-[420px] sm:h-[480px] md:h-[500px] lg:h-[560px] aspect-[4/5] overflow-hidden rounded-[2rem] p-0 m-0 shadow-sm hover:shadow-md transition-shadow duration-300">
+              {/* Natural Uniform Image Container */}
+              <div className="relative w-full flex items-center justify-center">
                 <Image
                   src={step.image}
                   alt={step.title}
-                  fill
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 p-0 m-0 border-0"
+                  width={1112}
+                  height={1426}
+                  className="w-full h-auto object-contain select-none"
                   unoptimized
                 />
               </div>

@@ -21,7 +21,7 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 items-start">
           {/* Column 1: Quick Links */}
           <div className="space-y-4 text-center md:text-left">
-            <h3 className="font-stampatello text-2xl font-bold uppercase tracking-wider text-white border-b border-white/30 pb-2 inline-block md:block">
+            <h3 className="font-salongbeach text-2xl sm:text-3xl font-bold uppercase tracking-wider text-white border-b border-white/30 pb-2 inline-block md:block">
               БЪРЗИ ВРЪЗКИ
             </h3>
             <ul className="space-y-2.5 pt-2">
@@ -40,7 +40,7 @@ export const Footer = () => {
 
           {/* Column 2: About Poshtichka & Socials */}
           <div className="space-y-5 text-center md:text-left">
-            <h3 className="font-stampatello text-2xl font-bold uppercase tracking-wider text-white border-b border-white/30 pb-2 inline-block md:block">
+            <h3 className="font-salongbeach text-2xl sm:text-3xl font-bold uppercase tracking-wider text-white border-b border-white/30 pb-2 inline-block md:block">
               ЗА ПОЩИЧКА
             </h3>
             <p className="font-stampatello text-base sm:text-lg text-white/95 leading-relaxed font-light pt-2">

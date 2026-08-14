@@ -29,10 +29,9 @@ const features = [
 
 export const FeaturesSection = () => {
   return (
-    <section className="py-12 sm:py-16 bg-brand-cream relative">
+    <section className="pt-8 sm:pt-12 pb-2 sm:pb-4 bg-brand-cream relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
           {features.map((feature, idx) => (
             <motion.div
               key={feature.id}
@@ -42,7 +41,7 @@ export const FeaturesSection = () => {
               transition={{ duration: 0.5, delay: idx * 0.1 }}
               className="flex flex-col items-center group cursor-pointer"
             >
-              <div className="relative w-full aspect-square sm:aspect-[4/5] flex items-center justify-center p-2">
+              <div className="relative w-full aspect-square sm:aspect-[4/5] flex items-center justify-center p-1">
                 <Image
                   src={feature.image}
                   alt={feature.title}
@@ -58,4 +57,3 @@ export const FeaturesSection = () => {
     </section>
   );
 };
-
