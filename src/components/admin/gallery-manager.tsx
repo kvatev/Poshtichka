@@ -44,33 +44,43 @@ const defaultBgCitiesPresets: CityPreset[] = [
   { id: "c9", name: "Варна", lat: 43.2141, lng: 27.9147 },
 ];
 
+import { searchBgLocations, findNearestBgLocation } from "@/lib/bg-locations";
+
 /**
- * Client-side automatic image loader and WebP converter.
+ * Client-side automatic image loader and WebP converter with smart downscaling.
  */
 const processFileToWebp = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
-    const isWebp = file.type === "image/webp" || file.name.toLowerCase().endsWith(".webp");
     const reader = new FileReader();
 
     reader.onload = (e) => {
       const src = e.target?.result as string;
       if (!src) return reject(new Error("Грешка при четене на файла."));
 
-      if (isWebp) {
-        return resolve(src);
-      }
-
-      // Convert PNG/JPG to WebP via Canvas
       const img = new window.Image();
       img.onload = () => {
         try {
+          const maxDim = 1280;
+          let width = img.naturalWidth || img.width || 800;
+          let height = img.naturalHeight || img.height || 600;
+
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
           const canvas = document.createElement("canvas");
-          canvas.width = img.naturalWidth || img.width || 800;
-          canvas.height = img.naturalHeight || img.height || 600;
+          canvas.width = width;
+          canvas.height = height;
           const ctx = canvas.getContext("2d");
           if (!ctx) return resolve(src);
-          ctx.drawImage(img, 0, 0);
-          const webpDataUrl = canvas.toDataURL("image/webp", 0.85);
+          ctx.drawImage(img, 0, 0, width, height);
+          const webpDataUrl = canvas.toDataURL("image/webp", 0.82);
           resolve(webpDataUrl);
         } catch {
           resolve(src);
@@ -191,51 +201,80 @@ export const GalleryManager = () => {
 
   // Reverse Geocoding to auto-detect city/village name when clicking on map
   const fetchReverseGeocodeCity = async (lat: number, lng: number) => {
+    // 1. Instant local nearest location lookup
+    const nearest = findNearestBgLocation(lat, lng);
+    if (nearest) {
+      setCityName(nearest.name);
+    }
+
+    // 2. Background proxy query for micro-details if available
     try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=bg`
-      );
-      if (!res.ok) return;
-      const data = await res.json();
-      if (data && data.address) {
-        const rawCity =
-          data.address.city ||
-          data.address.town ||
-          data.address.village ||
-          data.address.municipality ||
-          data.address.county;
-        if (rawCity) {
-          const cleaned = rawCity.replace(/^(гр\.|с\.|община)\s+/i, "").trim();
-          if (cleaned) {
-            setCityName(cleaned);
+      const res = await fetch(`/api/geocode?lat=${lat}&lng=${lng}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.address) {
+          const rawCity =
+            data.address.city ||
+            data.address.town ||
+            data.address.village ||
+            data.address.municipality ||
+            data.address.county;
+          if (rawCity) {
+            const cleaned = rawCity.replace(/^(гр\.|с\.|община)\s+/i, "").trim();
+            if (cleaned) {
+              setCityName(cleaned);
+            }
           }
         }
       }
     } catch {}
   };
 
-  // Map Search Autocomplete
+  // Map Search Autocomplete (Instant Local BG Database + API Proxy fallback)
   const handleMapSearch = async (query: string) => {
     setMapSearchQuery(query);
-    if (!query.trim() || query.length < 2) {
+    if (!query.trim()) {
       setMapSearchResults([]);
       return;
     }
 
-    setIsSearchingMap(true);
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-          query
-        )}&countrycodes=bg&accept-language=bg&limit=5`
-      );
-      if (res.ok) {
-        const data = await res.json();
-        setMapSearchResults(data || []);
+    // 1. Instant local database search
+    const localMatches = searchBgLocations(query, 8).map((loc) => ({
+      display_name: `${loc.type === "село" ? "с. " : ""}${loc.name}${loc.region ? ` (${loc.region})` : ""}`,
+      lat: String(loc.lat),
+      lon: String(loc.lng),
+    }));
+
+    setMapSearchResults(localMatches);
+
+    // 2. Background proxy search for unlisted hamlets
+    if (query.trim().length >= 2) {
+      setIsSearchingMap(true);
+      try {
+        const res = await fetch(`/api/geocode?q=${encodeURIComponent(query)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            const externalMatches = data.map((d: any) => ({
+              display_name: d.display_name,
+              lat: String(d.lat),
+              lon: String(d.lon),
+            }));
+            setMapSearchResults((prev) => {
+              const combined = [...localMatches];
+              externalMatches.forEach((ext) => {
+                if (!combined.some((c) => Math.abs(Number(c.lat) - Number(ext.lat)) < 0.01)) {
+                  combined.push(ext);
+                }
+              });
+              return combined.slice(0, 10);
+            });
+          }
+        }
+      } catch {
+      } finally {
+        setIsSearchingMap(false);
       }
-    } catch {
-    } finally {
-      setIsSearchingMap(false);
     }
   };
 
@@ -247,7 +286,7 @@ export const GalleryManager = () => {
     setLongitude(newLng);
 
     const parts = result.display_name.split(",");
-    const cleanName = parts[0].replace(/^(гр\.|с\.|община)\s+/i, "").trim();
+    const cleanName = parts[0].replace(/^(гр\.|с\.|община)\s+/i, "").replace(/\s*\(.*?\)/, "").trim();
 
     if (cleanName) {
       setCityName(cleanName);
@@ -624,7 +663,9 @@ export const GalleryManager = () => {
         body: JSON.stringify(payload),
       });
 
-      if (res.ok) {
+      const data = await res.json().catch(() => null);
+
+      if (res.ok && data?.success) {
         setSuccessMsg(editingItem ? "Събитието бе обновено успешно!" : "Новото събитие бе добавено в галерията!");
         fetchItems();
         setTimeout(() => {
@@ -632,10 +673,12 @@ export const GalleryManager = () => {
           setSuccessMsg("");
         }, 1000);
       } else {
-        throw new Error("Грешка при запис.");
+        const errorText = data?.error || "Грешка при запис на събитието.";
+        setErrorMsg(errorText);
       }
-    } catch {
-      setErrorMsg("Възникна грешка при запазването на събитието.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Възникна грешка при запазването на събитието.";
+      setErrorMsg(msg);
     } finally {
       setSaving(false);
     }

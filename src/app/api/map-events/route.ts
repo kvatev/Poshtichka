@@ -3,8 +3,12 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { EventLocation } from "@/types/map-event";
 
-// Fallback in-memory store matching user mockups and events
-let mockMapEvents: EventLocation[] = [
+// Global in-memory store to guarantee persistence across requests & hot reloads
+declare global {
+  var __POSHTICHKA_MAP_EVENTS__: EventLocation[] | undefined;
+}
+
+const initialMapEvents: EventLocation[] = [
   {
     id: "MAP-01",
     eventName: "ГЕРИ И КРАСИ",
@@ -163,43 +167,57 @@ let mockMapEvents: EventLocation[] = [
   },
 ];
 
+if (!globalThis.__POSHTICHKA_MAP_EVENTS__) {
+  globalThis.__POSHTICHKA_MAP_EVENTS__ = initialMapEvents;
+}
+
+function isSupabaseConfigured() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  return Boolean(url && !url.includes("placeholder") && !url.includes("example"));
+}
+
 /**
  * GET: Fetch all map events
  */
 export async function GET() {
-  try {
-    const supabase = await createClient();
-    
-    // DB Query: Fetch all map events from 'map_events' table
-    const { data: dbEvents, error } = await supabase
-      .from("map_events")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error || !dbEvents || dbEvents.length === 0) {
-      return NextResponse.json({ events: mockMapEvents, source: "mock" });
-    }
-
-    const formattedEvents: EventLocation[] = dbEvents.map((item) => ({
-      id: item.id,
-      eventName: item.event_name || "",
-      cityName: item.city_name,
-      venueName: item.venue_name || "",
-      eventType: item.event_type || "",
-      latitude: Number(item.latitude),
-      longitude: Number(item.longitude),
-      coverImage: item.cover_image || "",
-      galleryImages: Array.isArray(item.gallery_images) ? item.gallery_images : [],
-      description: item.description || "",
-      eventDate: item.event_date || "",
-      createdAt: item.created_at,
-      updatedAt: item.updated_at,
-    }));
-
-    return NextResponse.json({ events: formattedEvents, source: "database" });
-  } catch {
-    return NextResponse.json({ events: mockMapEvents, source: "fallback" });
+  if (!globalThis.__POSHTICHKA_MAP_EVENTS__) {
+    globalThis.__POSHTICHKA_MAP_EVENTS__ = initialMapEvents;
   }
+
+  if (isSupabaseConfigured()) {
+    try {
+      const supabase = await createClient();
+      const { data: dbEvents, error } = await supabase
+        .from("map_events")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!error && dbEvents && dbEvents.length > 0) {
+        const formattedEvents: EventLocation[] = dbEvents.map((item) => ({
+          id: item.id,
+          eventName: item.event_name || "",
+          cityName: item.city_name,
+          venueName: item.venue_name || "",
+          eventType: item.event_type || "",
+          latitude: Number(item.latitude),
+          longitude: Number(item.longitude),
+          coverImage: item.cover_image || "",
+          galleryImages: Array.isArray(item.gallery_images) ? item.gallery_images : [],
+          description: item.description || "",
+          eventDate: item.event_date || "",
+          createdAt: item.created_at,
+          updatedAt: item.updated_at,
+        }));
+
+        globalThis.__POSHTICHKA_MAP_EVENTS__ = formattedEvents;
+        return NextResponse.json({ events: formattedEvents, source: "database" });
+      }
+    } catch (err) {
+      console.warn("Supabase fetch notice:", err);
+    }
+  }
+
+  return NextResponse.json({ events: globalThis.__POSHTICHKA_MAP_EVENTS__, source: "memory" });
 }
 
 /**
@@ -208,7 +226,18 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { eventName, cityName, venueName, eventType, latitude, longitude, coverImage, galleryImages, description, eventDate } = body;
+    const {
+      eventName,
+      cityName,
+      venueName,
+      eventType,
+      latitude,
+      longitude,
+      coverImage,
+      galleryImages,
+      description,
+      eventDate,
+    } = body;
 
     if (!cityName || latitude === undefined || longitude === undefined) {
       return NextResponse.json(
@@ -217,62 +246,71 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const finalEventName = eventName ? eventName.trim() : "";
-    const finalVenueName = venueName ? venueName.trim() : "";
-    const finalEventType = eventType ? eventType.trim() : "";
-    const finalCoverImage = coverImage ? coverImage.trim() : "";
+    const finalEventName = eventName ? String(eventName).trim() : "";
+    const finalVenueName = venueName ? String(venueName).trim() : "";
+    const finalEventType = eventType ? String(eventType).trim() : "";
+    const finalCoverImage = coverImage ? String(coverImage).trim() : "";
     const finalGalleryImages = Array.isArray(galleryImages) ? galleryImages : [];
 
     const newEvent: EventLocation = {
       id: `MAP-${Date.now()}`,
       eventName: finalEventName,
-      cityName: cityName.trim(),
+      cityName: String(cityName).trim(),
       venueName: finalVenueName,
       eventType: finalEventType,
       latitude: Number(latitude),
       longitude: Number(longitude),
-      coverImage: finalCoverImage,
-      galleryImages: finalGalleryImages,
-      description: description ? description.trim() : "",
+      coverImage: finalCoverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
+      galleryImages: finalGalleryImages.length > 0 ? finalGalleryImages : [finalCoverImage],
+      description: description ? String(description).trim() : "",
       eventDate: eventDate || new Date().toISOString().split("T")[0],
       createdAt: new Date().toISOString(),
     };
 
-    try {
-      const supabase = await createClient();
-      const { data, error } = await supabase
-        .from("map_events")
-        .insert([
-          {
-            event_name: finalEventName,
-            city_name: cityName.trim(),
-            venue_name: finalVenueName,
-            event_type: finalEventType,
-            latitude: Number(latitude),
-            longitude: Number(longitude),
-            cover_image: finalCoverImage,
-            gallery_images: finalGalleryImages,
-            description: description || "",
-            event_date: eventDate || null,
-          },
-        ])
-        .select()
-        .single();
+    if (isSupabaseConfigured()) {
+      try {
+        const supabase = await createClient();
+        const { data, error } = await supabase
+          .from("map_events")
+          .insert([
+            {
+              event_name: finalEventName,
+              city_name: newEvent.cityName,
+              venue_name: finalVenueName,
+              event_type: finalEventType,
+              latitude: Number(latitude),
+              longitude: Number(longitude),
+              cover_image: newEvent.coverImage,
+              gallery_images: newEvent.galleryImages,
+              description: newEvent.description,
+              event_date: newEvent.eventDate || null,
+            },
+          ])
+          .select()
+          .single();
 
-      if (!error && data) {
-        newEvent.id = data.id;
+        if (!error && data) {
+          newEvent.id = data.id;
+        }
+      } catch (dbErr) {
+        console.warn("Supabase insert notice:", dbErr);
       }
-    } catch {
-      // Fallback
     }
 
-    mockMapEvents = [newEvent, ...mockMapEvents];
+    if (!globalThis.__POSHTICHKA_MAP_EVENTS__) {
+      globalThis.__POSHTICHKA_MAP_EVENTS__ = initialMapEvents;
+    }
+
+    globalThis.__POSHTICHKA_MAP_EVENTS__ = [newEvent, ...globalThis.__POSHTICHKA_MAP_EVENTS__];
+
     try {
       revalidatePath("/gallery");
       revalidatePath("/");
     } catch {}
+
     return NextResponse.json({ success: true, event: newEvent });
   } catch (err: unknown) {
+    console.error("Create event error:", err);
     const msg = err instanceof Error ? err.message : "Грешка при създаване на събитие.";
     return NextResponse.json({ error: msg }, { status: 500 });
   }
@@ -284,61 +322,79 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
-    const { id, eventName, cityName, venueName, eventType, latitude, longitude, coverImage, galleryImages, description, eventDate } = body;
+    const {
+      id,
+      eventName,
+      cityName,
+      venueName,
+      eventType,
+      latitude,
+      longitude,
+      coverImage,
+      galleryImages,
+      description,
+      eventDate,
+    } = body;
 
     if (!id) {
       return NextResponse.json({ error: "Липсва ИД на събитието за редакция." }, { status: 400 });
     }
 
-    const finalEventName = eventName !== undefined ? eventName : "";
-    const finalVenueName = venueName !== undefined ? venueName : "";
-    const finalEventType = eventType !== undefined ? eventType : "";
-    const finalCoverImage = coverImage !== undefined ? coverImage : "";
+    const finalEventName = eventName !== undefined ? String(eventName) : "";
+    const finalVenueName = venueName !== undefined ? String(venueName) : "";
+    const finalEventType = eventType !== undefined ? String(eventType) : "";
+    const finalCoverImage = coverImage !== undefined ? String(coverImage) : "";
     const finalGalleryImages = Array.isArray(galleryImages) ? galleryImages : [];
 
     let updatedEvent: EventLocation | null = null;
 
-    try {
-      const supabase = await createClient();
-      const { data, error } = await supabase
-        .from("map_events")
-        .update({
-          event_name: finalEventName,
-          city_name: cityName,
-          venue_name: finalVenueName,
-          event_type: finalEventType,
-          latitude: Number(latitude),
-          longitude: Number(longitude),
-          cover_image: finalCoverImage,
-          gallery_images: finalGalleryImages,
-          description: description || "",
-          event_date: eventDate || null,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", id)
-        .select()
-        .single();
+    if (isSupabaseConfigured()) {
+      try {
+        const supabase = await createClient();
+        const { data, error } = await supabase
+          .from("map_events")
+          .update({
+            event_name: finalEventName,
+            city_name: cityName,
+            venue_name: finalVenueName,
+            event_type: finalEventType,
+            latitude: Number(latitude),
+            longitude: Number(longitude),
+            cover_image: finalCoverImage,
+            gallery_images: finalGalleryImages,
+            description: description || "",
+            event_date: eventDate || null,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", id)
+          .select()
+          .single();
 
-      if (!error && data) {
-        updatedEvent = {
-          id: data.id,
-          eventName: data.event_name,
-          cityName: data.city_name,
-          venueName: data.venue_name,
-          eventType: data.event_type,
-          latitude: Number(data.latitude),
-          longitude: Number(data.longitude),
-          coverImage: data.cover_image,
-          galleryImages: data.gallery_images || [],
-          description: data.description,
-          eventDate: data.event_date,
-        };
+        if (!error && data) {
+          updatedEvent = {
+            id: data.id,
+            eventName: data.event_name,
+            cityName: data.city_name,
+            venueName: data.venue_name,
+            eventType: data.event_type,
+            latitude: Number(data.latitude),
+            longitude: Number(data.longitude),
+            coverImage: data.cover_image,
+            galleryImages: data.gallery_images || [],
+            description: data.description,
+            eventDate: data.event_date,
+          };
+        }
+      } catch (dbErr) {
+        console.warn("Supabase update notice:", dbErr);
       }
-    } catch {
-      // Fallback
     }
 
-    mockMapEvents = mockMapEvents.map((ev) => {
+    if (!globalThis.__POSHTICHKA_MAP_EVENTS__) {
+      globalThis.__POSHTICHKA_MAP_EVENTS__ = initialMapEvents;
+    }
+
+    globalThis.__POSHTICHKA_MAP_EVENTS__ = globalThis.__POSHTICHKA_MAP_EVENTS__.map((ev) => {
       if (ev.id === id) {
         return {
           ...ev,
@@ -348,8 +404,8 @@ export async function PUT(req: NextRequest) {
           eventType: finalEventType,
           latitude: latitude !== undefined ? Number(latitude) : ev.latitude,
           longitude: longitude !== undefined ? Number(longitude) : ev.longitude,
-          coverImage: finalCoverImage,
-          galleryImages: finalGalleryImages,
+          coverImage: finalCoverImage || ev.coverImage,
+          galleryImages: finalGalleryImages.length > 0 ? finalGalleryImages : ev.galleryImages,
           description: description ?? ev.description,
           eventDate: eventDate ?? ev.eventDate,
           updatedAt: new Date().toISOString(),
@@ -363,8 +419,12 @@ export async function PUT(req: NextRequest) {
       revalidatePath("/");
     } catch {}
 
-    return NextResponse.json({ success: true, event: updatedEvent || mockMapEvents.find((e) => e.id === id) });
+    const result =
+      updatedEvent || globalThis.__POSHTICHKA_MAP_EVENTS__.find((e) => e.id === id);
+
+    return NextResponse.json({ success: true, event: result });
   } catch (err: unknown) {
+    console.error("Update event error:", err);
     const msg = err instanceof Error ? err.message : "Грешка при редакция на събитие.";
     return NextResponse.json({ error: msg }, { status: 500 });
   }
@@ -382,14 +442,23 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: "Липсва ИД за изтриване." }, { status: 400 });
     }
 
-    try {
-      const supabase = await createClient();
-      await supabase.from("map_events").delete().eq("id", id);
-    } catch {
-      // Fallback
+    if (isSupabaseConfigured()) {
+      try {
+        const supabase = await createClient();
+        await supabase.from("map_events").delete().eq("id", id);
+      } catch (dbErr) {
+        console.warn("Supabase delete notice:", dbErr);
+      }
     }
 
-    mockMapEvents = mockMapEvents.filter((ev) => ev.id !== id);
+    if (!globalThis.__POSHTICHKA_MAP_EVENTS__) {
+      globalThis.__POSHTICHKA_MAP_EVENTS__ = initialMapEvents;
+    }
+
+    globalThis.__POSHTICHKA_MAP_EVENTS__ = globalThis.__POSHTICHKA_MAP_EVENTS__.filter(
+      (ev) => ev.id !== id
+    );
+
     try {
       revalidatePath("/gallery");
       revalidatePath("/");
@@ -397,6 +466,7 @@ export async function DELETE(req: NextRequest) {
 
     return NextResponse.json({ success: true, id });
   } catch (err: unknown) {
+    console.error("Delete event error:", err);
     const msg = err instanceof Error ? err.message : "Грешка при изтриване на локацията.";
     return NextResponse.json({ error: msg }, { status: 500 });
   }
