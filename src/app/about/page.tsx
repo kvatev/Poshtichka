@@ -9,7 +9,7 @@ export default function AboutPage() {
   return (
     <PageWrapper>
       <div className="space-y-6 sm:space-y-12 pb-2 font-sans select-none bg-[#f9f6f0]">
-        {/* Section 1: Top Hero Photo (Static Exact Focal Framing for Mobile matching user screenshot) */}
+        {/* Section 1: Top Hero Photo */}
         <section className="relative w-full h-[40vh] sm:h-[55vh] lg:h-[65vh] overflow-hidden">
           <Image
             src={encodeURI("/media/За Пощичка/Asset 61@2x.png")}
@@ -106,7 +106,7 @@ export default function AboutPage() {
           />
         </section>
 
-        {/* Section 6: Who is Behind the Idea? (КОЙ СТОИ ЗАД ИДЕЯТА?) - 100% Dead Centered Graphics */}
+        {/* Section 6: Who is Behind the Idea? (КОЙ СТОИ ЗАД ИДЕЯТА?) - Top Baseline Aligned */}
         <section className="max-w-6xl mx-auto px-4 sm:px-8 space-y-10 py-6">
           <div className="text-center max-w-3xl mx-auto space-y-2">
             <h2 className="font-salongbeach text-3xl sm:text-5xl font-bold uppercase tracking-wider text-[#00b4b6]">
@@ -119,13 +119,13 @@ export default function AboutPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start justify-items-center text-center">
             {/* Geri Column Graphic (Asset 68@2x.png) */}
-            <div className="w-full flex justify-center items-center text-center">
-              <div className="relative w-full max-w-[320px] sm:max-w-[380px] md:max-w-[420px] aspect-[1587/3390] mx-auto">
+            <div className="w-full flex justify-center items-start text-center">
+              <div className="relative w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[440px] h-[580px] sm:h-[760px] lg:h-[840px]">
                 <Image
                   src={encodeURI("/media/За Пощичка/Asset 68@2x.png")}
                   alt="Гери - дизайнер"
                   fill
-                  className="object-contain object-center"
+                  className="object-contain object-top"
                   unoptimized
                   priority
                 />
@@ -133,13 +133,13 @@ export default function AboutPage() {
             </div>
 
             {/* Krasi Column Graphic (Asset 69@2x.png) */}
-            <div className="w-full flex justify-center items-center text-center">
-              <div className="relative w-full max-w-[320px] sm:max-w-[380px] md:max-w-[420px] aspect-[1836/3707] mx-auto">
+            <div className="w-full flex justify-center items-start text-center">
+              <div className="relative w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[440px] h-[580px] sm:h-[760px] lg:h-[840px]">
                 <Image
                   src={encodeURI("/media/За Пощичка/Asset 69@2x.png")}
                   alt="Краси - програмист"
                   fill
-                  className="object-contain object-center"
+                  className="object-contain object-top"
                   unoptimized
                   priority
                 />

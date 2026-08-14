@@ -8,12 +8,10 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
   { href: "/", label: "Начало" },
-  { href: "/services", label: "Услуги" },
   { href: "/about", label: "За Пощичка" },
-  { href: "/gallery", label: "Галерия" },
   { href: "/calendar", label: "Заетост" },
-  { href: "/faq", label: "ЧЗВ" },
-  { href: "/contact", label: "Контакти" },
+  { href: "/gallery", label: "Галерия" },
+  { href: "/services", label: "Услуги" },
   { href: "/booking", label: "Резервирай сега", isCta: true },
 ];
 
