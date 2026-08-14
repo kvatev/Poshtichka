@@ -122,13 +122,15 @@ export const AdminMapManager = () => {
       });
 
       if (!mapInstanceRef.current) {
-        const map = L.map(mapContainerRef.current).setView(
+        const map = L.map(mapContainerRef.current, {
+          attributionControl: false,
+        }).setView(
           [formData.latitude, formData.longitude],
           9
         );
 
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+          attribution: "",
         }).addTo(map);
 
         const marker = L.marker([formData.latitude, formData.longitude], {
