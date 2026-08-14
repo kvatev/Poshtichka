@@ -85,6 +85,18 @@ export const Header = () => {
                   {link.label}
                 </Link>
               ))}
+
+              {/* Install App Link */}
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  window.dispatchEvent(new CustomEvent("open-pwa-install-modal"));
+                }}
+                className="py-2.5 mt-2 bg-[#00b4b6]/10 text-[#00b4b6] hover:bg-[#00b4b6] hover:text-white rounded-2xl transition-all font-salongbeach text-sm uppercase tracking-wider font-bold cursor-pointer"
+              >
+                📱 Изтегли като приложение
+              </button>
             </div>
           </motion.div>
         )}

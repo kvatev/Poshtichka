@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
+import { PwaInstaller } from "@/components/pwa-installer";
 
 // Google fonts used for production build stability; can be swapped with localFont SALongBeach.otf
 const displayFont = Playfair_Display({
@@ -14,6 +15,14 @@ const inter = Inter({
   variable: "--font-sans",
   display: "swap",
 });
+
+export const viewport: Viewport = {
+  themeColor: "#00b4b6",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   title: "Пощичка | Всеки гост си тръгва със спомен",
@@ -30,10 +39,19 @@ export const metadata: Metadata = {
     "Пощичка",
   ],
   authors: [{ name: "Пощичка" }],
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Пощичка",
+  },
+  formatDetection: {
+    telephone: false,
+  },
   icons: {
     icon: "/media/logos/Logo.png",
     shortcut: "/media/logos/Logo.png",
-    apple: "/media/logos/Logo.png",
+    apple: "/apple-touch-icon.png",
   },
   openGraph: {
     title: "Пощичка | Всеки гост си тръгва със спомен",
@@ -84,7 +102,11 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/media/logos/Logo.png" type="image/png" sizes="any" />
         <link rel="shortcut icon" href="/media/logos/Logo.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/media/logos/Logo.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Пощичка" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -92,6 +114,7 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased min-h-screen bg-brand-cream text-brand-dark selection:bg-brand-[#00b4b6] selection:text-white">
         {children}
+        <PwaInstaller />
       </body>
     </html>
   );
