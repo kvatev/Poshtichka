@@ -16,11 +16,11 @@ export const HeroSection = () => {
           src={heroImage}
           alt="Пощичка събитие"
           fill
-          className="object-cover object-center opacity-85"
+          className="object-cover object-center opacity-95 sm:opacity-100"
           priority
           unoptimized
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/40 to-brand-dark/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-black/10" />
       </div>
 
       {/* Hero Content */}
@@ -29,7 +29,7 @@ export const HeroSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="font-salongbeach text-[28px] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-wider uppercase leading-tight text-white whitespace-normal break-words max-w-4xl mx-auto"
+          className="font-salongbeach text-[28px] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-wider uppercase leading-tight text-white whitespace-normal break-words max-w-4xl mx-auto drop-shadow-[0_4px_12px_rgba(0,0,0,0.7)]"
         >
           Всеки гост си тръгва със спомен
         </motion.h1>

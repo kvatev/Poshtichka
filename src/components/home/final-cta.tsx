@@ -33,10 +33,10 @@ export const FinalCTA = () => {
           src="/media/Main Page/final-cta-bg.png"
           alt="Пощичка незабравим спомен"
           fill
-          className="object-cover object-[80%_center] md:object-center opacity-85"
+          className="object-cover object-[80%_center] md:object-center opacity-95 sm:opacity-100"
           unoptimized
         />
-        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/15 to-black/10" />
       </div>
 
       {/* Content */}
@@ -46,7 +46,7 @@ export const FinalCTA = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="font-salongbeach text-[28px] sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-center leading-tight text-white"
+          className="font-salongbeach text-[28px] sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-center leading-tight text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.7)]"
         >
           {title}
         </motion.h2>
