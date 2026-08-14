@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
-import { PopupModal } from "@/components/popup-modal";
 
 // Google fonts used for production build stability; can be swapped with localFont SALongBeach.otf
 const displayFont = Playfair_Display({
@@ -93,7 +92,6 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased min-h-screen bg-brand-cream text-brand-dark selection:bg-brand-[#00b4b6] selection:text-white">
         {children}
-        <PopupModal />
       </body>
     </html>
   );

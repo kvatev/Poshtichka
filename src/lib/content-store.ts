@@ -62,20 +62,6 @@ export interface WebsiteSectionText {
   ctaLink?: string;
 }
 
-export interface PromoPopup {
-  id: string;
-  title: string;
-  subtitle: string;
-  imageUrl?: string;
-  buttonText: string;
-  buttonLink: string;
-  badgeText?: string;
-  startDate?: string;
-  endDate?: string;
-  enabled: boolean;
-  backgroundColor?: string;
-}
-
 export interface PromoBanner {
   id: string;
   type: "top" | "homepage" | "seasonal" | "announcement";
@@ -229,19 +215,6 @@ export const defaultHomepageConfig: HomepageConfig = {
   topBarSpeedSeconds: 35,
 };
 
-
-export const defaultPopups: PromoPopup[] = [
-  {
-    id: "pop-01",
-    title: "Ранни Резервации 2026",
-    subtitle: "Запазете Пощичка за сватбения сезон с 10% отстъпка и безплатен индивидуален дизайн!",
-    buttonText: "Проверете Вашата дата",
-    buttonLink: "/calendar",
-    badgeText: "Специална оферта",
-    enabled: true,
-    backgroundColor: "#1c1917",
-  },
-];
 
 export const defaultBanners: PromoBanner[] = [
   {

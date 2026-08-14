@@ -47,7 +47,6 @@ export type AdminTab =
   | "faq"
   | "pricing"
   | "products"
-  | "popups"
   | "banners"
   | "seo"
   | "analytics"
@@ -76,8 +75,7 @@ export const adminNavItems: { id: AdminTab; label: string; icon: React.ElementTy
   { id: "faq", label: "ЧЗВ", icon: HelpCircle },
   { id: "pricing", label: "Цени & Калкулатор", icon: Tag },
   { id: "products", label: "Продукти & Сувенири", icon: Package },
-  { id: "popups", label: "Попъп Мениджър", icon: Gift, section: "Маркетинг" },
-  { id: "banners", label: "Промо Банери", icon: Megaphone },
+  { id: "banners", label: "Промо Банери", icon: Megaphone, section: "Маркетинг" },
   { id: "seo", label: "SEO & Метатегове", icon: Search },
   { id: "analytics", label: "Аналитика & Отчети", icon: BarChart3 },
   { id: "backup", label: "Бекъп & Сигурност", icon: Database, section: "Система" },

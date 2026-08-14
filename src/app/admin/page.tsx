@@ -21,7 +21,6 @@ import { WebsiteContentManager } from "@/components/admin/website-content-manage
 import { HomepageEditor } from "@/components/admin/homepage-editor";
 import { SeoManager } from "@/components/admin/seo-manager";
 import { AnalyticsDashboard } from "@/components/admin/analytics-dashboard";
-import { PopupManager } from "@/components/admin/popup-manager";
 import { BannerManager } from "@/components/admin/banner-manager";
 import { BackupManager } from "@/components/admin/backup-manager";
 import { BookingDetailModal } from "@/components/admin/booking-detail-modal";
@@ -214,7 +213,6 @@ export default function AdminDashboardPage() {
           {activeTab === "faq" && <FAQManager />}
           {activeTab === "pricing" && <PricingManager />}
           {activeTab === "products" && <ProductsManager />}
-          {activeTab === "popups" && <PopupManager />}
           {activeTab === "banners" && <BannerManager />}
           {activeTab === "seo" && <SeoManager />}
           {activeTab === "analytics" && <AnalyticsDashboard />}

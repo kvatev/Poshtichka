@@ -4,7 +4,6 @@ import {
   defaultGeneralSettings,
   defaultSeoSettings,
   defaultHomepageConfig,
-  defaultPopups,
   defaultBanners,
   defaultTestimonials,
 } from "@/lib/content-store";
@@ -19,7 +18,6 @@ export async function GET() {
   let general = store.general_settings || defaultGeneralSettings;
   let seo = store.seo_settings || defaultSeoSettings;
   let homepage = store.homepage_config ? { ...defaultHomepageConfig, ...store.homepage_config } : defaultHomepageConfig;
-  let popups = store.popups || defaultPopups;
   let banners = store.banners || defaultBanners;
   let testimonials = store.testimonials || defaultTestimonials;
   let faq = store.faq_items || null;
@@ -33,7 +31,6 @@ export async function GET() {
         if (item.key === "general_settings") general = { ...general, ...item.value };
         if (item.key === "seo_settings") seo = { ...seo, ...item.value };
         if (item.key === "homepage_config") homepage = { ...homepage, ...item.value };
-        if (item.key === "popups") popups = item.value;
         if (item.key === "banners") banners = item.value;
         if (item.key === "testimonials") testimonials = item.value;
         if (item.key === "faq_items") faq = item.value;
@@ -47,10 +44,8 @@ export async function GET() {
     general,
     seo,
     homepage,
-    popups,
     banners,
     testimonials,
     faq,
   });
 }
-
