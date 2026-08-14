@@ -8,14 +8,14 @@ import { PageWrapper } from "@/components/layout/page-wrapper";
 export default function AboutPage() {
   return (
     <PageWrapper>
-      <div className="space-y-12 sm:space-y-16 pb-24 font-sans select-none bg-[#f9f6f0]">
-        {/* Section 1: Top Hero Photo */}
+      <div className="space-y-6 sm:space-y-12 pb-2 font-sans select-none bg-[#f9f6f0]">
+        {/* Section 1: Top Hero Photo (Static Exact Focal Framing for Mobile matching user screenshot) */}
         <section className="relative w-full h-[40vh] sm:h-[55vh] lg:h-[65vh] overflow-hidden">
           <Image
             src={encodeURI("/media/За Пощичка/Asset 61@2x.png")}
             alt="Пощичка машина на събитие"
             fill
-            className="object-cover object-center"
+            className="object-cover object-[47%_center] sm:object-center"
             priority
             unoptimized
           />
@@ -81,9 +81,9 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Section 4: What is Poshtichka & Booth Diagram (Responsive Asset 66@2x.png) */}
-        <section className="max-w-5xl mx-auto px-4 sm:px-8 py-4 flex justify-center items-center">
-          <div className="relative w-full max-w-4xl aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9]">
+        {/* Section 4: What is Poshtichka & Booth Diagram (Exact Native Aspect Ratio Asset 66@2x.png) */}
+        <section className="max-w-5xl mx-auto px-2 sm:px-8 py-0 sm:py-2 flex justify-center items-center -my-2 sm:my-0">
+          <div className="relative w-full max-w-4xl aspect-[3738/2212]">
             <Image
               src={encodeURI("/media/За Пощичка/Asset 66@2x.png")}
               alt="Какво е Пощичка - схема и въпроси"
@@ -106,7 +106,7 @@ export default function AboutPage() {
           />
         </section>
 
-        {/* Section 6: Who is Behind the Idea? (КОЙ СТОИ ЗАД ИДЕЯТА?) */}
+        {/* Section 6: Who is Behind the Idea? (КОЙ СТОИ ЗАД ИДЕЯТА?) - 100% Dead Centered Graphics */}
         <section className="max-w-6xl mx-auto px-4 sm:px-8 space-y-10 py-6">
           <div className="text-center max-w-3xl mx-auto space-y-2">
             <h2 className="font-salongbeach text-3xl sm:text-5xl font-bold uppercase tracking-wider text-[#00b4b6]">
@@ -117,15 +117,15 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start justify-items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start justify-items-center text-center">
             {/* Geri Column Graphic (Asset 68@2x.png) */}
-            <div className="w-full flex justify-center items-start">
-              <div className="relative w-full max-w-[340px] sm:max-w-[420px] h-[600px] sm:h-[780px] lg:h-[840px]">
+            <div className="w-full flex justify-center items-center text-center">
+              <div className="relative w-full max-w-[320px] sm:max-w-[380px] md:max-w-[420px] aspect-[1587/3390] mx-auto">
                 <Image
                   src={encodeURI("/media/За Пощичка/Asset 68@2x.png")}
                   alt="Гери - дизайнер"
                   fill
-                  className="object-contain object-top"
+                  className="object-contain object-center"
                   unoptimized
                   priority
                 />
@@ -133,13 +133,13 @@ export default function AboutPage() {
             </div>
 
             {/* Krasi Column Graphic (Asset 69@2x.png) */}
-            <div className="w-full flex justify-center items-start">
-              <div className="relative w-full max-w-[340px] sm:max-w-[420px] h-[600px] sm:h-[780px] lg:h-[840px]">
+            <div className="w-full flex justify-center items-center text-center">
+              <div className="relative w-full max-w-[320px] sm:max-w-[380px] md:max-w-[420px] aspect-[1836/3707] mx-auto">
                 <Image
                   src={encodeURI("/media/За Пощичка/Asset 69@2x.png")}
                   alt="Краси - програмист"
                   fill
-                  className="object-contain object-top"
+                  className="object-contain object-center"
                   unoptimized
                   priority
                 />
@@ -159,9 +159,9 @@ export default function AboutPage() {
           />
         </section>
 
-        {/* Section 8: Final Bottom CTA Banner (Matching exact user mockup with Asset 71 & Asset 72) */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-16">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-10 text-center relative">
+        {/* Section 8: Final Bottom CTA Banner (Tight Normal Top Padding & Zero Empty Bottom Space) */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-8 pt-6 sm:pt-10 pb-4 sm:pb-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8 sm:gap-10 md:gap-16 text-center relative">
             {/* Left Graphic: Asset 71@2x.png (Hands holding bird postcard) */}
             <div className="relative w-36 sm:w-48 md:w-60 h-36 sm:h-48 md:h-60 flex-shrink-0 mx-auto md:mx-0">
               <Image

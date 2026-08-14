@@ -88,17 +88,6 @@ export const Header = () => {
                 </Link>
               ))}
             </div>
-
-            <div className="pt-2">
-              <Link
-                href="/booking"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-3.5 rounded-full bg-[#00b4b6] text-white font-sans text-sm font-semibold uppercase tracking-wider hover:bg-[#008b8d] transition-all flex items-center justify-center space-x-2 shadow-sm"
-              >
-                <Calendar className="w-4 h-4" />
-                <span>Резервирай събитие</span>
-              </Link>
-            </div>
           </motion.div>
         )}
       </AnimatePresence>
