@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { EventLocation } from "@/types/map-event";
+import { readPersistentData, writePersistentData } from "@/lib/server-storage";
 
 // Global in-memory store to guarantee persistence across requests & hot reloads
 declare global {
@@ -167,8 +168,18 @@ const initialMapEvents: EventLocation[] = [
   },
 ];
 
-if (!globalThis.__POSHTICHKA_MAP_EVENTS__) {
-  globalThis.__POSHTICHKA_MAP_EVENTS__ = initialMapEvents;
+function getStoredEvents(): EventLocation[] {
+  if (globalThis.__POSHTICHKA_MAP_EVENTS__ && globalThis.__POSHTICHKA_MAP_EVENTS__.length > 0) {
+    return globalThis.__POSHTICHKA_MAP_EVENTS__;
+  }
+  const fromFile = readPersistentData<EventLocation[]>("map-events", initialMapEvents);
+  globalThis.__POSHTICHKA_MAP_EVENTS__ = fromFile;
+  return fromFile;
+}
+
+function saveStoredEvents(events: EventLocation[]): void {
+  globalThis.__POSHTICHKA_MAP_EVENTS__ = events;
+  writePersistentData("map-events", events);
 }
 
 function isSupabaseConfigured() {
@@ -180,9 +191,7 @@ function isSupabaseConfigured() {
  * GET: Fetch all map events
  */
 export async function GET() {
-  if (!globalThis.__POSHTICHKA_MAP_EVENTS__) {
-    globalThis.__POSHTICHKA_MAP_EVENTS__ = initialMapEvents;
-  }
+  const currentEvents = getStoredEvents();
 
   if (isSupabaseConfigured()) {
     try {
@@ -209,7 +218,7 @@ export async function GET() {
           updatedAt: item.updated_at,
         }));
 
-        globalThis.__POSHTICHKA_MAP_EVENTS__ = formattedEvents;
+        saveStoredEvents(formattedEvents);
         return NextResponse.json({ events: formattedEvents, source: "database" });
       }
     } catch (err) {
@@ -217,7 +226,7 @@ export async function GET() {
     }
   }
 
-  return NextResponse.json({ events: globalThis.__POSHTICHKA_MAP_EVENTS__, source: "memory" });
+  return NextResponse.json({ events: currentEvents, source: "storage" });
 }
 
 /**
@@ -297,11 +306,9 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    if (!globalThis.__POSHTICHKA_MAP_EVENTS__) {
-      globalThis.__POSHTICHKA_MAP_EVENTS__ = initialMapEvents;
-    }
-
-    globalThis.__POSHTICHKA_MAP_EVENTS__ = [newEvent, ...globalThis.__POSHTICHKA_MAP_EVENTS__];
+    const currentList = getStoredEvents();
+    const updatedList = [newEvent, ...currentList.filter((e) => e.id !== newEvent.id)];
+    saveStoredEvents(updatedList);
 
     try {
       revalidatePath("/gallery");
@@ -390,11 +397,8 @@ export async function PUT(req: NextRequest) {
       }
     }
 
-    if (!globalThis.__POSHTICHKA_MAP_EVENTS__) {
-      globalThis.__POSHTICHKA_MAP_EVENTS__ = initialMapEvents;
-    }
-
-    globalThis.__POSHTICHKA_MAP_EVENTS__ = globalThis.__POSHTICHKA_MAP_EVENTS__.map((ev) => {
+    const currentList = getStoredEvents();
+    const updatedList = currentList.map((ev) => {
       if (ev.id === id) {
         return {
           ...ev,
@@ -414,13 +418,15 @@ export async function PUT(req: NextRequest) {
       return ev;
     });
 
+    saveStoredEvents(updatedList);
+
     try {
       revalidatePath("/gallery");
       revalidatePath("/");
     } catch {}
 
     const result =
-      updatedEvent || globalThis.__POSHTICHKA_MAP_EVENTS__.find((e) => e.id === id);
+      updatedEvent || updatedList.find((e) => e.id === id);
 
     return NextResponse.json({ success: true, event: result });
   } catch (err: unknown) {
@@ -451,13 +457,9 @@ export async function DELETE(req: NextRequest) {
       }
     }
 
-    if (!globalThis.__POSHTICHKA_MAP_EVENTS__) {
-      globalThis.__POSHTICHKA_MAP_EVENTS__ = initialMapEvents;
-    }
-
-    globalThis.__POSHTICHKA_MAP_EVENTS__ = globalThis.__POSHTICHKA_MAP_EVENTS__.filter(
-      (ev) => ev.id !== id
-    );
+    const currentList = getStoredEvents();
+    const updatedList = currentList.filter((ev) => ev.id !== id);
+    saveStoredEvents(updatedList);
 
     try {
       revalidatePath("/gallery");

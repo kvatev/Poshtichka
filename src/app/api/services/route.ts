@@ -1,6 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { readPersistentData, writePersistentData } from "@/lib/server-storage";
 
 export interface ServiceItem {
   id: string;
@@ -12,7 +13,11 @@ export interface ServiceItem {
   badgeAsset?: string;
 }
 
-let mockServices: ServiceItem[] = [
+declare global {
+  var __POSHTICHKA_SERVICES__: ServiceItem[] | undefined;
+}
+
+const initialServices: ServiceItem[] = [
   {
     id: "SRV-01",
     title: "ВЕНДИНГ МАШИНА",
@@ -61,35 +66,59 @@ let mockServices: ServiceItem[] = [
   },
 ];
 
+function getStoredServices(): ServiceItem[] {
+  if (globalThis.__POSHTICHKA_SERVICES__ && globalThis.__POSHTICHKA_SERVICES__.length > 0) {
+    return globalThis.__POSHTICHKA_SERVICES__;
+  }
+  const fromFile = readPersistentData<ServiceItem[]>("services", initialServices);
+  globalThis.__POSHTICHKA_SERVICES__ = fromFile;
+  return fromFile;
+}
+
+function saveStoredServices(services: ServiceItem[]): void {
+  globalThis.__POSHTICHKA_SERVICES__ = services;
+  writePersistentData("services", services);
+}
+
+function isSupabaseConfigured() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  return Boolean(url && !url.includes("placeholder") && !url.includes("example"));
+}
+
 /**
  * GET: Fetch services list
  */
 export async function GET() {
-  try {
-    const supabase = await createClient();
-    const { data: dbServices, error } = await supabase
-      .from("services")
-      .select("*")
-      .order("created_at", { ascending: true });
+  const current = getStoredServices();
 
-    if (error || !dbServices || dbServices.length === 0) {
-      return NextResponse.json({ services: mockServices });
+  if (isSupabaseConfigured()) {
+    try {
+      const supabase = await createClient();
+      const { data: dbServices, error } = await supabase
+        .from("services")
+        .select("*")
+        .order("created_at", { ascending: true });
+
+      if (!error && dbServices && dbServices.length > 0) {
+        const formatted: ServiceItem[] = dbServices.map((s) => ({
+          id: s.id,
+          title: s.title,
+          subtitle: s.subtitle || "",
+          description: s.description || "",
+          features: Array.isArray(s.features) ? s.features : [],
+          image: s.image || "/media/gallery/Tezza_2025_07_13_155326413.webp",
+          badgeAsset: s.badge_asset || "",
+        }));
+
+        saveStoredServices(formatted);
+        return NextResponse.json({ services: formatted });
+      }
+    } catch {
+      // Fallback
     }
-
-    const formatted: ServiceItem[] = dbServices.map((s) => ({
-      id: s.id,
-      title: s.title,
-      subtitle: s.subtitle || "",
-      description: s.description || "",
-      features: Array.isArray(s.features) ? s.features : [],
-      image: s.image || "/media/gallery/Tezza_2025_07_13_155326413.webp",
-      badgeAsset: s.badge_asset || "",
-    }));
-
-    return NextResponse.json({ services: formatted });
-  } catch {
-    return NextResponse.json({ services: mockServices });
   }
+
+  return NextResponse.json({ services: current });
 }
 
 /**
@@ -106,40 +135,49 @@ export async function POST(req: NextRequest) {
 
     const newService: ServiceItem = {
       id: `SRV-${Date.now()}`,
-      title: title.trim(),
-      subtitle: subtitle ? subtitle.trim() : "",
-      description: description ? description.trim() : "",
+      title: String(title).trim(),
+      subtitle: subtitle ? String(subtitle).trim() : "",
+      description: description ? String(description).trim() : "",
       features: Array.isArray(features) ? features : [],
       image: image || "/media/gallery/Tezza_2025_07_13_155326413.webp",
       badgeAsset: badgeAsset || "/media/Услуги/Asset 88@2x.png",
     };
 
-    try {
-      const supabase = await createClient();
-      const { data, error } = await supabase
-        .from("services")
-        .insert([
-          {
-            title: newService.title,
-            subtitle: newService.subtitle,
-            description: newService.description,
-            features: newService.features,
-            image: newService.image,
-            badge_asset: newService.badgeAsset,
-          },
-        ])
-        .select()
-        .single();
+    if (isSupabaseConfigured()) {
+      try {
+        const supabase = await createClient();
+        const { data, error } = await supabase
+          .from("services")
+          .insert([
+            {
+              title: newService.title,
+              subtitle: newService.subtitle,
+              description: newService.description,
+              features: newService.features,
+              image: newService.image,
+              badge_asset: newService.badgeAsset,
+            },
+          ])
+          .select()
+          .single();
 
-      if (!error && data) {
-        newService.id = data.id;
+        if (!error && data) {
+          newService.id = data.id;
+        }
+      } catch (dbErr) {
+        console.warn("Supabase service insert notice:", dbErr);
       }
-    } catch {
-      // Fallback
     }
 
-    mockServices = [...mockServices, newService];
-    try { revalidatePath("/services"); revalidatePath("/"); } catch {}
+    const current = getStoredServices();
+    const updated = [...current, newService];
+    saveStoredServices(updated);
+
+    try {
+      revalidatePath("/services");
+      revalidatePath("/");
+    } catch {}
+
     return NextResponse.json({ success: true, service: newService });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : "Грешка при създаване на услуга.";
@@ -161,38 +199,41 @@ export async function PUT(req: NextRequest) {
 
     let updatedService: ServiceItem | null = null;
 
-    try {
-      const supabase = await createClient();
-      const { data, error } = await supabase
-        .from("services")
-        .update({
-          title,
-          subtitle,
-          description,
-          features: Array.isArray(features) ? features : [],
-          image,
-          badge_asset: badgeAsset,
-        })
-        .eq("id", id)
-        .select()
-        .single();
+    if (isSupabaseConfigured()) {
+      try {
+        const supabase = await createClient();
+        const { data, error } = await supabase
+          .from("services")
+          .update({
+            title,
+            subtitle,
+            description,
+            features: Array.isArray(features) ? features : [],
+            image,
+            badge_asset: badgeAsset,
+          })
+          .eq("id", id)
+          .select()
+          .single();
 
-      if (!error && data) {
-        updatedService = {
-          id: data.id,
-          title: data.title,
-          subtitle: data.subtitle,
-          description: data.description,
-          features: data.features || [],
-          image: data.image,
-          badgeAsset: data.badge_asset,
-        };
+        if (!error && data) {
+          updatedService = {
+            id: data.id,
+            title: data.title,
+            subtitle: data.subtitle,
+            description: data.description,
+            features: data.features || [],
+            image: data.image,
+            badgeAsset: data.badge_asset,
+          };
+        }
+      } catch (dbErr) {
+        console.warn("Supabase service update notice:", dbErr);
       }
-    } catch {
-      // Fallback
     }
 
-    mockServices = mockServices.map((s) => {
+    const current = getStoredServices();
+    const updated = current.map((s) => {
       if (s.id === id) {
         return {
           ...s,
@@ -207,8 +248,17 @@ export async function PUT(req: NextRequest) {
       return s;
     });
 
-    try { revalidatePath("/services"); revalidatePath("/"); } catch {}
-    return NextResponse.json({ success: true, service: updatedService || mockServices.find((s) => s.id === id) });
+    saveStoredServices(updated);
+
+    try {
+      revalidatePath("/services");
+      revalidatePath("/");
+    } catch {}
+
+    return NextResponse.json({
+      success: true,
+      service: updatedService || updated.find((s) => s.id === id),
+    });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : "Грешка при редакция на услугата.";
     return NextResponse.json({ error: msg }, { status: 500 });
@@ -227,15 +277,24 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: "Липсва ИД за изтриване." }, { status: 400 });
     }
 
-    try {
-      const supabase = await createClient();
-      await supabase.from("services").delete().eq("id", id);
-    } catch {
-      // Fallback
+    if (isSupabaseConfigured()) {
+      try {
+        const supabase = await createClient();
+        await supabase.from("services").delete().eq("id", id);
+      } catch (dbErr) {
+        console.warn("Supabase service delete notice:", dbErr);
+      }
     }
 
-    mockServices = mockServices.filter((s) => s.id !== id);
-    try { revalidatePath("/services"); revalidatePath("/"); } catch {}
+    const current = getStoredServices();
+    const updated = current.filter((s) => s.id !== id);
+    saveStoredServices(updated);
+
+    try {
+      revalidatePath("/services");
+      revalidatePath("/");
+    } catch {}
+
     return NextResponse.json({ success: true, id });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : "Грешка при изтриване на услугата.";

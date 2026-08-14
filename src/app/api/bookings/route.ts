@@ -1,11 +1,27 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { readPersistentData, writePersistentData } from "@/lib/server-storage";
 
-declare global {
-  var __BOOKINGS_STORE__: any[];
+export interface BookingRecord {
+  id: string;
+  fullName: string;
+  phone: string;
+  email: string;
+  eventDate: string;
+  eventType: string;
+  venueLocation: string;
+  guestCount: number;
+  preferredContact: string;
+  message: string;
+  status: string;
+  createdAt: string;
 }
 
-const mockBookingsList = [
+declare global {
+  var __BOOKINGS_STORE__: BookingRecord[] | undefined;
+}
+
+const mockBookingsList: BookingRecord[] = [
   {
     id: "BK-1001",
     fullName: "Светлана & Димитър Василеви",
@@ -50,41 +66,60 @@ const mockBookingsList = [
   },
 ];
 
-if (!globalThis.__BOOKINGS_STORE__) {
-  globalThis.__BOOKINGS_STORE__ = mockBookingsList;
+function getStoredBookings(): BookingRecord[] {
+  if (globalThis.__BOOKINGS_STORE__ && globalThis.__BOOKINGS_STORE__.length > 0) {
+    return globalThis.__BOOKINGS_STORE__;
+  }
+  const fromFile = readPersistentData<BookingRecord[]>("bookings", mockBookingsList);
+  globalThis.__BOOKINGS_STORE__ = fromFile;
+  return fromFile;
+}
+
+function saveStoredBookings(bookings: BookingRecord[]): void {
+  globalThis.__BOOKINGS_STORE__ = bookings;
+  writePersistentData("bookings", bookings);
+}
+
+function isSupabaseConfigured() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  return Boolean(url && !url.includes("placeholder") && !url.includes("example"));
 }
 
 export async function GET() {
-  try {
-    const supabase = await createClient();
-    const { data: dbBookings, error } = await supabase
-      .from("bookings")
-      .select("*")
-      .order("created_at", { ascending: false });
+  const current = getStoredBookings();
 
-    if (!error && dbBookings && dbBookings.length > 0) {
-      const formatted = dbBookings.map((b: any) => ({
-        id: b.id || `BK-${b.id}`,
-        fullName: b.full_name || b.fullName,
-        phone: b.phone,
-        email: b.email,
-        eventDate: b.event_date || b.eventDate,
-        eventType: b.event_type || b.eventType,
-        venueLocation: b.venue_location || b.venueLocation,
-        guestCount: b.guest_count || b.guestCount,
-        preferredContact: b.preferred_contact || b.preferredContact,
-        message: b.message,
-        status: b.status || "pending",
-        createdAt: b.created_at ? b.created_at.split("T")[0] : new Date().toISOString().split("T")[0],
-      }));
-      globalThis.__BOOKINGS_STORE__ = formatted;
-      return NextResponse.json(formatted);
+  if (isSupabaseConfigured()) {
+    try {
+      const supabase = await createClient();
+      const { data: dbBookings, error } = await supabase
+        .from("bookings")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!error && dbBookings && dbBookings.length > 0) {
+        const formatted: BookingRecord[] = dbBookings.map((b: any) => ({
+          id: b.id || `BK-${b.id}`,
+          fullName: b.full_name || b.fullName,
+          phone: b.phone,
+          email: b.email,
+          eventDate: b.event_date || b.eventDate,
+          eventType: b.event_type || b.eventType,
+          venueLocation: b.venue_location || b.venueLocation,
+          guestCount: b.guest_count || b.guestCount,
+          preferredContact: b.preferred_contact || b.preferredContact,
+          message: b.message || "",
+          status: b.status || "pending",
+          createdAt: b.created_at ? b.created_at.split("T")[0] : new Date().toISOString().split("T")[0],
+        }));
+        saveStoredBookings(formatted);
+        return NextResponse.json(formatted);
+      }
+    } catch (err) {
+      console.warn("Fetch bookings warning:", err);
     }
-  } catch (err) {
-    console.warn("Fetch bookings warning:", err);
   }
 
-  return NextResponse.json(globalThis.__BOOKINGS_STORE__ || mockBookingsList);
+  return NextResponse.json(current);
 }
 
 export async function POST(request: Request) {
@@ -110,14 +145,14 @@ export async function POST(request: Request) {
       );
     }
 
-    const newRecord = {
+    const newRecord: BookingRecord = {
       id: `BK-${Date.now()}`,
-      fullName,
-      phone,
-      email,
+      fullName: String(fullName).trim(),
+      phone: String(phone).trim(),
+      email: String(email).trim(),
       eventDate,
       eventType: eventType || "Сватбено тържество",
-      venueLocation,
+      venueLocation: String(venueLocation).trim(),
       guestCount: Number(guestCount) || 100,
       preferredContact: preferredContact || "телефон",
       message: message || "",
@@ -125,48 +160,46 @@ export async function POST(request: Request) {
       createdAt: new Date().toISOString().split("T")[0],
     };
 
-    if (!globalThis.__BOOKINGS_STORE__) {
-      globalThis.__BOOKINGS_STORE__ = mockBookingsList;
-    }
-    globalThis.__BOOKINGS_STORE__.unshift(newRecord);
+    if (isSupabaseConfigured()) {
+      try {
+        const supabase = await createClient();
+        const { data: existing } = await supabase
+          .from("bookings")
+          .select("id, status")
+          .eq("event_date", eventDate)
+          .eq("status", "confirmed");
 
-    try {
-      const supabase = await createClient();
+        if (existing && existing.length > 0) {
+          return NextResponse.json(
+            {
+              error: `За съжаление, датата ${eventDate} вече е потвърдена за друго събитие. Моля, изберете друга дата.`,
+            },
+            { status: 409 }
+          );
+        }
 
-      // Check double booking for confirmed date
-      const { data: existing } = await supabase
-        .from("bookings")
-        .select("id, status")
-        .eq("event_date", eventDate)
-        .eq("status", "confirmed");
-
-      if (existing && existing.length > 0) {
-        return NextResponse.json(
+        await supabase.from("bookings").insert([
           {
-            error: `За съжаление, датата ${eventDate} вече е потвърдена за друго събитие. Моля, изберете друга дата.`,
+            full_name: fullName,
+            phone,
+            email,
+            event_date: eventDate,
+            event_type: eventType,
+            venue_location: venueLocation,
+            guest_count: guestCount,
+            preferred_contact: preferredContact,
+            message: message || null,
+            status: "pending",
           },
-          { status: 409 }
-        );
+        ]);
+      } catch (dbErr) {
+        console.warn("Supabase booking insert notice:", dbErr);
       }
-
-      // Insert new booking into Supabase
-      await supabase.from("bookings").insert([
-        {
-          full_name: fullName,
-          phone,
-          email,
-          event_date: eventDate,
-          event_type: eventType,
-          venue_location: venueLocation,
-          guest_count: guestCount,
-          preferred_contact: preferredContact,
-          message: message || null,
-          status: "pending",
-        },
-      ]);
-    } catch (dbErr) {
-      console.warn("Supabase connection note:", dbErr);
     }
+
+    const current = getStoredBookings();
+    const updated = [newRecord, ...current];
+    saveStoredBookings(updated);
 
     return NextResponse.json({
       success: true,
@@ -189,20 +222,18 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: "Missing id or status" }, { status: 400 });
     }
 
-    // Update in-memory store
-    if (globalThis.__BOOKINGS_STORE__) {
-      globalThis.__BOOKINGS_STORE__ = globalThis.__BOOKINGS_STORE__.map((b) =>
-        b.id === id ? { ...b, status } : b
-      );
+    if (isSupabaseConfigured()) {
+      try {
+        const supabase = await createClient();
+        await supabase.from("bookings").update({ status }).eq("id", id);
+      } catch (err) {
+        console.warn("Supabase update booking status notice:", err);
+      }
     }
 
-    // Update in Supabase DB
-    try {
-      const supabase = await createClient();
-      await supabase.from("bookings").update({ status }).eq("id", id);
-    } catch (err) {
-      console.warn("Supabase update booking status notice:", err);
-    }
+    const current = getStoredBookings();
+    const updated = current.map((b) => (b.id === id ? { ...b, status } : b));
+    saveStoredBookings(updated);
 
     return NextResponse.json({ success: true, id, status });
   } catch (err) {
