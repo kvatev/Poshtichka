@@ -470,9 +470,9 @@ export const MapGallery = () => {
               <div className="w-full md:w-1/2 relative min-h-[300px] sm:min-h-[380px] md:min-h-[480px]">
                 <Image
                   src={
-                    activeModalEvent.galleryImages && activeModalEvent.galleryImages.length > 0
-                      ? activeModalEvent.galleryImages[activeLightboxIndex] || activeModalEvent.coverImage
-                      : activeModalEvent.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"
+                    (activeModalEvent.galleryImages && activeModalEvent.galleryImages[activeLightboxIndex]) ||
+                    activeModalEvent.coverImage ||
+                    "/media/gallery/Tezza_2025_07_07_170901960_1.webp"
                   }
                   alt={activeModalEvent.eventName || activeModalEvent.cityName}
                   fill
