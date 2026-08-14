@@ -1,11 +1,13 @@
 export interface EventLocation {
   id: string;
-  eventName?: string; // Optional: Defaults to "Пощичка в {cityName}" if left blank
-  cityName: string;
+  eventName?: string; // Optional: e.g. "ГЕРИ И КРАСИ"
+  cityName: string; // e.g. "Созопол"
+  venueName?: string; // e.g. "Комплекс Свети Тома"
+  eventType?: string; // e.g. "сватбено тържество", "кръщение"
   latitude: number;
   longitude: number;
-  coverImage?: string; // Optional: Uses fallback brand image if left blank
-  galleryImages?: string[]; // Optional: Empty array if no images
+  coverImage?: string;
+  galleryImages?: string[];
   description?: string;
   eventDate?: string;
   createdAt?: string;
@@ -15,6 +17,8 @@ export interface EventLocation {
 export interface CreateEventLocationInput {
   eventName?: string;
   cityName: string;
+  venueName?: string;
+  eventType?: string;
   latitude: number;
   longitude: number;
   coverImage?: string;

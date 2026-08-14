@@ -54,7 +54,6 @@
   font-family: 'StampatelloFaceto', sans-serif;
 }
 
-
 /* Glassmorphism utility */
 .glass-panel {
   background: rgba(255, 255, 255, 0.75);
@@ -88,3 +87,12 @@
   background: #008b8d;
 }
 
+/* Hide Leaflet map attribution bar and controls */
+.leaflet-control-attribution,
+.leaflet-control-container .leaflet-bottom.leaflet-right,
+.leaflet-control-zoom {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}

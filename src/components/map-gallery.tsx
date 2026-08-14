@@ -3,17 +3,165 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Sparkles, X, Layers, Navigation, ChevronRight, Calendar, Heart, Award } from "lucide-react";
+import { X } from "lucide-react";
 import { EventLocation } from "@/types/map-event";
-import { Card } from "./ui/card";
-import { Button } from "./ui/button";
+
+// Default locations pre-populated matching exact user screenshots & data
+const DEFAULT_LOCATIONS: EventLocation[] = [
+  {
+    id: "MAP-01",
+    eventName: "ГЕРИ И КРАСИ",
+    cityName: "Созопол",
+    venueName: "Комплекс Свети Тома",
+    eventType: "сватбено тържество",
+    latitude: 42.4175,
+    longitude: 27.6958,
+    coverImage: "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
+    galleryImages: [
+      "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
+      "/media/gallery/Tezza_2025_07_13_155324686.webp",
+      "/media/gallery/Tezza_2025_07_13_155326413.webp",
+    ],
+    description:
+      "За сватбения ден на Гери и Краси изготвихме 2 марки, стикер и татуировка. Младоженците искаха ключови локации, домашния си любимец и тях самите въплатени в дизайните. Машината се изпразни още на първия час от сватбения ден!",
+    eventDate: "2026-07-15",
+  },
+  {
+    id: "MAP-02",
+    eventName: "МИЛКА И АНДРЕЙ",
+    cityName: "София",
+    venueName: "Голф клуб Св. София",
+    eventType: "сватбено тържество",
+    latitude: 42.6977,
+    longitude: 23.3219,
+    coverImage: "/media/gallery/Tezza_2025_07_13_155331795.webp",
+    galleryImages: [
+      "/media/gallery/Tezza_2025_07_13_155331795.webp",
+      "/media/gallery/Tezza_2025_07_13_155333570.webp",
+      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
+    ],
+    description: "Незабравима сватба в Голф клуб Св. София с персонализирани спомени и картички от драсканици за всички гости.",
+    eventDate: "2026-06-20",
+  },
+  {
+    id: "MAP-03",
+    eventName: "СВЕТЛИН",
+    cityName: "Велико Търново",
+    venueName: "Park Hotel RAYA Garden",
+    eventType: "кръщение",
+    latitude: 43.0757,
+    longitude: 25.6172,
+    coverImage: "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
+    galleryImages: [
+      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
+      "/media/gallery/Tezza_2025_07_13_155324686.webp",
+    ],
+    description: "Празнично кръщение с авторски картички и специални монети-жетони в Park Hotel RAYA Garden.",
+    eventDate: "2026-05-18",
+  },
+  {
+    id: "MAP-04",
+    eventName: "НИКОЛ И ДАНИЕЛ",
+    cityName: "Перущица",
+    venueName: "Вила Юстина",
+    eventType: "сватбено тържество",
+    latitude: 42.0567,
+    longitude: 24.5458,
+    coverImage: "/media/gallery/Tezza_2025_07_13_155324686.webp",
+    galleryImages: [
+      "/media/gallery/Tezza_2025_07_13_155324686.webp",
+      "/media/gallery/Tezza_2025_07_13_155326413.webp",
+    ],
+    description: "Вълшебен сватбен ден във Вила Юстина, Перущица с мобилния кът на Пощичка.",
+    eventDate: "2026-08-02",
+  },
+  {
+    id: "MAP-05",
+    eventName: "КРИСИ И ВИКТОР",
+    cityName: "София",
+    venueName: "Голф клуб Св. София",
+    eventType: "сватбено тържество",
+    latitude: 42.6977,
+    longitude: 23.3219,
+    coverImage: "/media/gallery/Tezza_2025_07_13_155326413.webp",
+    galleryImages: [
+      "/media/gallery/Tezza_2025_07_13_155326413.webp",
+      "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
+    ],
+    description: "Елегантен сватбен кът Пощичка с персонализиран дизайн на картички за тържеството.",
+    eventDate: "2026-07-28",
+  },
+  {
+    id: "MAP-06",
+    eventName: "РАЛИ И ЖЕЛЮ",
+    cityName: "Червен",
+    venueName: "Midalidare Estate",
+    eventType: "сватбено тържество",
+    latitude: 43.6212,
+    longitude: 25.9961,
+    coverImage: "/media/gallery/Tezza_2025_07_13_155333570.webp",
+    galleryImages: [
+      "/media/gallery/Tezza_2025_07_13_155333570.webp",
+      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
+    ],
+    description: "Сватбено гостуване в Midalidare Estate, Червен с временни татуировки и картички.",
+    eventDate: "2026-06-10",
+  },
+  {
+    id: "MAP-07",
+    eventName: "МАРИНА И ИВАН",
+    cityName: "Каварна",
+    venueName: "Вила Калиакра и Градина",
+    eventType: "сватбено тържество",
+    latitude: 43.4342,
+    longitude: 28.3392,
+    coverImage: "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
+    galleryImages: [
+      "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
+      "/media/gallery/Tezza_2025_07_13_155331795.webp",
+    ],
+    description: "Красиви спомени във Вила Калиакра и Градина, Каварна.",
+    eventDate: "2026-08-12",
+  },
+  {
+    id: "MAP-08",
+    eventName: "МАЯ И НИКО",
+    cityName: "София",
+    venueName: "Голф клуб Св. София",
+    eventType: "сватбено тържество",
+    latitude: 42.6977,
+    longitude: 23.3219,
+    coverImage: "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
+    galleryImages: [
+      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
+      "/media/gallery/Tezza_2025_07_13_155324686.webp",
+    ],
+    description: "Забавни моменти и картички за гостите в Голф клуб Св. София.",
+    eventDate: "2026-09-01",
+  },
+  {
+    id: "MAP-09",
+    eventName: "ВИКТОРИЯ И ВАСИЛ",
+    cityName: "София",
+    venueName: "Pasarel Lake Club",
+    eventType: "сватбено тържество",
+    latitude: 42.5412,
+    longitude: 23.5012,
+    coverImage: "/media/gallery/Tezza_2025_07_13_155324686.webp",
+    galleryImages: [
+      "/media/gallery/Tezza_2025_07_13_155324686.webp",
+      "/media/gallery/Tezza_2025_07_13_155326413.webp",
+    ],
+    description: "Романтично празненство в Pasarel Lake Club.",
+    eventDate: "2026-09-15",
+  },
+];
 
 export const MapGallery = () => {
-  const [events, setEvents] = useState<EventLocation[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedCity, setSelectedCity] = useState<string>("Всички");
-  const [activeEventId, setActiveEventId] = useState<string | null>(null);
-  const [activeLightboxIndex, setActiveLightboxIndex] = useState<number | null>(null);
+  const [events, setEvents] = useState<EventLocation[]>(DEFAULT_LOCATIONS);
+  const [selectedCity, setSelectedCity] = useState<string>("Созопол");
+  const [activeModalEvent, setActiveModalEvent] = useState<EventLocation | null>(null);
+  const [activeLightboxIndex, setActiveLightboxIndex] = useState<number>(0);
 
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,62 +169,31 @@ export const MapGallery = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const markersRef = useRef<any[]>([]);
 
-  // Fetch locations from dynamic API endpoint /api/map-events
+  // Fetch API locations
   useEffect(() => {
     fetch("/api/map-events")
-      .then((res) => res.json())
+      .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (data.events && Array.isArray(data.events)) {
+        if (data && data.events && Array.isArray(data.events) && data.events.length > 0) {
           setEvents(data.events);
-          if (data.events.length > 0) {
-            setActiveEventId(data.events[0].id);
-          }
         }
       })
-      .catch((err) => {
-        console.error("Грешка при зареждане на събитията за картата:", err);
-      })
-      .finally(() => setLoading(false));
+      .catch(() => {});
   }, []);
 
-  // Active event object
-  const activeEvent = useMemo(() => {
-    return events.find((e) => e.id === activeEventId) || events[0] || null;
-  }, [events, activeEventId]);
+  const cityNamesList = ["Созопол", "Каварна", "София", "Червен", "Перущица", "Велико Търново"];
 
-  // All visits for the currently active city
-  const cityVisits = useMemo(() => {
-    if (!activeEvent) return [];
-    return events.filter((e) => e.cityName.toLowerCase() === activeEvent.cityName.toLowerCase());
-  }, [events, activeEvent]);
+  // Active events for the selected city
+  const selectedCityEvents = useMemo(() => {
+    return events.filter(
+      (e) => e.cityName.toLowerCase().trim() === selectedCity.toLowerCase().trim()
+    );
+  }, [events, selectedCity]);
 
-  // Unique city list for filters
-  const cities = ["Всички", ...Array.from(new Set(events.map((e) => e.cityName)))];
-
-  const filteredEvents = selectedCity === "Всички"
-    ? events
-    : events.filter((e) => e.cityName === selectedCity);
-
-  // Group events by city for map markers so each unique location has 1 marker with visit count
-  const groupedCityMarkers = useMemo(() => {
-    const map = new Map<string, EventLocation[]>();
-    filteredEvents.forEach((ev) => {
-      const key = ev.cityName.toLowerCase();
-      if (!map.has(key)) {
-        map.set(key, []);
-      }
-      map.get(key)!.push(ev);
-    });
-    return Array.from(map.values());
-  }, [filteredEvents]);
-
-  // Initialize public Leaflet map with Abstract Blob Markers
+  // Leaflet Map Initialization with Asset 82@2x.png pins
   useEffect(() => {
-    if (events.length === 0) return;
-
     let isMounted = true;
 
-    // Load Leaflet CSS dynamically
     if (!document.getElementById("leaflet-css")) {
       const link = document.createElement("link");
       link.id = "leaflet-css";
@@ -88,342 +205,357 @@ export const MapGallery = () => {
     import("leaflet").then((L) => {
       if (!isMounted || !mapContainerRef.current) return;
 
-      // Custom icon setup
-      delete (L.Icon.Default.prototype as any)._getIconUrl;
-      L.Icon.Default.mergeOptions({
-        iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-        iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-      });
-
       if (!mapInstanceRef.current) {
-        const centerLat = events[0]?.latitude || 42.5048;
-        const centerLng = events[0]?.longitude || 27.4626;
-
         const map = L.map(mapContainerRef.current, {
           scrollWheelZoom: false,
-        }).setView([centerLat, centerLng], 8);
+          zoomControl: true,
+          attributionControl: false,
+        }).setView([42.75, 25.5], 7);
 
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+          attribution: "",
         }).addTo(map);
 
         mapInstanceRef.current = map;
       }
 
-      // Clear existing markers
       markersRef.current.forEach((m) => m.remove());
       markersRef.current = [];
 
-      // Add Abstract Blob Markers for each city group
-      groupedCityMarkers.forEach((cityEventsGroup) => {
-        const firstEvent = cityEventsGroup[0];
-        const visitCount = cityEventsGroup.length;
-        const isMultiVisit = visitCount > 1;
+      const customBoothIcon = L.icon({
+        iconUrl: encodeURI("/media/Галерия/Asset 82@2x.png"),
+        iconSize: [44, 48],
+        iconAnchor: [22, 48],
+        popupAnchor: [0, -44],
+      });
 
-        // Custom Abstract Blob Marker HTML
-        const blobMarkerHtml = `
-          <div class="relative group cursor-pointer">
-            <div class="absolute -inset-1.5 rounded-[45%_55%_65%_35%/40%_50%_60%_50%] bg-[#00b4b6]/40 blur-xs animate-pulse group-hover:scale-125 transition-transform"></div>
-            <div class="relative w-10 h-10 bg-gradient-to-tr from-[#00b4b6] via-[#121212] to-emerald-400 border-2 border-white shadow-xl flex items-center justify-center text-white font-serif font-bold text-xs group-hover:scale-110 transition-transform" style="border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;">
-              ${isMultiVisit ? `<span class="bg-amber-400 text-black rounded-full w-4 h-4 text-[9px] font-mono flex items-center justify-center font-bold absolute -top-1 -right-1 shadow-sm">${visitCount}</span>` : ""}
-              <span class="text-xs drop-shadow-md">✦</span>
-            </div>
-          </div>
-        `;
+      const cityCoordsMap: Record<string, [number, number]> = {
+        "Созопол": [42.4175, 27.6958],
+        "Каварна": [43.4342, 28.3392],
+        "София": [42.6977, 23.3219],
+        "Червен": [43.6212, 25.9961],
+        "Перущица": [42.0567, 24.5458],
+        "Велико Търново": [43.0757, 25.6172],
+      };
 
-        const abstractBlobIcon = L.divIcon({
-          className: "custom-abstract-blob-pin",
-          html: blobMarkerHtml,
-          iconSize: [40, 40],
-          iconAnchor: [20, 20],
-        });
-
-        const tooltipText = isMultiVisit
-          ? `<b>${firstEvent.cityName}</b><br/>${visitCount} гостувания на Пощичка`
-          : `<b>${firstEvent.eventName || "Пощичка"}</b><br/>${firstEvent.cityName}`;
-
-        const marker = L.marker([firstEvent.latitude, firstEvent.longitude], { icon: abstractBlobIcon })
+      Object.entries(cityCoordsMap).forEach(([cityName, coords]) => {
+        const marker = L.marker(coords, { icon: customBoothIcon })
           .addTo(mapInstanceRef.current)
-          .bindTooltip(tooltipText, { direction: "top", offset: [0, -10] });
+          .bindTooltip(`<b>${cityName}</b>`, { direction: "top", offset: [0, -10] });
 
         marker.on("click", () => {
-          setActiveEventId(firstEvent.id);
-          mapInstanceRef.current.panTo([firstEvent.latitude, firstEvent.longitude]);
+          setSelectedCity(cityName);
+          if (mapInstanceRef.current) {
+            mapInstanceRef.current.panTo(coords);
+          }
         });
 
         markersRef.current.push(marker);
       });
-
-      if (groupedCityMarkers.length > 0 && mapInstanceRef.current) {
-        const group = L.featureGroup(markersRef.current);
-        mapInstanceRef.current.fitBounds(group.getBounds().pad(0.25));
-      }
     });
 
     return () => {
       isMounted = false;
     };
-  }, [events, groupedCityMarkers]);
+  }, []);
+
+  // Center map on selected city
+  useEffect(() => {
+    if (!mapInstanceRef.current) return;
+    const cityCoordsMap: Record<string, [number, number]> = {
+      "Созопол": [42.4175, 27.6958],
+      "Каварна": [43.4342, 28.3392],
+      "София": [42.6977, 23.3219],
+      "Червен": [43.6212, 25.9961],
+      "Перущица": [42.0567, 24.5458],
+      "Велико Търново": [43.0757, 25.6172],
+    };
+    const coords = cityCoordsMap[selectedCity];
+    if (coords) {
+      mapInstanceRef.current.panTo(coords);
+    }
+  }, [selectedCity]);
 
   return (
-    <section className="py-16 sm:py-20 bg-brand-bg text-brand-dark relative overflow-hidden font-sans">
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-10">
-        {/* Section Header */}
-        <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <div className="inline-flex items-center space-x-2 bg-brand-primary/30 px-4 py-1.5 rounded-full text-xs font-semibold text-brand-accent uppercase tracking-widest border border-brand-primary/50 shadow-xs">
-            <Sparkles className="w-4 h-4" />
-            <span>Интерактивна Карта на Локациите</span>
-          </div>
+    <div className="space-y-12 sm:space-y-16 py-6 font-sans select-none bg-[#f9f6f0]">
+      {/* 1. Header Section */}
+      <div className="text-center max-w-3xl mx-auto space-y-3 px-4">
+        <h1 className="font-salongbeach text-3xl sm:text-5xl lg:text-6xl font-bold uppercase tracking-wider text-[#00b4b6] leading-tight">
+          ГАЛЕРИЯ ОТ ИЗМИНАЛИ СЪБИТИЯ
+        </h1>
+        <p className="font-sans text-sm sm:text-base lg:text-lg text-[#182b2c]/80 italic">
+          Разгледайте истински кадри от пътуването на Пощичка.
+        </p>
 
-          <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-brand-dark">
-            Пощичка На Живо Из Всяка Точка На България
-          </h2>
-
-          <p className="text-base sm:text-lg text-brand-dark/80 font-light leading-relaxed">
-            Открийте локациите и събитията, на които нашият live memory lab сътвори усмивки и персонализирани спомени за гостите.
-          </p>
-        </div>
-
-        {/* City Filter Tabs */}
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          {cities.map((city) => (
-            <button
-              key={city}
-              onClick={() => setSelectedCity(city)}
-              className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
-                selectedCity === city
-                  ? "bg-brand-accent text-white shadow-md scale-105"
-                  : "bg-white border border-brand-primary/30 text-brand-dark hover:bg-brand-secondary"
-              }`}
-            >
-              {city}
-            </button>
-          ))}
-        </div>
-
-        {/* Interactive Map & Active Event Panel */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-          {/* Map View Container */}
-          <Card className="lg:col-span-7 h-[450px] sm:h-[580px] rounded-3xl overflow-hidden border border-brand-primary/30 shadow-xl relative z-10">
-            {loading ? (
-              <div className="w-full h-full flex items-center justify-center bg-brand-secondary/40 text-brand-dark">
-                <div className="animate-spin rounded-full h-10 w-10 border-4 border-brand-accent border-t-transparent" />
-              </div>
-            ) : (
-              <div ref={mapContainerRef} className="w-full h-full" />
-            )}
-          </Card>
-
-          {/* Active Event Preview & Multi-Visit Selector Panel */}
-          <Card className="lg:col-span-5 p-6 sm:p-8 bg-white border border-brand-primary/30 shadow-xl rounded-3xl flex flex-col justify-between space-y-6">
-            {activeEvent ? (
-              <div className="space-y-5 flex-1 flex flex-col justify-between">
-                {/* Multi-Visit Header & Switcher Tabs if city has multiple visits */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between border-b border-brand-primary/20 pb-3">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 rounded-full bg-brand-primary/30 border border-brand-primary/50 flex items-center justify-center text-brand-accent font-bold text-xs shadow-xs">
-                        📍
-                      </div>
-                      <div>
-                        <h3 className="font-serif font-bold text-lg text-brand-dark leading-none">
-                          {activeEvent.cityName}
-                        </h3>
-                        <span className="text-[11px] text-brand-accent font-medium">
-                          {cityVisits.length > 1
-                            ? `${cityVisits.length} гостувания на тази локация`
-                            : "Локация на Пощичка"}
-                        </span>
-                      </div>
-                    </div>
-
-                    {cityVisits.length > 1 && (
-                      <span className="bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center space-x-1">
-                        <Award className="w-3 h-3 text-amber-600" />
-                        <span>Множество събития</span>
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Multi-Visit Event Tabs Switcher */}
-                  {cityVisits.length > 1 && (
-                    <div className="space-y-1.5 bg-brand-secondary/40 p-2.5 rounded-2xl border border-brand-primary/30">
-                      <span className="text-[10px] uppercase tracking-wider font-bold text-brand-dark/70 px-1">
-                        Изберете събитие от {activeEvent.cityName}:
-                      </span>
-                      <div className="flex flex-col gap-1.5 max-h-36 overflow-y-auto pr-1">
-                        {cityVisits.map((visit, idx) => {
-                          const visitTitle = visit.eventName && visit.eventName.trim()
-                            ? visit.eventName
-                            : `Гостуване #${idx + 1} в ${visit.cityName}`;
-                          const isSelected = visit.id === activeEvent.id;
-
-                          return (
-                            <button
-                              key={visit.id}
-                              onClick={() => setActiveEventId(visit.id)}
-                              className={`w-full text-left px-3 py-2 rounded-xl text-xs transition-all flex items-center justify-between ${
-                                isSelected
-                                  ? "bg-brand-accent text-white font-bold shadow-xs"
-                                  : "bg-white text-brand-dark hover:bg-brand-primary/30 border border-brand-primary/20"
-                              }`}
-                            >
-                              <span className="truncate pr-2">{visitTitle}</span>
-                              {visit.eventDate && (
-                                <span className={`text-[10px] font-mono flex-shrink-0 ${isSelected ? "text-white/80" : "text-brand-dark/50"}`}>
-                                  {visit.eventDate}
-                                </span>
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Active Event Cover Image or Fallback Brand Banner */}
-                  <div className="relative w-full h-48 sm:h-56 rounded-2xl overflow-hidden border border-brand-primary/20 shadow-md">
-                    {activeEvent.coverImage ? (
-                      <Image
-                        src={activeEvent.coverImage}
-                        alt={activeEvent.eventName || activeEvent.cityName}
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-brand-accent/20 via-brand-primary/30 to-brand-secondary flex flex-col items-center justify-center p-6 text-center space-y-2">
-                        <div className="w-12 h-12 rounded-2xl bg-white/80 border border-brand-accent/40 flex items-center justify-center shadow-md">
-                          <Image src="/media/logos/logo.webp" alt="Пощичка" width={36} height={36} className="rounded-lg object-cover" />
-                        </div>
-                        <span className="font-serif font-bold text-lg text-brand-dark">
-                          Пощичка в {activeEvent.cityName}
-                        </span>
-                        <span className="text-xs text-brand-dark/70 font-light">
-                          Персонализирани спомени, сътворени на място
-                        </span>
-                      </div>
-                    )}
-
-                    {activeEvent.coverImage && (
-                      <div className="absolute top-3 left-3 bg-brand-dark/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-brand-primary border border-brand-primary/40 flex items-center space-x-1">
-                        <MapPin className="w-3.5 h-3.5 text-brand-accent" />
-                        <span>{activeEvent.cityName}</span>
-                      </div>
-                    )}
-
-                    {activeEvent.eventDate && (
-                      <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] text-white flex items-center space-x-1">
-                        <Calendar className="w-3 h-3 text-brand-accent" />
-                        <span>{activeEvent.eventDate}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Event Title & Description */}
-                  <div className="space-y-1.5">
-                    <h4 className="font-serif text-xl sm:text-2xl font-bold text-brand-dark leading-tight">
-                      {activeEvent.eventName || `Пощичка в ${activeEvent.cityName}`}
-                    </h4>
-                    <p className="text-xs sm:text-sm font-sans text-brand-dark/80 leading-relaxed">
-                      {activeEvent.description || `Нашето гостуване в ${activeEvent.cityName} подари незабравими емоции на всички гости.`}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Photo Gallery for Selected Event */}
-                {activeEvent.galleryImages && activeEvent.galleryImages.length > 0 && (
-                  <div className="space-y-2 pt-3 border-t border-brand-primary/20">
-                    <span className="text-xs font-bold uppercase tracking-wider text-brand-accent flex items-center space-x-1">
-                      <Layers className="w-3.5 h-3.5" />
-                      <span>Кадри от събитието ({activeEvent.galleryImages.length})</span>
-                    </span>
-
-                    <div className="grid grid-cols-4 gap-2">
-                      {activeEvent.galleryImages.map((img, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => setActiveLightboxIndex(idx)}
-                          className="relative h-16 rounded-xl overflow-hidden border border-brand-primary/30 hover:scale-105 transition-transform group shadow-xs"
-                        >
-                          <Image src={img} alt={`Кадър ${idx + 1}`} fill className="object-cover" unoptimized />
-                          <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs">
-                            🔍
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <LinkBookingButton date={activeEvent.eventDate} />
-              </div>
-            ) : (
-              <div className="h-full flex flex-col items-center justify-center text-center p-8 text-brand-dark/60 space-y-3">
-                <Navigation className="w-10 h-10 text-brand-accent animate-bounce" />
-                <p className="text-sm font-medium">
-                  Изберете точка от картата, за да разгледате гостуванията и събитията на Пощичка.
-                </p>
-              </div>
-            )}
-          </Card>
+        {/* Curly Arrow pointing down */}
+        <div className="pt-2 flex justify-center pointer-events-none">
+          <Image
+            src={encodeURI("/media/Main Page/curly-arrow-left.png")}
+            alt="Стрелка"
+            width={44}
+            height={44}
+            className="w-8 sm:w-10 h-auto object-contain opacity-85 rotate-90"
+          />
         </div>
       </div>
 
-      {/* Lightbox Modal for Gallery Photos */}
-      <AnimatePresence>
-        {activeLightboxIndex !== null && activeEvent && activeEvent.galleryImages && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
-            onClick={() => setActiveLightboxIndex(null)}
-          >
-            <div className="relative max-w-4xl w-full h-[80vh] flex flex-col items-center justify-center" onClick={(e) => e.stopPropagation()}>
-              <button
-                onClick={() => setActiveLightboxIndex(null)}
-                className="absolute top-4 right-4 text-white hover:text-brand-primary p-2 bg-white/10 rounded-full"
-              >
-                <X className="w-6 h-6" />
-              </button>
+      {/* 2. City Filter Oval Tabs */}
+      <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 px-4 max-w-5xl mx-auto">
+        {cityNamesList.map((cityName) => {
+          const isSelected = selectedCity.toLowerCase() === cityName.toLowerCase();
+          return (
+            <button
+              key={cityName}
+              onClick={() => setSelectedCity(cityName)}
+              className={`px-5 sm:px-7 py-2 text-xs sm:text-sm font-salongbeach font-bold uppercase tracking-wider rounded-full transition-all duration-300 cursor-pointer shadow-xs ${
+                isSelected
+                  ? "bg-[#00b4b6] text-white shadow-md scale-105"
+                  : "bg-[#f9f6f0] border border-[#00b4b6] text-[#182b2c] hover:bg-[#00b4b6]/10"
+              }`}
+            >
+              {cityName}
+            </button>
+          );
+        })}
+      </div>
 
-              <div className="relative w-full h-full">
+      {/* 3. Interactive Bulgaria Map Container with Asset 82@2x.png pins */}
+      <div className="max-w-5xl mx-auto px-4">
+        <div className="relative w-full h-[320px] sm:h-[460px] md:h-[520px] rounded-[32px] overflow-hidden border-2 border-[#182b2c]/20 shadow-xl bg-[#e5e7eb]">
+          <div ref={mapContainerRef} className="w-full h-full" />
+        </div>
+      </div>
+
+      {/* 4. Active City Title Section with Asset 83@2x.png icon */}
+      <div className="text-center space-y-2 px-4 pt-4">
+        <div className="flex justify-center">
+          <div className="relative w-10 sm:w-12 h-10 sm:h-12">
+            <Image
+              src={encodeURI("/media/Галерия/Asset 83@2x.png")}
+              alt="Иконка локация"
+              fill
+              className="object-contain"
+              unoptimized
+            />
+          </div>
+        </div>
+        <h2 className="font-salongbeach text-3xl sm:text-5xl font-bold uppercase tracking-wider text-[#182b2c]">
+          {selectedCity}
+        </h2>
+        <p className="font-sans text-xs sm:text-sm text-[#182b2c]/75 italic">
+          {selectedCityEvents.length > 0
+            ? `${selectedCityEvents.length} ${selectedCityEvents.length === 1 ? "гостуване" : "гостувания"} на тази локация`
+            : "1 гостуване на тази локация"}
+        </p>
+      </div>
+
+      {/* 5. Active City Event Banner Section (Teal Background #00b4b6) */}
+      <section className="w-full bg-[#00b4b6] py-12 sm:py-16 px-4 sm:px-8">
+        <div className="max-w-6xl mx-auto">
+          {selectedCityEvents.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 justify-center">
+              {selectedCityEvents.map((ev) => (
+                <div
+                  key={ev.id}
+                  onClick={() => {
+                    setActiveModalEvent(ev);
+                    setActiveLightboxIndex(0);
+                  }}
+                  className="bg-[#f9f6f0] rounded-[32px] p-3 shadow-xl border-2 border-white/80 text-center flex flex-col justify-between space-y-3 hover:scale-[1.02] transition-all duration-300 cursor-pointer"
+                >
+                  <div className="relative w-full h-64 sm:h-72 rounded-[24px] overflow-hidden">
+                    <Image
+                      src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
+                      alt={ev.eventName || ev.cityName}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  </div>
+
+                  <div className="space-y-1 pb-1">
+                    <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
+                      {ev.eventName || `Пощичка в ${ev.cityName}`}
+                    </h3>
+                    <p className="font-sans text-xs sm:text-sm text-[#182b2c]/80">
+                      {ev.venueName || `Комплекс в ${ev.cityName}`}
+                    </p>
+                    <p className="font-sans text-[11px] text-[#00b4b6] font-medium">
+                      {ev.eventType || "сватбено тържество"}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-white space-y-2 py-8 font-sans">
+              <p className="text-lg font-bold">Няма намерени събития за {selectedCity}</p>
+              <p className="text-sm opacity-90">Изберете друг град от списъка или картата.</p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* 6. ВСИЧКИ ЛОКАЦИИ Section with Asset 83@2x.png icon */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 space-y-10 pt-6">
+        <div className="text-center space-y-2">
+          <div className="flex justify-center">
+            <div className="relative w-10 sm:w-12 h-10 sm:h-12">
+              <Image
+                src={encodeURI("/media/Галерия/Asset 83@2x.png")}
+                alt="Иконка локация"
+                fill
+                className="object-contain"
+                unoptimized
+              />
+            </div>
+          </div>
+          <h2 className="font-salongbeach text-3xl sm:text-5xl font-bold uppercase tracking-wider text-[#182b2c]">
+            ВСИЧКИ ЛОКАЦИИ
+          </h2>
+        </div>
+
+        {/* 3-Column Grid matching Screenshot 1 layout */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 justify-items-center">
+          {events.map((ev) => (
+            <div
+              key={ev.id}
+              onClick={() => {
+                setActiveModalEvent(ev);
+                setActiveLightboxIndex(0);
+              }}
+              className="bg-[#f9f6f0] rounded-[32px] p-3 shadow-md border-2 border-[#182b2c]/15 text-center flex flex-col justify-between space-y-3 w-full max-w-sm hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer"
+            >
+              <div className="relative w-full h-64 sm:h-72 rounded-[24px] overflow-hidden">
                 <Image
-                  src={
-                    activeEvent.galleryImages[activeLightboxIndex] ||
-                    activeEvent.coverImage ||
-                    "/media/logos/logo.webp"
-                  }
-                  alt={activeEvent.eventName || activeEvent.cityName}
+                  src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
+                  alt={ev.eventName || ev.cityName}
                   fill
-                  className="object-contain"
+                  className="object-cover"
                   unoptimized
                 />
               </div>
 
-              <div className="mt-4 text-center text-white space-y-1">
-                <p className="font-serif font-bold text-lg">{activeEvent.eventName || `Пощичка в ${activeEvent.cityName}`}</p>
-                <p className="text-xs text-white/70">
-                  Снимка {activeLightboxIndex + 1} от {activeEvent.galleryImages.length} ({activeEvent.cityName})
+              <div className="space-y-1 pb-1">
+                <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
+                  {ev.eventName || `Пощичка в ${ev.cityName}`}
+                </h3>
+                <p className="font-sans text-xs sm:text-sm text-[#182b2c]/80">
+                  {ev.venueName || `Събитие в ${ev.cityName}`}
                 </p>
+                <p className="font-sans text-[11px] text-[#00b4b6] font-medium">
+                  {ev.eventType || "сватбено тържество"}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 7. Lightbox Overlay Modal matching Screenshot 2 layout */}
+      <AnimatePresence>
+        {activeModalEvent && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
+            onClick={() => setActiveModalEvent(null)}
+          >
+            <div
+              className="relative max-w-5xl w-full bg-[#f9f6f0] rounded-[36px] overflow-hidden shadow-2xl border border-white/60 flex flex-col md:flex-row text-left font-sans max-h-[90vh] md:max-h-[85vh]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Left Side: Main Large Image */}
+              <div className="w-full md:w-1/2 relative min-h-[300px] sm:min-h-[380px] md:min-h-[480px]">
+                <Image
+                  src={
+                    activeModalEvent.galleryImages && activeModalEvent.galleryImages.length > 0
+                      ? activeModalEvent.galleryImages[activeLightboxIndex] || activeModalEvent.coverImage
+                      : activeModalEvent.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"
+                  }
+                  alt={activeModalEvent.eventName || activeModalEvent.cityName}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              </div>
+
+              {/* Right Side: Info Content matching Screenshot 2 */}
+              <div className="w-full md:w-1/2 p-6 sm:p-8 flex flex-col justify-between space-y-6 overflow-y-auto relative">
+                {/* Close Button in cyan circle ring */}
+                <button
+                  onClick={() => setActiveModalEvent(null)}
+                  className="absolute top-4 right-4 w-9 h-9 rounded-full border-2 border-[#00b4b6] text-[#00b4b6] hover:bg-[#00b4b6] hover:text-white transition-all flex items-center justify-center cursor-pointer shadow-xs"
+                  aria-label="Затвори"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+
+                <div className="space-y-4 pr-6">
+                  {/* Category / Type Tag */}
+                  <span className="text-[#00b4b6] font-semibold text-xs uppercase tracking-wider block">
+                    {activeModalEvent.eventType || "СВАТБЕНО ТЪРЖЕСТВО"}
+                  </span>
+
+                  {/* Main Title */}
+                  <h3 className="font-salongbeach text-3xl sm:text-4xl font-bold uppercase tracking-wider text-[#182b2c] leading-tight">
+                    {activeModalEvent.eventName || `ПОЩИЧКА В ${activeModalEvent.cityName.toUpperCase()}`}
+                  </h3>
+
+                  {/* Venue Name */}
+                  <p className="font-sans text-xs sm:text-sm text-[#00b4b6] uppercase tracking-wider font-semibold">
+                    {activeModalEvent.venueName || activeModalEvent.cityName}
+                  </p>
+
+                  {/* Paragraph Description */}
+                  <p className="font-sans text-xs sm:text-sm text-[#182b2c]/85 leading-relaxed pt-1">
+                    {activeModalEvent.description ||
+                      "За събитието изготвихме авторски картички, стикери и татуировки за гостите. Персонализираното изживяване донесе много усмивки и спомени за цял живот!"}
+                  </p>
+
+                  {/* Thumbnails Row */}
+                  {activeModalEvent.galleryImages && activeModalEvent.galleryImages.length > 0 && (
+                    <div className="pt-2">
+                      <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                        {activeModalEvent.galleryImages.slice(0, 3).map((img, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => setActiveLightboxIndex(idx)}
+                            className={`relative h-20 sm:h-24 rounded-2xl overflow-hidden border-2 transition-all cursor-pointer ${
+                              activeLightboxIndex === idx
+                                ? "border-[#00b4b6] scale-105 shadow-md"
+                                : "border-transparent opacity-80 hover:opacity-100"
+                            }`}
+                          >
+                            <Image src={img} alt={`Снимка ${idx + 1}`} fill className="object-cover" unoptimized />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Bottom Row with Asset 72@2x.png heart icon */}
+                <div className="pt-4 border-t border-[#00b4b6]/20 flex items-center space-x-3">
+                  <div className="relative w-9 h-9 flex-shrink-0">
+                    <Image
+                      src={encodeURI("/media/За Пощичка/Asset 72@2x.png")}
+                      alt="Автентичен спомен"
+                      fill
+                      className="object-contain"
+                      unoptimized
+                    />
+                  </div>
+                  <span className="font-salongbeach text-[#00b4b6] font-bold text-base sm:text-lg uppercase tracking-wider">
+                    АВТЕНТИЧЕН СПОМЕН ОТ ПОЩИЧКА
+                  </span>
+                </div>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
-  );
-};
-
-const LinkBookingButton = ({ date }: { date?: string }) => {
-  return (
-    <a href={date ? `/booking?date=${date}` : "/booking"} className="block w-full">
-      <Button variant="accent" size="lg" className="w-full flex items-center justify-center space-x-2 shadow-md py-3 text-sm font-semibold">
-        <span>Резервирай Пощичка за Вашето събитие</span>
-        <ChevronRight className="w-4 h-4" />
-      </Button>
-    </a>
+    </div>
   );
 };

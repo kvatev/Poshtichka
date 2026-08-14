@@ -18,24 +18,28 @@ import {
   Sparkles,
   Navigation,
   Upload,
+  Tag,
+  Building,
 } from "lucide-react";
 import { EventLocation, CreateEventLocationInput } from "@/types/map-event";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
-// Preset Bulgarian cities with coordinates for quick pan
+// Preset Bulgarian cities with coordinates for quick selection
 const bgCitiesPresets = [
   { name: "Бургас", lat: 42.5048, lng: 27.4626 },
   { name: "Созопол", lat: 42.4175, lng: 27.6958 },
   { name: "Поморие", lat: 42.5583, lng: 27.6444 },
   { name: "Несебър", lat: 42.6592, lng: 27.7354 },
+  { name: "Каварна", lat: 43.4342, lng: 28.3392 },
   { name: "Варна", lat: 43.2141, lng: 27.9147 },
   { name: "Пловдив", lat: 42.1354, lng: 24.7453 },
   { name: "София", lat: 42.6977, lng: 23.3219 },
-  { name: "Банско", lat: 41.8383, lng: 23.4885 },
+  { name: "Велико Търново", lat: 43.0757, lng: 25.6172 },
+  { name: "Перущица", lat: 42.0567, lng: 24.5458 },
+  { name: "Червен", lat: 43.6212, lng: 25.9961 },
 ];
 
-// Preset demo gallery images for easy picking
 const sampleGalleryAssets = [
   "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
   "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
@@ -54,12 +58,14 @@ export const AdminMapManager = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  // Form State - ALL FIELDS EXCEPT cityName & latitude/longitude ARE OPTIONAL!
+  // Form State
   const [formData, setFormData] = useState<CreateEventLocationInput>({
     eventName: "",
-    cityName: "Бургас",
-    latitude: 42.5048,
-    longitude: 27.4626,
+    cityName: "Созопол",
+    venueName: "",
+    eventType: "сватбено тържество",
+    latitude: 42.4175,
+    longitude: 27.6958,
     coverImage: "",
     galleryImages: [],
     description: "",
@@ -68,14 +74,12 @@ export const AdminMapManager = () => {
 
   const [newGalleryUrl, setNewGalleryUrl] = useState("");
 
-  // Map Container Ref
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mapInstanceRef = useRef<any>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const markerInstanceRef = useRef<any>(null);
 
-  // Fetch events on mount
   useEffect(() => {
     fetchEvents();
   }, []);
@@ -95,11 +99,9 @@ export const AdminMapManager = () => {
     }
   };
 
-  // Initialize interactive Leaflet map
   useEffect(() => {
     let isMounted = true;
 
-    // Dynamically load Leaflet CSS if not already injected
     if (!document.getElementById("leaflet-css")) {
       const link = document.createElement("link");
       link.id = "leaflet-css";
@@ -108,11 +110,9 @@ export const AdminMapManager = () => {
       document.head.appendChild(link);
     }
 
-    // Load Leaflet library dynamically
     import("leaflet").then((L) => {
       if (!isMounted || !mapContainerRef.current) return;
 
-      // Fix default Leaflet icon paths
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       delete (L.Icon.Default.prototype as any)._getIconUrl;
       L.Icon.Default.mergeOptions({
@@ -122,7 +122,6 @@ export const AdminMapManager = () => {
       });
 
       if (!mapInstanceRef.current) {
-        // Create Leaflet map centered at form coordinates
         const map = L.map(mapContainerRef.current).setView(
           [formData.latitude, formData.longitude],
           9
@@ -136,7 +135,6 @@ export const AdminMapManager = () => {
           draggable: true,
         }).addTo(map);
 
-        // Update coordinates on drag or map click
         marker.on("dragend", (e) => {
           const latLng = e.target.getLatLng();
           setFormData((prev) => ({
@@ -166,7 +164,6 @@ export const AdminMapManager = () => {
     };
   }, []);
 
-  // Sync marker when form coordinates or city preset changes
   useEffect(() => {
     if (mapInstanceRef.current && markerInstanceRef.current) {
       const lat = formData.latitude;
@@ -176,7 +173,6 @@ export const AdminMapManager = () => {
     }
   }, [formData.latitude, formData.longitude]);
 
-  // Handle City Preset Click
   const handleSelectCityPreset = (city: typeof bgCitiesPresets[0]) => {
     setFormData((prev) => ({
       ...prev,
@@ -186,12 +182,13 @@ export const AdminMapManager = () => {
     }));
   };
 
-  // Handle Edit Event
   const handleEdit = (event: EventLocation) => {
     setEditingId(event.id);
     setFormData({
       eventName: event.eventName || "",
       cityName: event.cityName,
+      venueName: event.venueName || "",
+      eventType: event.eventType || "сватбено тържество",
       latitude: event.latitude,
       longitude: event.longitude,
       coverImage: event.coverImage || "",
@@ -202,14 +199,15 @@ export const AdminMapManager = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Handle Reset / Cancel Edit
   const handleCancelEdit = () => {
     setEditingId(null);
     setFormData({
       eventName: "",
-      cityName: "Бургас",
-      latitude: 42.5048,
-      longitude: 27.4626,
+      cityName: "Созопол",
+      venueName: "",
+      eventType: "сватбено тържество",
+      latitude: 42.4175,
+      longitude: 27.6958,
       coverImage: "",
       galleryImages: [],
       description: "",
@@ -217,7 +215,6 @@ export const AdminMapManager = () => {
     });
   };
 
-  // Handle Custom File Upload for Cover Image
   const handleUploadCoverFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -231,7 +228,6 @@ export const AdminMapManager = () => {
     reader.readAsDataURL(file);
   };
 
-  // Handle Custom File Upload for Gallery
   const handleUploadGalleryFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -248,7 +244,6 @@ export const AdminMapManager = () => {
     reader.readAsDataURL(file);
   };
 
-  // Handle Form Submit (Create or Update)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.cityName) {
@@ -277,7 +272,7 @@ export const AdminMapManager = () => {
         throw new Error(result.error || "Грешка при запис на събитието.");
       }
 
-      setSuccessMsg(editingId ? "Локацията бе успешно обновена!" : "Новата локация бе успешно добавена към картата!");
+      setSuccessMsg(editingId ? "Локацията бе успешно обновена!" : "Новото събитие бе успешно добавено към картата!");
       handleCancelEdit();
       await fetchEvents();
     } catch (err: unknown) {
@@ -287,7 +282,6 @@ export const AdminMapManager = () => {
     }
   };
 
-  // Handle Delete Event
   const handleDelete = async (id: string, name?: string) => {
     const displayName = name || "тази локация";
     if (!confirm(`Сигурни ли сте, че искате да изтриете локацията "${displayName}"?`)) return;
@@ -303,7 +297,6 @@ export const AdminMapManager = () => {
     }
   };
 
-  // Add Image to Gallery via URL
   const handleAddGalleryImage = (url: string) => {
     if (!url.trim()) return;
     if ((formData.galleryImages || []).includes(url.trim())) return;
@@ -314,7 +307,6 @@ export const AdminMapManager = () => {
     setNewGalleryUrl("");
   };
 
-  // Remove Image from Gallery
   const handleRemoveGalleryImage = (indexToRemove: number) => {
     setFormData((prev) => ({
       ...prev,
@@ -325,7 +317,8 @@ export const AdminMapManager = () => {
   const filteredEvents = events.filter(
     (ev) =>
       (ev.eventName || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ev.cityName.toLowerCase().includes(searchQuery.toLowerCase())
+      ev.cityName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (ev.venueName || "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -335,13 +328,13 @@ export const AdminMapManager = () => {
         <div className="space-y-1">
           <div className="inline-flex items-center space-x-2 bg-brand-primary/20 px-3 py-1 rounded-full text-xs text-brand-accent font-semibold border border-brand-primary/40">
             <MapPin className="w-3.5 h-3.5" />
-            <span>Гъвкаво Управление на Локации</span>
+            <span>Добавяне на Нови Събития и Локации</span>
           </div>
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-brand-dark">
-            Добавяне и Редактиране на Локации
+            Добавяне на Гостувания и Снимки на Пощичка
           </h1>
           <p className="text-xs sm:text-sm text-brand-dark/70">
-            Можете да добавите нова локация само с град и клик върху картата — без да задължавате снимки или име на двойка!
+            Добавете нови събития, на които е гостувала Пощичка — с място, описания и галерия от снимки!
           </p>
         </div>
 
@@ -388,7 +381,7 @@ export const AdminMapManager = () => {
           <div className="flex items-center justify-between pb-4 border-b border-brand-primary/10">
             <h2 className="font-serif text-xl font-bold text-brand-dark flex items-center space-x-2">
               <Sparkles className="w-5 h-5 text-brand-accent" />
-              <span>{editingId ? "Редактиране на локация" : "Нова локация на картата"}</span>
+              <span>{editingId ? "Редактиране на събитие" : "Добави ново събитие на Пощичка"}</span>
             </h2>
             {editingId && (
               <button
@@ -402,7 +395,20 @@ export const AdminMapManager = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* City Name & Date */}
+            {/* Title / Couple */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-brand-dark">Име на събитието / Двойката *</label>
+              <input
+                type="text"
+                required
+                value={formData.eventName}
+                onChange={(e) => setFormData({ ...formData, eventName: e.target.value })}
+                placeholder="напр. ГЕРИ И КРАСИ, МИЛКА И АНДРЕЙ"
+                className="w-full px-4 py-3 rounded-xl border border-brand-primary/30 bg-brand-bg text-brand-dark text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all font-sans"
+              />
+            </div>
+
+            {/* City & Venue */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-brand-dark">Град / Локация *</label>
@@ -411,15 +417,46 @@ export const AdminMapManager = () => {
                   required
                   value={formData.cityName}
                   onChange={(e) => setFormData({ ...formData, cityName: e.target.value })}
-                  placeholder="напр. Поморие, Созопол, Бургас"
-                  className="w-full px-4 py-3 rounded-xl border border-brand-primary/30 bg-brand-bg text-brand-dark placeholder:text-brand-dark/40 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all font-sans"
+                  placeholder="напр. Созопол, София, Каварна"
+                  className="w-full px-4 py-3 rounded-xl border border-brand-primary/30 bg-brand-bg text-brand-dark text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all font-sans"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-brand-dark flex items-center space-x-1">
+                  <Building className="w-3.5 h-3.5 text-brand-accent" />
+                  <span>Име на локацията / Комплекса</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.venueName}
+                  onChange={(e) => setFormData({ ...formData, venueName: e.target.value })}
+                  placeholder="напр. Комплекс Свети Тома, Вила Юстина"
+                  className="w-full px-4 py-3 rounded-xl border border-brand-primary/30 bg-brand-bg text-brand-dark text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all font-sans"
+                />
+              </div>
+            </div>
+
+            {/* Event Type & Date */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-brand-dark flex items-center space-x-1">
+                  <Tag className="w-3.5 h-3.5 text-brand-accent" />
+                  <span>Вид на събитието</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.eventType}
+                  onChange={(e) => setFormData({ ...formData, eventType: e.target.value })}
+                  placeholder="напр. сватбено тържество, кръщение"
+                  className="w-full px-4 py-3 rounded-xl border border-brand-primary/30 bg-brand-bg text-brand-dark text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all font-sans"
                 />
               </div>
 
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-brand-dark flex items-center space-x-1">
                   <Calendar className="w-3.5 h-3.5 text-brand-accent" />
-                  <span>Дата (Опционално)</span>
+                  <span>Дата</span>
                 </label>
                 <input
                   type="date"
@@ -430,24 +467,9 @@ export const AdminMapManager = () => {
               </div>
             </div>
 
-            {/* Event / Couple Name (OPTIONAL) */}
-            <div className="space-y-1.5">
-              <div className="flex justify-between items-center">
-                <label className="text-xs font-semibold text-brand-dark">Име на събитието / Двойката</label>
-                <span className="text-[10px] text-brand-dark/50 font-normal">(Опционално)</span>
-              </div>
-              <input
-                type="text"
-                value={formData.eventName}
-                onChange={(e) => setFormData({ ...formData, eventName: e.target.value })}
-                placeholder="напр. Сватба: Светлана & Димитър (или оставете празно)"
-                className="w-full px-4 py-3 rounded-xl border border-brand-primary/30 bg-brand-bg text-brand-dark placeholder:text-brand-dark/40 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all font-sans"
-              />
-            </div>
-
             {/* Quick City Presets */}
             <div className="space-y-1.5">
-              <span className="text-[11px] font-semibold text-brand-dark/70">Бърз избор на регион в България:</span>
+              <span className="text-[11px] font-semibold text-brand-dark/70">Бърз избор на град:</span>
               <div className="flex flex-wrap gap-1.5">
                 {bgCitiesPresets.map((city) => (
                   <button
@@ -466,10 +488,10 @@ export const AdminMapManager = () => {
               </div>
             </div>
 
-            {/* Coordinates Lat / Lng */}
+            {/* Coordinates */}
             <div className="grid grid-cols-2 gap-4 p-4 rounded-2xl bg-brand-secondary/30 border border-brand-primary/20">
               <div className="space-y-1">
-                <label className="text-[11px] font-semibold text-brand-dark/80">Ширина (Latitude)</label>
+                <label className="text-[11px] font-semibold text-brand-dark/80">Ширина (Lat)</label>
                 <input
                   type="number"
                   step="0.000001"
@@ -481,7 +503,7 @@ export const AdminMapManager = () => {
               </div>
 
               <div className="space-y-1">
-                <label className="text-[11px] font-semibold text-brand-dark/80">Дължина (Longitude)</label>
+                <label className="text-[11px] font-semibold text-brand-dark/80">Дължина (Lng)</label>
                 <input
                   type="number"
                   step="0.000001"
@@ -493,17 +515,13 @@ export const AdminMapManager = () => {
               </div>
             </div>
 
-            {/* Cover Image Selection (OPTIONAL) + File Upload */}
+            {/* Cover Image */}
             <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <label className="text-xs font-semibold text-brand-dark flex items-center space-x-1">
-                  <ImageIcon className="w-4 h-4 text-brand-accent" />
-                  <span>Корична снимка за локацията</span>
-                </label>
-                <span className="text-[10px] text-brand-dark/50 font-normal">(Опционално)</span>
-              </div>
+              <label className="text-xs font-semibold text-brand-dark flex items-center space-x-1">
+                <ImageIcon className="w-4 h-4 text-brand-accent" />
+                <span>Основна снимка за събитието</span>
+              </label>
 
-              {/* URL or Upload Inputs */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <input
                   type="text"
@@ -513,10 +531,9 @@ export const AdminMapManager = () => {
                   className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 bg-brand-bg text-brand-dark text-xs focus:outline-none focus:ring-1 focus:ring-brand-accent"
                 />
 
-                {/* Upload File Input */}
                 <label className="cursor-pointer flex items-center justify-center space-x-1.5 px-3 py-2 rounded-xl border border-dashed border-brand-accent/60 bg-brand-secondary/40 text-brand-dark hover:bg-brand-secondary text-xs font-semibold transition-colors">
                   <Upload className="w-3.5 h-3.5 text-brand-accent" />
-                  <span>Прикачи свой файл</span>
+                  <span>Прикачи файл от устройството</span>
                   <input
                     type="file"
                     accept="image/*"
@@ -526,46 +543,27 @@ export const AdminMapManager = () => {
                 </label>
               </div>
 
-              {/* Cover Image Preview or Default Fallback Note */}
-              {formData.coverImage ? (
+              {formData.coverImage && (
                 <div className="relative w-full h-36 rounded-2xl overflow-hidden border border-brand-primary/30 shadow-xs">
-                  <Image
-                    src={formData.coverImage}
-                    alt="Корица Преглед"
-                    fill
-                    className="object-cover"
-                    unoptimized
-                  />
+                  <Image src={formData.coverImage} alt="Корица Преглед" fill className="object-cover" unoptimized />
                   <button
                     type="button"
                     onClick={() => setFormData((prev) => ({ ...prev, coverImage: "" }))}
                     className="absolute top-2 right-2 p-1 bg-red-600 text-white rounded-full shadow-xs"
-                    title="Премахни снимка"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
-                  <div className="absolute bottom-2 left-2 bg-brand-dark/80 backdrop-blur-xs px-2.5 py-1 rounded text-[10px] text-white font-medium">
-                    Прикачена корица
-                  </div>
-                </div>
-              ) : (
-                <div className="p-3 rounded-xl bg-brand-secondary/20 border border-dashed border-brand-primary/30 text-[11px] text-brand-dark/70 flex items-center justify-between">
-                  <span>ℹ️ При липса на снимка, локацията ще използва бранд икона на Пощичка.</span>
                 </div>
               )}
             </div>
 
-            {/* Gallery Images List & Picker (OPTIONAL) */}
+            {/* Gallery Images */}
             <div className="space-y-3 pt-2 border-t border-brand-primary/10">
-              <div className="flex justify-between items-center">
-                <label className="text-xs font-semibold text-brand-dark flex items-center space-x-1">
-                  <Layers className="w-4 h-4 text-brand-accent" />
-                  <span>Галерия със снимки ({formData.galleryImages?.length || 0})</span>
-                </label>
-                <span className="text-[10px] text-brand-dark/50 font-normal">(Опционално)</span>
-              </div>
+              <label className="text-xs font-semibold text-brand-dark flex items-center space-x-1">
+                <Layers className="w-4 h-4 text-brand-accent" />
+                <span>Галерия със допълнителни кадри ({formData.galleryImages?.length || 0})</span>
+              </label>
 
-              {/* Existing Gallery Thumbnails */}
               {(formData.galleryImages?.length || 0) > 0 && (
                 <div className="grid grid-cols-4 gap-2">
                   {(formData.galleryImages || []).map((imgUrl, idx) => (
@@ -578,7 +576,6 @@ export const AdminMapManager = () => {
                         type="button"
                         onClick={() => handleRemoveGalleryImage(idx)}
                         className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-xs"
-                        title="Премахни снимка"
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -587,7 +584,6 @@ export const AdminMapManager = () => {
                 </div>
               )}
 
-              {/* Add New Gallery Image URL or File Upload */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div className="flex gap-1.5">
                   <input
@@ -608,10 +604,9 @@ export const AdminMapManager = () => {
                   </Button>
                 </div>
 
-                {/* Upload File to Gallery */}
                 <label className="cursor-pointer flex items-center justify-center space-x-1.5 px-3 py-2 rounded-xl border border-dashed border-brand-accent/60 bg-brand-secondary/40 text-brand-dark hover:bg-brand-secondary text-xs font-semibold transition-colors">
                   <Upload className="w-3.5 h-3.5 text-brand-accent" />
-                  <span>Качи своя снимка в галерията</span>
+                  <span>Качи още снимка</span>
                   <input
                     type="file"
                     accept="image/*"
@@ -621,9 +616,8 @@ export const AdminMapManager = () => {
                 </label>
               </div>
 
-              {/* Sample Preset Thumbnails quick add */}
               <div className="space-y-1">
-                <span className="text-[10px] text-brand-dark/60 font-medium">Или кликнете за избор от мострите:</span>
+                <span className="text-[10px] text-brand-dark/60 font-medium">Или бърз избор от мострите:</span>
                 <div className="flex gap-1.5 overflow-x-auto pb-1">
                   {sampleGalleryAssets.map((asset, i) => (
                     <button
@@ -639,14 +633,14 @@ export const AdminMapManager = () => {
               </div>
             </div>
 
-            {/* Event Description */}
+            {/* Description */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-brand-dark">Бележка или кратко описание</label>
+              <label className="text-xs font-semibold text-brand-dark">Текст и описание за събитието</label>
               <textarea
-                rows={3}
+                rows={4}
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="напр. Бяхме тук за гостуване / Специален кът за събитието..."
+                placeholder="напр. За сватбения ден на Гери и Краси изготвихме 2 марки, стикер и татуировка..."
                 className="w-full px-4 py-2.5 rounded-xl border border-brand-primary/30 bg-brand-bg text-brand-dark placeholder:text-brand-dark/40 text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent"
               />
             </div>
@@ -660,7 +654,7 @@ export const AdminMapManager = () => {
                 className="flex-1 py-3 font-semibold shadow-md"
               >
                 <Save className="w-4 h-4 mr-2" />
-                <span>{saving ? "Записване..." : editingId ? "Обнови локацията" : "Запази локацията на картата"}</span>
+                <span>{saving ? "Записване..." : editingId ? "Обнови събитието" : "Запази новото събитие"}</span>
               </Button>
 
               {editingId && (
@@ -683,18 +677,17 @@ export const AdminMapManager = () => {
             <div className="flex items-center justify-between">
               <h2 className="font-serif text-xl font-bold text-brand-dark flex items-center space-x-2">
                 <Navigation className="w-5 h-5 text-brand-accent animate-pulse" />
-                <span>Кликнете за поставяне на пин</span>
+                <span>Кликнете за пин на събитието</span>
               </h2>
               <span className="text-xs font-semibold text-brand-accent bg-brand-primary/20 px-3 py-1 rounded-full border border-brand-primary/40">
-                GPS Локатор
+                Карта на Локациите
               </span>
             </div>
             <p className="text-xs text-brand-dark/70">
-              Просто кликнете на произволно място на картата за да посочите локация, където е била Пощичка!
+              Кликнете върху картата на България за да посочите координати на събитието.
             </p>
           </div>
 
-          {/* Interactive Leaflet Map Container */}
           <div className="relative w-full h-[450px] rounded-2xl overflow-hidden border border-brand-primary/30 shadow-inner z-10">
             <div ref={mapContainerRef} className="w-full h-full" />
             <div className="absolute top-3 right-3 z-[1000] bg-brand-dark/90 text-white backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/20 text-[11px] font-mono shadow-md">
@@ -703,9 +696,9 @@ export const AdminMapManager = () => {
           </div>
 
           <div className="p-4 rounded-2xl bg-brand-secondary/30 border border-brand-primary/20 text-xs text-brand-dark/80 space-y-1">
-            <span className="font-bold text-brand-accent">💡 Лесно добавяне:</span>
+            <span className="font-bold text-brand-accent">💡 Добавяне на събития:</span>
             <p>
-              Изберете град от бутоните горе или кликнете на картата. Полетата за снимка и име са напълно незадължителни.
+              Можете да добавяте неограничен брой нови събития със снимки и описания за всеки град!
             </p>
           </div>
         </Card>
@@ -717,14 +710,13 @@ export const AdminMapManager = () => {
           <div>
             <h2 className="font-serif text-2xl font-bold text-brand-dark flex items-center space-x-2">
               <MapPin className="w-6 h-6 text-brand-accent" />
-              <span>Запазени Локации ({filteredEvents.length})</span>
+              <span>Всички Добавени Събития ({filteredEvents.length})</span>
             </h2>
             <p className="text-xs text-brand-dark/70">
-              Управление на всички точки и градове, посетени от Пощичка.
+              Управление на всички гостувания и локации на Пощичка.
             </p>
           </div>
 
-          {/* Search Input */}
           <div className="relative w-full sm:w-64">
             <Search className="w-4 h-4 text-brand-dark/40 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
@@ -737,16 +729,15 @@ export const AdminMapManager = () => {
           </div>
         </div>
 
-        {/* Events Grid */}
         {loading ? (
           <div className="py-12 text-center text-brand-dark/60 space-y-2">
             <RefreshCw className="w-6 h-6 animate-spin mx-auto text-brand-accent" />
-            <p className="text-xs font-medium">Зареждане на локациите...</p>
+            <p className="text-xs font-medium">Зареждане на събитията...</p>
           </div>
         ) : filteredEvents.length === 0 ? (
           <div className="py-12 text-center text-brand-dark/50 space-y-2 border border-dashed border-brand-primary/30 rounded-2xl">
             <MapPin className="w-8 h-8 mx-auto text-brand-dark/30" />
-            <p className="text-sm font-medium">Няма намерени локации.</p>
+            <p className="text-sm font-medium">Няма намерени събития.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -759,7 +750,6 @@ export const AdminMapManager = () => {
                   key={event.id}
                   className="group relative bg-white border border-brand-primary/20 hover:border-brand-accent/50 rounded-2xl overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md flex flex-col justify-between"
                 >
-                  {/* Cover Image or Fallback Header */}
                   <div className="relative w-full h-44 bg-gradient-to-br from-brand-accent/30 via-brand-primary/20 to-brand-secondary flex items-center justify-center">
                     {hasCover ? (
                       <Image
@@ -787,12 +777,11 @@ export const AdminMapManager = () => {
                         {title}
                       </h3>
                       <p className="text-[11px] text-white/90 font-mono mt-0.5">
-                        GPS: {event.latitude}, {event.longitude}
+                        {event.venueName ? `${event.venueName} • ` : ""}{event.cityName}
                       </p>
                     </div>
                   </div>
 
-                  {/* Content & Gallery Info */}
                   <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
                     <p className="text-xs text-brand-dark/80 line-clamp-2 leading-relaxed font-sans">
                       {event.description || `Пощичка на гостуване и събитие в ${event.cityName}.`}
@@ -809,7 +798,6 @@ export const AdminMapManager = () => {
                     </div>
                   </div>
 
-                  {/* Action Buttons */}
                   <div className="p-3 bg-brand-secondary/30 border-t border-brand-primary/10 flex items-center justify-end space-x-2">
                     <Button
                       onClick={() => handleEdit(event)}
