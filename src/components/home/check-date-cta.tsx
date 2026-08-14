@@ -18,7 +18,7 @@ export const CheckDateCTA = () => {
           className="flex-shrink-0 flex items-center justify-center"
         >
           <Image
-            src="/media/Main Page/Asset 34@2x.png"
+            src="/media/Main Page/Asset 34@2x.webp"
             alt="Пощичка печат"
             width={240}
             height={240}

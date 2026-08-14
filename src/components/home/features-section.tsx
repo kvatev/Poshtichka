@@ -8,22 +8,22 @@ const features = [
   {
     id: "marka",
     title: "МАРКА",
-    image: "/media/Main Page/feature-marka.png",
+    image: "/media/Main Page/feature-marka.webp",
   },
   {
     id: "kartichka",
     title: "КАРТИЧКА",
-    image: "/media/Main Page/feature-kartichka.png",
+    image: "/media/Main Page/feature-kartichka.webp",
   },
   {
     id: "stiker",
     title: "СТИКЕР",
-    image: "/media/Main Page/feature-stiker.png",
+    image: "/media/Main Page/feature-stiker.webp",
   },
   {
     id: "tatuirovka",
     title: "ТАТУИРОВКА",
-    image: "/media/Main Page/feature-tatuirovka.png",
+    image: "/media/Main Page/feature-tatuirovka.webp",
   },
 ];
 

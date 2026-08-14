@@ -12,7 +12,7 @@ export default function AboutPage() {
         {/* Section 1: Top Hero Photo */}
         <section className="relative w-full h-[40vh] sm:h-[55vh] lg:h-[65vh] overflow-hidden">
           <Image
-            src={encodeURI("/media/За Пощичка/Asset 61@2x.png")}
+            src={encodeURI("/media/За Пощичка/Asset 61@2x.webp")}
             alt="Пощичка машина на събитие"
             fill
             className="object-cover object-[47%_center] sm:object-center"
@@ -98,7 +98,7 @@ export default function AboutPage() {
         {/* Section 5: Photo Banner 1 (Hands holding over booth) */}
         <section className="relative w-full h-[280px] sm:h-[450px] overflow-hidden">
           <Image
-            src={encodeURI("/media/За Пощичка/Asset 67@2x.png")}
+            src={encodeURI("/media/За Пощичка/Asset 67@2x.webp")}
             alt="Младоженци и Пощичка"
             fill
             className="object-cover object-center"
@@ -151,7 +151,7 @@ export default function AboutPage() {
         {/* Section 7: Photo Banner 2 (Hands holding postcards) */}
         <section className="relative w-full h-[280px] sm:h-[450px] overflow-hidden">
           <Image
-            src={encodeURI("/media/За Пощичка/Asset 70@2x.png")}
+            src={encodeURI("/media/За Пощичка/Asset 70@2x.webp")}
             alt="Ръце с сватбени картички"
             fill
             className="object-cover object-center"

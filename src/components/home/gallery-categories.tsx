@@ -9,17 +9,17 @@ const categories = [
   {
     id: "wedding",
     title: "СВАТБА",
-    image: "/media/Main Page/category-wedding.png",
+    image: "/media/Main Page/category-wedding.webp",
   },
   {
     id: "baptism",
     title: "КРЪЩЕНЕ",
-    image: "/media/Main Page/category-baptism.png",
+    image: "/media/Main Page/category-baptism.webp",
   },
   {
     id: "corporate",
     title: "ФИРМЕНО ПАРТИ",
-    image: "/media/Main Page/category-corporate.png",
+    image: "/media/Main Page/category-corporate.webp",
   },
 ];
 

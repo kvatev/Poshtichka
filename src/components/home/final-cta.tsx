@@ -31,7 +31,7 @@ export const FinalCTA = () => {
       {/* Background Image: Right-aligned focus on mobile (object-[80%_center]), centered on desktop (md:object-center) */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/media/Main Page/final-cta-bg.png"
+          src="/media/Main Page/final-cta-bg.webp"
           alt="Пощичка незабравим спомен"
           fill
           className="object-cover object-[80%_center] md:object-center opacity-95 sm:opacity-100"

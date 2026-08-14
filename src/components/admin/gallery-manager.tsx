@@ -90,7 +90,7 @@ export const GalleryManager = () => {
       title,
       category,
       categoryLabel,
-      imageUrl: imageUrl || "/media/Main Page/Main Banner.png",
+      imageUrl: imageUrl || "/media/Main Page/Main Banner.webp",
       description,
       eventDate,
     };

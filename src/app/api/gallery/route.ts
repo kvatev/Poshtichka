@@ -94,7 +94,7 @@ export async function GET() {
     if (!error && dbItems && dbItems.length > 0) {
       const formatted: GalleryItem[] = dbItems.map((item: any) => ({
         id: item.id?.toString() || `gal-${Date.now()}`,
-        imageUrl: item.image_url || item.imageUrl || "/media/Main Page/Main Banner.png",
+        imageUrl: item.image_url || item.imageUrl || "/media/Main Page/Main Banner.webp",
         title: item.title || "Спомен от събитие",
         category: item.category || "weddings",
         categoryLabel: item.category_label || item.categoryLabel || "Сватби",

@@ -196,7 +196,7 @@ export const defaultHomepageConfig: HomepageConfig = {
   heroSubtitle: "Персонализирани подаръци, създадени по ваша идея!",
   primaryCtaText: "Разбери повече",
   secondaryCtaText: "Разгледайте галерията",
-  heroImageUrl: "/media/Main Page/Main Banner.png",
+  heroImageUrl: "/media/Main Page/Main Banner.webp",
   heroVideoUrl: "",
   showVideo: false,
   howItWorksTitle: "Как функционира Пощичка?",

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 
 export const HeroSection = () => {
-  const heroImage = "/media/Main Page/Main Banner.png";
+  const heroImage = "/media/Main Page/Main Banner.webp";
 
   return (
     <section className="relative w-full min-h-[75vh] sm:min-h-[85vh] flex items-center justify-center overflow-hidden bg-brand-dark py-16 sm:py-24 px-4 sm:px-6 lg:px-8">

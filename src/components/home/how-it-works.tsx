@@ -8,17 +8,17 @@ const steps = [
   {
     id: 1,
     title: "1. Гостите взимат жетон",
-    image: "/media/Main Page/step-1.png",
+    image: "/media/Main Page/step-1.webp",
   },
   {
     id: 2,
     title: "2. Поставят го и завъртат ръчката",
-    image: "/media/Main Page/step-2.png",
+    image: "/media/Main Page/step-2.webp",
   },
   {
     id: 3,
     title: "3. Отварят картончето и получават подаръка си",
-    image: "/media/Main Page/step-3.png",
+    image: "/media/Main Page/step-3.webp",
   },
 ];
 
