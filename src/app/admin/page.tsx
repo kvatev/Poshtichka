@@ -9,6 +9,7 @@ import { LeadsKanbanManager } from "@/components/admin/leads-kanban-manager";
 import { CalendarView } from "@/components/admin/calendar-view";
 import { FinanceManager } from "@/components/admin/finance-manager";
 import { CustomersManager } from "@/components/admin/customers-manager";
+import { ServicesManager } from "@/components/admin/services-manager";
 import { GalleryManager } from "@/components/admin/gallery-manager";
 import { AdminMapManager } from "@/components/admin/admin-map-manager";
 import { TestimonialsManager } from "@/components/admin/testimonials-manager";
@@ -204,6 +205,7 @@ export default function AdminDashboardPage() {
             />
           )}
 
+          {activeTab === "services" && <ServicesManager />}
           {activeTab === "media" && <MediaLibraryManager />}
           {activeTab === "homepage" && <HomepageEditor />}
           {activeTab === "content" && <WebsiteContentManager />}

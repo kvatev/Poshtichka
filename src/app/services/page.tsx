@@ -1,212 +1,194 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Sparkles, Palette, Truck, Check, ArrowRight } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { PageWrapper } from "@/components/layout/page-wrapper";
+import { ServiceItem } from "@/components/admin/services-manager";
 
-export const metadata = {
-  title: "Услуги & Видове събития | Пощичка",
-  description:
-    "Открийте услугите на Пощичка: сватбено изживяване, корпоративен брандинг, рождени дни и маркетинг активации. Автоматизирано печатане на живо с авторски дизайн.",
-};
-
-const servicesList = [
+const initialServices: ServiceItem[] = [
   {
-    title: "Сватбено изживяване",
-    subtitle: "Най-емоционалният подарък за Вашите гости",
-    desc: "Подарете на гостите си момент на радост и изненада. Машината се декорира съобразно сватбената цветова тема, а картичките съдържат вашите имена, дата и акварелни илюстрации.",
+    id: "SRV-01",
+    title: "ВЕНДИНГ МАШИНА",
+    subtitle: "подходящо за сватбено тържество, кръщение, юбилей, корпоративно събитие",
+    description:
+      "Подарете на гостите си момент на радост и изненада. Дизайните се изготвят по идея на клиента, съобразно цветовата гама на събитието.",
     features: [
-      "Персонализирани сватбени картички",
-      "Временни татуировки с инициали",
-      "Луксозни книгоразделители",
-      "Специални метални жетони за гостите",
+      "НАЕМ НА ВЕНДНИГ МАШИНА ЗА КОНКРЕТНИ ЧАСОВЕ",
+      "БУРКАН СЪС ЖЕТОНИ, СПРЯМО ГОСТИТЕ НА СЪБИТИЕТО",
+      "ДИЗАЙН НА 4 ВИДА ИЛЮСТРАЦИИ, КАКТО И ЗА ПОСТЕРИТЕ",
+      "ПЕЧАТ + СТАНДАРТНИ/ПЕРСОНАЛИЗИРАНИ КАРТОНЧЕТА",
+      "2-МА СЛУЖИТЕЛИ ЗА СЪДЕЙСТВИЕ НА ГОСТИТЕ И МОНТАЖ",
     ],
     image: "/media/gallery/Tezza_2025_07_13_155326413.webp",
-    alt: "Сватбени пликове и автентични картички от Пощичка",
+    badgeAsset: "/media/Услуги/Asset 88@2x.png",
   },
   {
-    title: "Корпоративно брандиране & Активации",
-    subtitle: "Иновативен бранд ангажимент за Вашите партньори",
-    desc: "Превърнете корпоративното събитие, изложение или конференцитя в тема за разговор. Всеки участник си тръгва с брандиран сувенир с Вашето лого и послание.",
+    id: "SRV-02",
+    title: "ТАБЛО С МАРКИ И КАРТИЧКИ",
+    subtitle: "подходящо за сватбено тържество, юбилей, частни партита",
+    description:
+      "Елегантен кът с авторски марки, пликове за спомени и възможност за пожелания от вашите близки.",
     features: [
-      "Пълно брандиране на картичките с корпоративно лого",
-      "Маркетинг послания & QR кодове за кампании",
-      "Подходящо за над 300+ участници",
-      "Професионално обслужване на място",
+      "АВТОРСКО ТАБЛО С МАРКИ И ДИЗАЙН ПО ИЗБОР",
+      "ПЕРСОНАЛИЗИРАНИ ПЛИКОВЕ ЗА СПОМЕНИ ЗА ВСЕКИ ГОСТ",
+      "ДАРСТВЕНИ КАРТИЧКИ С БЛАГОДАРСТВЕНИ ПОСЛАНИЯ",
+      "ДЕКОРАТИВЕН СТАНОК И МОНТАЖ НА МЯСТО НА СЪБИТИЕТО",
     ],
     image: "/media/gallery/Tezza_2025_07_13_155324686.webp",
-    alt: "Табло Пощичка с маркови картички и жетони",
+    badgeAsset: "/media/Услуги/Asset 89@2x.png",
   },
   {
-    title: "Рождени дни, Юбилеи & Бейби Шауър",
-    subtitle: "Уникален акцент за Вашите лични празници",
-    desc: "Направете личния си празник още по-топъл. Гостите избират своя любим дизайн като спомен от Вашия специален ден.",
+    id: "SRV-03",
+    title: "ВРЕМЕННИ ТАТУИРОВКИ",
+    subtitle: "подходящо за рождени дни, сватби, фестивали и партита",
+    description:
+      "Забавна интерактивна станция с уникални временни татуировки по ваш собствен мотив или илюстрация.",
     features: [
-      "Тематични илюстрации и снимки",
-      "Персонализирани благодарствени картички",
-      "Забавни и интерактивни татуировки за деца и възрастни",
-      "Компактно и стилно оборудване",
+      "АВТОРСКИ ДИЗАЙНИ НА ТАТУИРОВКИ С ИНИЦИАЛИ ИЛИ ЛОГО",
+      "БЕЗОПАСНИ И ВОДОУСТОЙЧИВИ МАТЕРИАЛИ ЗА ГОСТИТЕ",
+      "ИНТЕРАКТИВЕН КЪТ С ИНСТРУКЦИИ И АКСЕСОАРИ",
+      "ПЪЛНА КООРДИНАЦИЯ И СЪДЕЙСТВИЕ ОТ ЕКИПА",
     ],
     image: "/media/gallery/Tezza_2025_07_13_155331795.webp",
-    alt: "Интерактивно използване на вендинг машина Пощичка",
+    badgeAsset: "/media/Услуги/Asset 90@2x.png",
   },
 ];
 
 export default function ServicesPage() {
+  const [services, setServices] = useState<ServiceItem[]>(initialServices);
+
+  useEffect(() => {
+    fetch("/api/services")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && Array.isArray(data.services) && data.services.length > 0) {
+          setServices(data.services);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <PageWrapper>
-      <div className="space-y-16 sm:space-y-24 md:space-y-32 pb-24">
+      <div className="space-y-16 sm:space-y-24 py-10 pb-24 font-sans select-none bg-[#f9f6f0]/50">
         {/* Header */}
-        <section className="bg-brand-secondary/40 py-12 sm:py-20 border-b border-brand-primary/20">
-          <div className="max-w-4xl mx-auto px-4 text-center space-y-4 sm:space-y-6">
-            <span className="text-xs uppercase tracking-widest text-[#00b4b6] font-semibold">
-              Нашите Услуги
-            </span>
-            <h1 className="font-salongbeach text-3xl sm:text-5xl md:text-6xl font-bold text-brand-dark leading-tight">
-              Преживяване, съобразено с <br className="hidden sm:inline" />
-              <span className="text-[#00b4b6] italic font-normal">Вашия специален повод</span>
-            </h1>
-            <p className="text-brand-dark/80 text-base sm:text-xl font-sans max-w-2xl mx-auto font-light leading-relaxed">
-              Всяко събитие получава напълно индивидуален подход — от графичния дизайн до избора на продуктите в машината.
-            </p>
-          </div>
+        <section className="text-center max-w-4xl mx-auto space-y-4 px-4">
+          <span className="text-xs uppercase tracking-widest text-[#00b4b6] font-semibold bg-[#00b4b6]/10 px-4 py-1.5 rounded-full">
+            Нашите Услуги
+          </span>
+          <h1 className="font-salongbeach text-3xl sm:text-5xl md:text-6xl font-bold text-[#182b2c] uppercase tracking-wider leading-tight">
+            Преживяване, съобразено с <br className="hidden sm:inline" />
+            <span className="text-[#00b4b6]">Вашия специален повод</span>
+          </h1>
+          <p className="text-[#182b2c]/80 text-base sm:text-xl font-sans max-w-2xl mx-auto font-light leading-relaxed">
+            Всяко събитие получава напълно индивидуален подход — от графичния дизайн до избора на продуктите в машината.
+          </p>
         </section>
 
-        {/* Detailed Services */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-8 space-y-16 sm:space-y-20">
-          {servicesList.map((service, index) => (
+        {/* Detailed Services Cards matching user screenshot layout */}
+        <section className="max-w-6xl mx-auto px-4 sm:px-8 space-y-12">
+          {services.map((service, index) => (
             <div
-              key={index}
-              className={`grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center ${
-                index % 2 === 1 ? "lg:flex-row-reverse" : ""
-              }`}
+              key={service.id || index}
+              className="bg-[#f9f6f0] border-2 border-[#182b2c]/20 shadow-xl rounded-[36px] p-6 sm:p-10 transition-all duration-300 hover:shadow-2xl flex flex-col lg:flex-row items-center gap-8 lg:gap-12"
             >
-              <div className={`space-y-4 sm:space-y-6 ${index % 2 === 1 ? "lg:order-2" : ""}`}>
-                <span className="text-xs uppercase tracking-widest text-[#00b4b6] font-semibold">
-                  {service.subtitle}
-                </span>
-                <h2 className="font-salongbeach text-2xl sm:text-4xl font-bold text-brand-dark leading-tight">
-                  {service.title}
-                </h2>
-                <p className="text-brand-dark/80 font-sans text-base sm:text-lg leading-relaxed">
-                  {service.desc}
-                </p>
+              {/* Left Side: Photo Frame with Decorative Rays (Asset 86@2x.png) */}
+              <div className="relative w-full lg:w-1/2 flex-shrink-0 flex items-center justify-center">
+                {/* Decorative Spark / Ray Asset 86@2x.png on left */}
+                <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-8 sm:w-12 h-16 sm:h-20 pointer-events-none z-10 hidden sm:block">
+                  <Image
+                    src={encodeURI("/media/Услуги/Asset 86@2x.png")}
+                    alt="Декорация"
+                    fill
+                    className="object-contain"
+                    unoptimized
+                  />
+                </div>
 
-                <ul className="space-y-3 pt-2">
-                  {service.features.map((f, i) => (
-                    <li key={i} className="flex items-center space-x-3 text-sm font-sans text-brand-dark">
-                      <div className="w-5 h-5 rounded-full bg-[#00b4b6]/20 flex items-center justify-center text-[#00b4b6] flex-shrink-0">
-                        <Check className="w-3.5 h-3.5" />
-                      </div>
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
+                {/* Main Photo Frame */}
+                <div className="relative w-full h-[320px] sm:h-[400px] md:h-[440px] rounded-[28px] overflow-hidden border-2 border-[#182b2c]/10 shadow-lg bg-gray-100">
+                  <Image
+                    src={service.image || "/media/gallery/Tezza_2025_07_13_155326413.webp"}
+                    alt={service.title}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
+                </div>
 
-                <div className="pt-4">
+                {/* Decorative Spark / Ray Asset 86@2x.png on right */}
+                <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-8 sm:w-12 h-16 sm:h-20 pointer-events-none z-10 hidden sm:block rotate-180">
+                  <Image
+                    src={encodeURI("/media/Услуги/Asset 86@2x.png")}
+                    alt="Декорация"
+                    fill
+                    className="object-contain"
+                    unoptimized
+                  />
+                </div>
+              </div>
+
+              {/* Right Side: Title, Subtitle, Description & Bullet List */}
+              <div className="w-full lg:w-1/2 space-y-5 text-left">
+                <div className="space-y-1.5">
+                  <h2 className="font-salongbeach text-3xl sm:text-4xl lg:text-5xl font-bold uppercase text-[#182b2c] tracking-wider leading-none">
+                    {service.title}
+                  </h2>
+                  {service.subtitle && (
+                    <p className="font-sans text-xs sm:text-sm text-[#00b4b6] font-medium leading-relaxed">
+                      {service.subtitle}
+                    </p>
+                  )}
+                </div>
+
+                {service.description && (
+                  <p className="font-sans text-sm sm:text-base text-[#182b2c]/85 leading-relaxed">
+                    {service.description}
+                  </p>
+                )}
+
+                {/* Bullet List with Teal Circular Checkmarks */}
+                {service.features && service.features.length > 0 && (
+                  <ul className="space-y-3 pt-2">
+                    {service.features.map((feat, i) => (
+                      <li key={i} className="flex items-center space-x-3.5">
+                        {/* Teal Circular Checkmark Icon matching Asset 88@2x.png */}
+                        <div className="relative w-7 h-7 sm:w-8 sm:h-8 flex-shrink-0">
+                          <Image
+                            src={encodeURI(service.badgeAsset || "/media/Услуги/Asset 88@2x.png")}
+                            alt="Отметка"
+                            fill
+                            className="object-contain"
+                            unoptimized
+                          />
+                        </div>
+
+                        <span className="font-salongbeach font-bold uppercase text-sm sm:text-base lg:text-lg text-[#182b2c] tracking-wider leading-snug">
+                          {feat}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {/* CTA Booking Button */}
+                <div className="pt-3">
                   <Link href="/booking">
-                    <Button variant="primary" size="md">
-                      Запазете за това събитие
+                    <Button
+                      variant="primary"
+                      className="bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-base font-bold uppercase tracking-wider px-8 py-3.5 rounded-full shadow-md flex items-center space-x-2 cursor-pointer"
+                    >
+                      <span>Резервирай тази услуга</span>
+                      <ArrowRight className="w-4 h-4" />
                     </Button>
                   </Link>
                 </div>
               </div>
-
-              <div className={`relative h-64 sm:h-80 md:h-96 rounded-3xl overflow-hidden shadow-2xl border border-brand-primary/30 ${index % 2 === 1 ? "lg:order-1" : ""}`}>
-                <Image
-                  src={service.image}
-                  alt={service.alt}
-                  fill
-                  className="object-cover"
-                />
-              </div>
             </div>
           ))}
-        </section>
-
-        {/* Pricing Breakdown */}
-        <section className="bg-brand-cream py-16 sm:py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-12">
-            <div className="text-center max-w-3xl mx-auto space-y-4">
-              <span className="text-xs uppercase tracking-widest text-[#00b4b6] font-semibold">
-                Прозрачно формиране на цената
-              </span>
-              <h2 className="font-salongbeach text-3xl sm:text-5xl font-bold text-brand-dark">
-                Какво включва пакетът?
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-stretch">
-              <Card className="h-auto min-h-full flex flex-col justify-between space-y-4 p-6 sm:p-8">
-                <div className="space-y-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[#00b4b6]/10 flex items-center justify-center text-[#00b4b6]">
-                    <Sparkles className="w-6 h-6" />
-                  </div>
-                  <h3 className="font-salongbeach text-2xl font-bold text-brand-dark">
-                    Наем на машината
-                  </h3>
-                  <p className="text-[#00b4b6] font-display font-bold text-2xl">
-                    350€ – 500€
-                  </p>
-                  <p className="text-sm text-brand-dark/75 font-sans leading-relaxed">
-                    Включва бутиковата машина за целия времетраене на събитието, монети-жетони за гостите и пълен комплект от избрани печатни продукти.
-                  </p>
-                </div>
-              </Card>
-
-              <Card className="h-auto min-h-full flex flex-col justify-between space-y-4 p-6 sm:p-8">
-                <div className="space-y-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[#00b4b6]/10 flex items-center justify-center text-[#00b4b6]">
-                    <Palette className="w-6 h-6" />
-                  </div>
-                  <h3 className="font-salongbeach text-2xl font-bold text-brand-dark">
-                    Графичен дизайн
-                  </h3>
-                  <p className="text-[#00b4b6] font-display font-bold text-2xl">
-                    25€ – 50€
-                  </p>
-                  <p className="text-sm text-brand-dark/75 font-sans leading-relaxed">
-                    Индивидуално авторско оформление от графичен дизайнер с вашите имена, дати или лого. Включва до 3 кръга от корекции.
-                  </p>
-                </div>
-              </Card>
-
-              <Card className="h-auto min-h-full flex flex-col justify-between space-y-4 p-6 sm:p-8">
-                <div className="space-y-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[#00b4b6]/10 flex items-center justify-center text-[#00b4b6]">
-                    <Truck className="w-6 h-6" />
-                  </div>
-                  <h3 className="font-salongbeach text-2xl font-bold text-brand-dark">
-                    Транспорт
-                  </h3>
-                  <p className="text-[#00b4b6] font-display font-bold text-2xl">
-                    0€ (първите 50 км)
-                  </p>
-                  <p className="text-sm text-brand-dark/75 font-sans leading-relaxed">
-                    Базирани сме в Бургас. Първите 50 км са напълно безплатни, след което се таксува 0.23 €/км до Вашето локация.
-                  </p>
-                </div>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section className="max-w-4xl mx-auto text-center px-4 space-y-6">
-          <h2 className="font-salongbeach text-3xl sm:text-5xl font-bold text-brand-dark">
-            Имате специфично виждане за събитието?
-          </h2>
-          <p className="text-brand-dark/80 font-sans text-lg">
-            Ще се радваме да обсъдим Вашите идеи и да ги превърнем в реалност.
-          </p>
-          <Link href="/booking">
-            <Button variant="accent" size="lg" className="flex items-center space-x-2 mx-auto">
-              <span>Изпратете запитване</span>
-              <ArrowRight className="w-4 h-4" />
-            </Button>
-          </Link>
         </section>
       </div>
     </PageWrapper>

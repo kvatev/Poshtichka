@@ -38,6 +38,7 @@ export type AdminTab =
   | "calendar"
   | "finance"
   | "customers"
+  | "services"
   | "media"
   | "homepage"
   | "content"
@@ -66,7 +67,8 @@ export const adminNavItems: { id: AdminTab; label: string; icon: React.ElementTy
   { id: "calendar", label: "Календар Заетост", icon: Calendar },
   { id: "finance", label: "Финанси & Плащания", icon: DollarSign },
   { id: "customers", label: "Клиенти & Профили", icon: Users },
-  { id: "media", label: "Медийна Библиотека", icon: FolderOpen, section: "Управление" },
+  { id: "services", label: "Услуги & Описание", icon: Sparkles, section: "Управление" },
+  { id: "media", label: "Медийна Библиотека", icon: FolderOpen },
   { id: "homepage", label: "Начална Страница", icon: HomeIcon },
   { id: "content", label: "Текстове & Съдържание", icon: FileText },
   { id: "gallery", label: "Галерия", icon: ImageIcon },
