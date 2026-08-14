@@ -1,206 +1,260 @@
 "use client";
 
 import React, { useState } from "react";
-import { Phone, Mail, MapPin, Instagram, Send, CheckCircle2 } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { MapPin, Mail, Instagram, CheckCircle2 } from "lucide-react";
+import { motion } from "framer-motion";
 import { PageWrapper } from "@/components/layout/page-wrapper";
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [service, setService] = useState("vending-machine");
+  const [message, setMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+
+    const serviceLabels: Record<string, string> = {
+      "vending-machine": "Вендинг машина Пощичка",
+      "audio-phone": "Аудио телефон за пожелания",
+      "wedding-gifts": "Подаръци за сватба & Хартиени спомени",
+      "digital-invitations": "Дигитални покани",
+      "corporate-branding": "Корпоративен брандинг & Маркетинг активация",
+      other: "Друга услуга / Общо запитване",
+    };
+
+    const selectedServiceLabel = serviceLabels[service] || service;
+
+    try {
+      await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName,
+          phone: "От контактна форма",
+          email,
+          eventDate: new Date().toISOString().split("T")[0],
+          eventType: `Запитване за: ${selectedServiceLabel}`,
+          venueLocation: "Бургас",
+          guestCount: 0,
+          preferredContact: "email",
+          message: `Избрана услуга: ${selectedServiceLabel}\n\nСъобщение: ${message}`,
+        }),
+      });
+      setSubmitted(true);
+    } catch {
+      setSubmitted(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <PageWrapper>
-      <div className="space-y-16 pb-24">
-        {/* Header */}
-        <section className="bg-brand-cream py-16 sm:py-24 border-b border-[#00b4b6]/20">
-          <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
-            <span className="text-xs uppercase tracking-widest text-[#00b4b6] font-semibold">
-              Свържете се с нас
-            </span>
-            <h1 className="font-display text-4xl sm:text-6xl font-bold text-brand-dark">
-              Очакваме Вашето запитване
+      <div className="space-y-12 pb-24 font-sans select-none">
+        {/* Top Banner */}
+        <section className="bg-[#00b4b6] text-white py-12 sm:py-16 px-4 relative overflow-hidden border-b border-white/20">
+          <div className="max-w-4xl mx-auto text-center space-y-4">
+            <h1 className="font-salongbeach text-3xl sm:text-5xl font-bold uppercase tracking-wider text-white leading-tight">
+              СВЪРЖЕТЕ С Е КИПА НА ПОЩИЧКА
             </h1>
-            <p className="text-brand-dark/80 text-lg sm:text-xl font-sans max-w-2xl mx-auto font-light leading-relaxed">
-              Имате въпрос или искате да проверите наличност за Вашата дата? Свържете се с нас по удобен за Вас начин.
+            <p className="font-sans text-sm sm:text-base lg:text-lg font-light text-white/95 max-w-2xl mx-auto italic">
+              Имате въпрос или друг тип запитване? Свържете се с нас, за да Ви помогнем!
             </p>
-          </div>
-        </section>
 
-        <section className="max-w-7xl mx-auto px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contact Info & Map */}
-          <div className="space-y-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <Card className="p-6 space-y-3">
-                <div className="w-10 h-10 rounded-full bg-[#00b4b6]/10 flex items-center justify-center text-[#00b4b6]">
-                  <MapPin className="w-5 h-5" />
-                </div>
-                <h3 className="font-display text-lg font-bold text-brand-dark">
-                  Локация
-                </h3>
-                <p className="text-sm font-sans text-brand-dark/80">
-                  гр. Бургас, България <br />
-                  <span className="text-xs text-brand-dark/70">
-                    (Пътуваме из цялата страна)
-                  </span>
-                </p>
-              </Card>
-
-              <Card className="p-6 space-y-3">
-                <div className="w-10 h-10 rounded-full bg-[#00b4b6]/10 flex items-center justify-center text-[#00b4b6]">
-                  <Phone className="w-5 h-5" />
-                </div>
-                <h3 className="font-display text-lg font-bold text-brand-dark">
-                  Телефон
-                </h3>
-                <a
-                  href="tel:+359888000000"
-                  className="text-sm font-sans text-[#00b4b6] hover:underline font-semibold"
-                >
-                  +359 888 000 000
-                </a>
-              </Card>
-
-              <Card className="p-6 space-y-3">
-                <div className="w-10 h-10 rounded-full bg-[#00b4b6]/10 flex items-center justify-center text-[#00b4b6]">
-                  <Mail className="w-5 h-5" />
-                </div>
-                <h3 className="font-display text-lg font-bold text-brand-dark">
-                  Имейл
-                </h3>
-                <a
-                  href="mailto:hello@poshtichka.bg"
-                  className="text-sm font-sans text-[#00b4b6] hover:underline font-semibold"
-                >
-                  hello@poshtichka.bg
-                </a>
-              </Card>
-
-              <Card className="p-6 space-y-3">
-                <div className="w-10 h-10 rounded-full bg-[#00b4b6]/10 flex items-center justify-center text-[#00b4b6]">
-                  <Instagram className="w-5 h-5" />
-                </div>
-                <h3 className="font-display text-lg font-bold text-brand-dark">
-                  Instagram
-                </h3>
-                <a
-                  href="https://instagram.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm font-sans text-[#00b4b6] hover:underline font-semibold"
-                >
-                  @poshtichka.bg
-                </a>
-              </Card>
-            </div>
-
-            {/* Google Maps Embed */}
-            <div className="rounded-3xl overflow-hidden shadow-glass border border-[#00b4b6]/30 h-72 relative">
-              <iframe
-                title="Карта Бургас"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d93967.58550130985!2d27.4046182!3d42.5047805!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40a6926514757c91%3A0x400a01269af5e70!2sBurgas!5e0!3m2!1sen!2sbg!4v1700000000000!5m2!1sen!2sbg"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen={false}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
+            {/* Curly Arrow pointing down */}
+            <div className="pt-2 flex items-center justify-center pointer-events-none">
+              <Image
+                src="/media/Main Page/curly-arrow-left.png"
+                alt="Стрелка"
+                width={50}
+                height={50}
+                className="w-8 sm:w-10 h-auto object-contain opacity-90 rotate-90"
               />
             </div>
           </div>
+        </section>
 
-          {/* Contact Form */}
-          <Card className="p-8 sm:p-10 space-y-6">
+        {/* Main 2-Column Responsive Layout */}
+        <section className="max-w-6xl mx-auto px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          {/* Left Column: 3 Separate Live Card Elements */}
+          <div className="space-y-6">
+            {/* Card 1: ЛОКАЦИЯ */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="bg-[#f9f6f0] border-2 border-[#2d3a37]/80 rounded-[32px] p-6 sm:p-8 text-center flex flex-col items-center justify-center space-y-3 shadow-md hover:scale-[1.02] transition-transform duration-300"
+            >
+              <div className="w-14 h-14 rounded-full bg-[#00b4b6]/10 flex items-center justify-center text-[#00b4b6]">
+                <MapPin className="w-8 h-8 stroke-[2.5]" />
+              </div>
+              <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#182b2c]">
+                ЛОКАЦИЯ
+              </h3>
+              <p className="font-stampatello text-lg sm:text-xl font-semibold text-[#00b4b6]">
+                Бургас, България
+              </p>
+            </motion.div>
+
+            {/* Card 2: ИМЕЙЛ */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="bg-[#f9f6f0] border-2 border-[#2d3a37]/80 rounded-[32px] p-6 sm:p-8 text-center flex flex-col items-center justify-center space-y-3 shadow-md hover:scale-[1.02] transition-transform duration-300"
+            >
+              <div className="w-14 h-14 rounded-full bg-[#00b4b6]/10 flex items-center justify-center text-[#00b4b6]">
+                <Mail className="w-8 h-8 stroke-[2.5]" />
+              </div>
+              <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#182b2c]">
+                ИМЕЙЛ
+              </h3>
+              <a
+                href="mailto:poshtichka@draskanitsi.com"
+                className="font-stampatello text-base sm:text-lg font-semibold text-[#00b4b6] hover:underline cursor-pointer break-all"
+              >
+                poshtichka@draskanitsi.com
+              </a>
+            </motion.div>
+
+            {/* Card 3: INSTAGRAM */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="bg-[#f9f6f0] border-2 border-[#2d3a37]/80 rounded-[32px] p-6 sm:p-8 text-center flex flex-col items-center justify-center space-y-3 shadow-md hover:scale-[1.02] transition-transform duration-300"
+            >
+              <div className="w-14 h-14 rounded-full bg-[#00b4b6]/10 flex items-center justify-center text-[#00b4b6]">
+                <Instagram className="w-8 h-8 stroke-[2.5]" />
+              </div>
+              <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#182b2c]">
+                INSTAGRAM
+              </h3>
+              <a
+                href="https://www.instagram.com/poshtichka/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-stampatello text-lg sm:text-xl font-semibold text-[#00b4b6] hover:underline cursor-pointer"
+              >
+                @poshtichka
+              </a>
+            </motion.div>
+          </div>
+
+          {/* Right Column: Contact Form Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="bg-[#f9f6f0] border-2 border-[#2d3a37]/80 rounded-[40px] p-6 sm:p-10 shadow-xl space-y-6"
+          >
             {submitted ? (
               <div className="text-center py-12 space-y-4">
                 <div className="w-16 h-16 rounded-full bg-[#00b4b6]/10 text-[#00b4b6] mx-auto flex items-center justify-center">
-                  <CheckCircle2 className="w-8 h-8" />
+                  <CheckCircle2 className="w-10 h-10 text-[#00b4b6]" />
                 </div>
-                <h3 className="font-display text-2xl font-bold text-brand-dark">
+                <h3 className="font-salongbeach text-3xl font-bold uppercase text-[#00b4b6]">
                   Благодарим Ви!
                 </h3>
-                <p className="text-sm font-sans text-brand-dark/80">
-                  Вашето съобщение беше изпратено успешно. Ще се свържем с Вас в рамките на 24 часа.
+                <p className="text-[#182b2c] font-sans text-base max-w-sm mx-auto leading-relaxed">
+                  Вашето съобщение беше изпратено успешно. Ще се свържем с Вас в рамките на 24 часа!
                 </p>
               </div>
             ) : (
-              <>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Име и фамилия */}
                 <div className="space-y-2">
-                  <h3 className="font-display text-2xl font-bold text-brand-dark">
-                    Изпратете съобщение
-                  </h3>
-                  <p className="text-sm font-sans text-brand-dark/70">
-                    Попълнете формата и ние ще Ви отговорим в рамките на 24 часа.
-                  </p>
+                  <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                    Име и фамилия *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="Иван Иванов"
+                    className="w-full px-6 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm"
+                  />
                 </div>
 
-                <form className="space-y-4" onSubmit={handleSubmit}>
-                  <div className="space-y-1">
-                    <label className="text-xs font-sans font-medium text-brand-dark">
-                      Вашето име *
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Име и фамилия"
-                      className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
-                      required
-                    />
-                  </div>
+                {/* Имейл */}
+                <div className="space-y-2">
+                  <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                    Имейл *
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="ivanivanov@gmail.com"
+                    className="w-full px-6 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm"
+                  />
+                </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-xs font-sans font-medium text-brand-dark">
-                        Телефон *
-                      </label>
-                      <input
-                        type="tel"
-                        placeholder="+359 888 123 456"
-                        className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
-                        required
-                      />
+                {/* За коя услуга искате да направите запитване? */}
+                <div className="space-y-2">
+                  <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                    За коя услуга искате да направите запитване? *
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={service}
+                      onChange={(e) => setService(e.target.value)}
+                      className="w-full px-6 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base appearance-none focus:outline-none focus:ring-2 focus:ring-[#00b4b6] cursor-pointer shadow-sm text-center pr-10"
+                    >
+                      <option value="vending-machine">Вендинг машина Пощичка</option>
+                      <option value="audio-phone">Аудио телефон за пожелания</option>
+                      <option value="wedding-gifts">Подаръци за сватба & Хартиени спомени</option>
+                      <option value="digital-invitations">Дигитални покани</option>
+                      <option value="corporate-branding">Корпоративен брандинг & Маркетинг активация</option>
+                      <option value="other">Друга услуга / Общо запитване</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-5 flex items-center text-[#00b4b6]">
+                      ▼
                     </div>
-
-                    <div className="space-y-1">
-                      <label className="text-xs font-sans font-medium text-brand-dark">
-                        Имейл *
-                      </label>
-                      <input
-                        type="email"
-                        placeholder="email@example.com"
-                        className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
-                        required
-                      />
-                    </div>
                   </div>
+                </div>
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-sans font-medium text-brand-dark">
-                      Съобщение *
-                    </label>
-                    <textarea
-                      rows={4}
-                      placeholder="Разкажете ни за Вашето събитие (дата, град, брой гости)..."
-                      className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
-                      required
-                    />
-                  </div>
+                {/* Съобщение */}
+                <div className="space-y-2">
+                  <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                    Съобщение *
+                  </label>
+                  <textarea
+                    rows={5}
+                    required
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Разкажете ни повече за Вашето събитие или идеята Ви..."
+                    className="w-full px-6 py-4 rounded-[28px] border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm resize-none"
+                  />
+                </div>
 
-                  <Button variant="primary" size="lg" className="w-full flex items-center justify-center space-x-2">
-                    <span>Изпрати съобщение</span>
-                    <Send className="w-4 h-4" />
-                  </Button>
-                </form>
-              </>
+                {/* Submit Button */}
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-2xl font-bold uppercase tracking-wider py-4 rounded-full shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 cursor-pointer"
+                  >
+                    <span>{loading ? "ИЗПРАЩАНЕ..." : "ИЗПРАТИ"}</span>
+                  </button>
+                </div>
+              </form>
             )}
-          </Card>
+          </motion.div>
         </section>
       </div>
     </PageWrapper>
   );
 }
-

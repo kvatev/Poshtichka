@@ -1,147 +1,219 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Sparkles, Heart, Award, MapPin } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { PageWrapper } from "@/components/layout/page-wrapper";
-
-export const metadata = {
-  title: "За нас & Философия | Пощичка",
-  description:
-    "Научете историята и философията на Пощичка — бутикова вендинг машина от Бургас, създаваща емоции и спомени за сватби и корпоративни събития.",
-};
 
 export default function AboutPage() {
   return (
     <PageWrapper>
-      <div className="space-y-24 sm:space-y-32 pb-24">
-        {/* Header */}
-        <section className="bg-brand-secondary/40 py-16 sm:py-24 border-b border-brand-primary/20">
-          <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
-            <span className="text-xs uppercase tracking-widest text-[#00b4b6] font-semibold">
-              За нас & Нашата Философия
-            </span>
-            <h1 className="font-display text-4xl sm:text-6xl font-bold text-brand-dark">
-              Ние не печатаме картички. <br />
-              <span className="text-[#00b4b6] italic font-normal">
-                Ние създаваме спомени.
-              </span>
-            </h1>
-            <p className="text-brand-dark/80 text-lg sm:text-xl font-sans max-w-2xl mx-auto font-light leading-relaxed">
-              Пощичка се роди с една ясна мисия: да превърне традиционния подарък за гости в интерактивно преживяване, което носи истинска радост.
-            </p>
+      <div className="space-y-12 sm:space-y-16 pb-24 font-sans select-none bg-[#f9f6f0]">
+        {/* Section 1: Top Hero Photo */}
+        <section className="relative w-full h-[40vh] sm:h-[55vh] lg:h-[65vh] overflow-hidden">
+          <Image
+            src={encodeURI("/media/За Пощичка/Asset 61@2x.png")}
+            alt="Пощичка машина на събитие"
+            fill
+            className="object-cover object-center"
+            priority
+            unoptimized
+          />
+        </section>
+
+        {/* Section 2: Headline & Subtitle */}
+        <section className="max-w-4xl mx-auto px-4 text-center space-y-4 pt-4">
+          <h1 className="font-salongbeach text-3xl sm:text-5xl lg:text-6xl font-bold uppercase tracking-wider text-[#182b2c] leading-tight">
+            НИЕ НЕ ПЕЧАТАМЕ КАРТИЧКИ
+          </h1>
+          <h2 className="font-salongbeach text-3xl sm:text-5xl lg:text-6xl font-bold uppercase tracking-wider text-[#00b4b6] leading-tight">
+            НИЕ СЪЗДАВАМЕ СПОМЕНИ
+          </h2>
+          <p className="font-sans text-sm sm:text-base lg:text-lg font-light text-[#182b2c]/85 max-w-2xl mx-auto italic leading-relaxed pt-1">
+            Пощичка се роди с една ясна мисия: да превърне традиционния подарък за гости в интерактивно преживяване, което носи истинска радост.
+          </p>
+        </section>
+
+        {/* Section 3: 3 Feature Graphic Elements in Teal Bar */}
+        <section className="w-full bg-[#00b4b6] py-10 sm:py-14 px-4 sm:px-8">
+          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 items-center text-center">
+            {/* Feature 1: Asset 65@2x.png (100% Авторски дизайн) */}
+            <div className="flex justify-center items-center py-2">
+              <div className="relative w-full max-w-[300px] sm:max-w-[350px] aspect-[4/3]">
+                <Image
+                  src={encodeURI("/media/За Пощичка/Asset 65@2x.png")}
+                  alt="100% Авторски дизайн"
+                  fill
+                  className="object-contain object-center"
+                  unoptimized
+                  priority
+                />
+              </div>
+            </div>
+
+            {/* Feature 2: Asset 63@2x.png (Емоционална стойност) */}
+            <div className="flex justify-center items-center py-2">
+              <div className="relative w-full max-w-[300px] sm:max-w-[350px] aspect-[4/3]">
+                <Image
+                  src={encodeURI("/media/За Пощичка/Asset 63@2x.png")}
+                  alt="Емоционална стойност"
+                  fill
+                  className="object-contain object-center"
+                  unoptimized
+                  priority
+                />
+              </div>
+            </div>
+
+            {/* Feature 3: Asset 64@2x.png (Гъвкавост и логистика) */}
+            <div className="flex justify-center items-center py-2">
+              <div className="relative w-full max-w-[300px] sm:max-w-[350px] aspect-[4/3]">
+                <Image
+                  src={encodeURI("/media/За Пощичка/Asset 64@2x.png")}
+                  alt="Гъвкавост и логистика"
+                  fill
+                  className="object-contain object-center"
+                  unoptimized
+                  priority
+                />
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* Main Story Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-8 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div className="relative h-96 sm:h-[500px] rounded-3xl overflow-hidden shadow-2xl border border-brand-primary/30">
+        {/* Section 4: What is Poshtichka & Booth Diagram (Responsive Asset 66@2x.png) */}
+        <section className="max-w-5xl mx-auto px-4 sm:px-8 py-4 flex justify-center items-center">
+          <div className="relative w-full max-w-4xl aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9]">
             <Image
-              src="/media/gallery/Tezza_2025_07_07_170901960_1.webp"
-              alt="Автентичният мобилен кът на Пощичка"
+              src={encodeURI("/media/За Пощичка/Asset 66@2x.png")}
+              alt="Какво е Пощичка - схема и въпроси"
               fill
-              className="object-cover"
+              className="object-contain object-center"
+              unoptimized
+              priority
             />
           </div>
+        </section>
 
-          <div className="space-y-6">
-            <div className="inline-flex items-center space-x-2 text-[#00b4b6] text-sm font-sans font-medium">
-              <Sparkles className="w-5 h-5" />
-              <span>Базирани в Бургас | Обслужваме цяла България</span>
-            </div>
+        {/* Section 5: Photo Banner 1 (Hands holding over booth) */}
+        <section className="relative w-full h-[280px] sm:h-[450px] overflow-hidden">
+          <Image
+            src={encodeURI("/media/За Пощичка/Asset 67@2x.png")}
+            alt="Младоженци и Пощичка"
+            fill
+            className="object-cover object-center"
+            unoptimized
+          />
+        </section>
 
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-brand-dark">
-              По-различно от стандартната фото кабина
+        {/* Section 6: Who is Behind the Idea? (КОЙ СТОИ ЗАД ИДЕЯТА?) */}
+        <section className="max-w-6xl mx-auto px-4 sm:px-8 space-y-10 py-6">
+          <div className="text-center max-w-3xl mx-auto space-y-2">
+            <h2 className="font-salongbeach text-3xl sm:text-5xl font-bold uppercase tracking-wider text-[#00b4b6]">
+              КОЙ СТОИ ЗАД ИДЕЯТА?
             </h2>
-
-            <p className="text-brand-dark/80 font-sans leading-relaxed text-base sm:text-lg">
-              Често ни питат: &quot;Какво точно е Пощичка?&quot;. Ние отговаряме, че това е мястото, където Вашите гости се събират, усмихват се и общуват помежду си.
+            <p className="font-sans text-sm sm:text-lg font-light text-[#182b2c]/85 italic">
+              Млада двойка, за която няма проект, който да не може да стане “НАПРАВИ СИ САМ”.
             </p>
+          </div>
 
-            <p className="text-brand-dark/80 font-sans leading-relaxed text-base sm:text-lg">
-              Всеки гост получава специален жетон. Когато го пусне в машината, той не просто получава предмет — той участва в създаването на своя персонализиран спомен (акварелна картичка, временна татуировка или луксозен книгоразделител).
-            </p>
-
-            <div className="pt-4 grid grid-cols-2 gap-4">
-              <div className="bg-white p-4 rounded-xl border border-brand-primary/20 shadow-sm">
-                <span className="font-display text-3xl font-bold text-[#00b4b6]">100%</span>
-                <p className="text-xs text-brand-dark/70 font-sans mt-1">
-                  Авторски индивидуален дизайн
-                </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start justify-items-center">
+            {/* Geri Column Graphic (Asset 68@2x.png) */}
+            <div className="w-full flex justify-center items-start">
+              <div className="relative w-full max-w-[340px] sm:max-w-[420px] h-[600px] sm:h-[780px] lg:h-[840px]">
+                <Image
+                  src={encodeURI("/media/За Пощичка/Asset 68@2x.png")}
+                  alt="Гери - дизайнер"
+                  fill
+                  className="object-contain object-top"
+                  unoptimized
+                  priority
+                />
               </div>
-              <div className="bg-white p-4 rounded-xl border border-brand-primary/20 shadow-sm">
-                <span className="font-display text-3xl font-bold text-[#00b4b6]">50 км</span>
-                <p className="text-xs text-brand-dark/70 font-sans mt-1">
-                  Безплатен транспорт от Бургас
-                </p>
+            </div>
+
+            {/* Krasi Column Graphic (Asset 69@2x.png) */}
+            <div className="w-full flex justify-center items-start">
+              <div className="relative w-full max-w-[340px] sm:max-w-[420px] h-[600px] sm:h-[780px] lg:h-[840px]">
+                <Image
+                  src={encodeURI("/media/За Пощичка/Asset 69@2x.png")}
+                  alt="Краси - програмист"
+                  fill
+                  className="object-contain object-top"
+                  unoptimized
+                  priority
+                />
               </div>
             </div>
           </div>
         </section>
 
-        {/* Brand Values */}
-        <section className="bg-brand-cream py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-12">
-            <div className="text-center max-w-2xl mx-auto space-y-4">
-              <h2 className="font-display text-3xl sm:text-4xl font-bold text-brand-dark">
-                Нашите Ценности
+        {/* Section 7: Photo Banner 2 (Hands holding postcards) */}
+        <section className="relative w-full h-[280px] sm:h-[450px] overflow-hidden">
+          <Image
+            src={encodeURI("/media/За Пощичка/Asset 70@2x.png")}
+            alt="Ръце с сватбени картички"
+            fill
+            className="object-cover object-center"
+            unoptimized
+          />
+        </section>
+
+        {/* Section 8: Final Bottom CTA Banner (Matching exact user mockup with Asset 71 & Asset 72) */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-16">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-10 text-center relative">
+            {/* Left Graphic: Asset 71@2x.png (Hands holding bird postcard) */}
+            <div className="relative w-36 sm:w-48 md:w-60 h-36 sm:h-48 md:h-60 flex-shrink-0 mx-auto md:mx-0">
+              <Image
+                src={encodeURI("/media/За Пощичка/Asset 71@2x.png")}
+                alt="Ръце с картичка"
+                fill
+                className="object-contain object-center"
+                unoptimized
+              />
+            </div>
+
+            {/* Center Content */}
+            <div className="space-y-4 max-w-2xl mx-auto flex-1">
+              <h2 className="font-salongbeach text-2xl sm:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-[#00b4b6] leading-tight">
+                ЧУДИТЕ СЕ ДАЛИ ДАТАТА ВИ Е СВОБОДНА?
               </h2>
-              <p className="text-brand-dark/70 font-sans">
-                Принципите, които правят изживяването с Пощичка незабравимо.
+              <p className="font-sans text-sm sm:text-base lg:text-lg text-[#182b2c]/85 italic">
+                Проверете дали Пощичка може да пътува за вашия специален ден!
               </p>
+
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3 relative">
+                <Link href="/calendar">
+                  <button className="inline-flex items-center justify-center px-10 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white hover:bg-[#00b4b6] hover:text-white text-[#00b4b6] font-salongbeach text-lg sm:text-xl font-bold uppercase tracking-wider transition-all duration-300 shadow-md cursor-pointer">
+                    <span>ПРОВЕРЕТЕ ТУК</span>
+                  </button>
+                </Link>
+
+                {/* Curly Arrow to the right of the button pointing at it */}
+                <div className="relative w-12 h-12 flex-shrink-0 pointer-events-none">
+                  <Image
+                    src={encodeURI("/media/Main Page/curly-arrow-left.png")}
+                    alt="Стрелка"
+                    fill
+                    className="object-contain opacity-90 -rotate-12"
+                  />
+                </div>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[
-                {
-                  icon: Heart,
-                  title: "Емоционална стойност",
-                  desc: "Физическият подарък има смисъл само когато носи чувство. Ние превръщаме Вашето събитие в емоция.",
-                },
-                {
-                  icon: Award,
-                  title: "Безпромисен дизайн",
-                  desc: "Нищо при нас не е генерично. Всеки проект се изработва с прецизност от професионален графичен дизайнер.",
-                },
-                {
-                  icon: MapPin,
-                  title: "Гъвкавост & Логистика",
-                  desc: "Базирани сме в Бургас, но машината ни пътува с удоволствие до всяка точка на България.",
-                },
-              ].map((v, i) => (
-                <Card key={i} className="text-center space-y-4 p-8">
-                  <div className="w-14 h-14 rounded-full bg-[#00b4b6]/10 mx-auto flex items-center justify-center text-[#00b4b6]">
-                    <v.icon className="w-7 h-7" />
-                  </div>
-                  <h3 className="font-display text-2xl font-bold text-brand-dark">
-                    {v.title}
-                  </h3>
-                  <p className="text-brand-dark/75 font-sans text-sm leading-relaxed">
-                    {v.desc}
-                  </p>
-                </Card>
-              ))}
+            {/* Right Graphic: Asset 72@2x.png (Hands making heart) */}
+            <div className="relative w-36 sm:w-48 md:w-60 h-36 sm:h-48 md:h-60 flex-shrink-0 mx-auto md:mx-0">
+              <Image
+                src={encodeURI("/media/За Пощичка/Asset 72@2x.png")}
+                alt="Ръце със сърце"
+                fill
+                className="object-contain object-center"
+                unoptimized
+              />
             </div>
           </div>
-        </section>
-
-        {/* CTA */}
-        <section className="max-w-4xl mx-auto text-center px-4 space-y-6">
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-brand-dark">
-            Искате ли да направим Вашето събитие специално?
-          </h2>
-          <p className="text-brand-dark/80 font-sans text-lg">
-            Свържете се с нас за свободна дата и концепция.
-          </p>
-          <Link href="/booking">
-            <Button variant="primary" size="lg">
-              Резервирайте дата сега
-            </Button>
-          </Link>
         </section>
       </div>
     </PageWrapper>
   );
 }
-

@@ -6,6 +6,7 @@ import {
   defaultHomepageConfig,
   defaultBanners,
   defaultTestimonials,
+  defaultFaqs,
 } from "@/lib/content-store";
 
 declare global {
@@ -20,7 +21,7 @@ export async function GET() {
   let homepage = store.homepage_config ? { ...defaultHomepageConfig, ...store.homepage_config } : defaultHomepageConfig;
   let banners = store.banners || defaultBanners;
   let testimonials = store.testimonials || defaultTestimonials;
-  let faq = store.faq_items || null;
+  let faq = store.faq_items || defaultFaqs;
 
   try {
     const supabase = await createClient();

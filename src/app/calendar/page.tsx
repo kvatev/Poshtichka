@@ -2,19 +2,16 @@
 
 import React, { useState, useEffect, useTransition, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   ChevronLeft,
   ChevronRight,
-  Calendar as CalendarIcon,
   CheckCircle2,
   XCircle,
   Clock,
   ArrowRight,
-  ShieldCheck,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { PageWrapper } from "@/components/layout/page-wrapper";
 
 const monthNamesBg = [
@@ -122,59 +119,62 @@ export default function PublicCalendarPage() {
 
   return (
     <PageWrapper>
-      <div className="space-y-16 pb-24 font-sans">
-        {/* Page Header */}
-        <section className="bg-brand-cream py-16 sm:py-24 border-b border-[#00b4b6]/20">
-          <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
-            <div className="inline-flex items-center space-x-2 bg-[#00b4b6]/10 px-4 py-1.5 rounded-full border border-[#00b4b6]/30 text-xs font-semibold uppercase tracking-widest text-[#00b4b6]">
-              <CalendarIcon className="w-4 h-4" />
-              <span>Публичен Календар Наличност</span>
-            </div>
-
-            <h1 className="font-display text-4xl sm:text-6xl font-bold text-brand-dark">
-              Свободни Дати за Събития
+      <div className="space-y-12 pb-24 font-sans select-none">
+        {/* Top Banner */}
+        <section className="bg-[#00b4b6] text-white py-12 sm:py-16 px-4 relative overflow-hidden border-b border-white/20">
+          <div className="max-w-4xl mx-auto text-center space-y-3">
+            <h1 className="font-salongbeach text-3xl sm:text-5xl font-bold uppercase tracking-wider text-white leading-tight">
+              КАЛЕНДАР СЪС ЗАЕТОСТ
             </h1>
-
-            <p className="text-brand-dark/80 text-lg sm:text-xl font-sans max-w-2xl mx-auto font-light leading-relaxed">
+            <p className="font-sans text-sm sm:text-base lg:text-lg font-light text-white/95 max-w-2xl mx-auto italic">
               Изберете желаната от Вас дата, за да проверите наличността. Кликнете върху свободна дата, за да продължите директно към резервацията.
             </p>
+            <p className="text-xs text-white/80 font-sans italic">
+              * Пълна конфиденциалност: Показват се единствено свободни и заети дати.
+            </p>
 
-            <div className="inline-flex items-center space-x-2 text-xs text-brand-dark/70 bg-white/80 px-4 py-2 rounded-full border border-[#00b4b6]/20 shadow-xs">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>Пълна конфиденциалност: Показват се единствено свободни и заети дати.</span>
+            {/* Curly Arrow pointing down */}
+            <div className="pt-2 flex items-center justify-center pointer-events-none">
+              <Image
+                src="/media/Main Page/curly-arrow-left.png"
+                alt="Стрелка"
+                width={50}
+                height={50}
+                className="w-8 sm:w-10 h-auto object-contain opacity-90 rotate-90"
+              />
             </div>
           </div>
         </section>
 
-        {/* Main Calendar Section */}
+        {/* Main Calendar Section (Inside rounded frame like calculator/booking form) */}
         <section className="max-w-5xl mx-auto px-4 sm:px-8 space-y-8">
-          <Card className="p-6 sm:p-8 bg-white border border-[#00b4b6]/30 shadow-xl rounded-3xl space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-[#00b4b6]/10">
+          <div className="bg-[#f9f6f0] rounded-[40px] border-2 border-[#2d3a37]/80 p-6 sm:p-10 shadow-2xl space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-[#00b4b6]/20">
               <div className="flex flex-wrap items-center gap-4">
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={handlePrevMonth}
-                    className="p-2.5 rounded-2xl bg-brand-cream hover:bg-[#00b4b6]/10 border border-[#00b4b6]/20 text-brand-dark transition-colors"
+                    className="p-2.5 rounded-2xl bg-white hover:bg-[#00b4b6]/10 border-2 border-[#00b4b6] text-[#182b2c] transition-colors cursor-pointer"
                     aria-label="Предишен месец"
                   >
-                    <ChevronLeft className="w-5 h-5" />
+                    <ChevronLeft className="w-5 h-5 text-[#00b4b6]" />
                   </button>
-                  <h2 className="font-display text-2xl sm:text-3xl font-bold text-brand-dark min-w-[180px] text-center">
+                  <h2 className="font-salongbeach text-2xl sm:text-3xl font-bold text-[#182b2c] min-w-[180px] text-center uppercase tracking-wider">
                     {monthNamesBg[currentMonth]} {currentYear}
                   </h2>
                   <button
                     onClick={handleNextMonth}
-                    className="p-2.5 rounded-2xl bg-brand-cream hover:bg-[#00b4b6]/10 border border-[#00b4b6]/20 text-brand-dark transition-colors"
+                    className="p-2.5 rounded-2xl bg-white hover:bg-[#00b4b6]/10 border-2 border-[#00b4b6] text-[#182b2c] transition-colors cursor-pointer"
                     aria-label="Следващ месец"
                   >
-                    <ChevronRight className="w-5 h-5" />
+                    <ChevronRight className="w-5 h-5 text-[#00b4b6]" />
                   </button>
                 </div>
 
                 <select
                   value={currentYear}
                   onChange={handleYearChange}
-                  className="px-4 py-2.5 rounded-2xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#00b4b6] cursor-pointer"
+                  className="px-4 py-2.5 rounded-2xl border-2 border-[#00b4b6] bg-white text-[#182b2c] text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#00b4b6] cursor-pointer"
                 >
                   {[2025, 2026, 2027, 2028].map((y) => (
                     <option key={y} value={y}>
@@ -188,30 +188,31 @@ export default function PublicCalendarPage() {
                     setCurrentYear(today.getFullYear());
                     setCurrentMonth(today.getMonth());
                   }}
-                  className="text-xs font-semibold text-[#00b4b6] hover:underline px-3 py-2 bg-[#00b4b6]/10 rounded-xl"
+                  className="text-xs font-semibold text-[#00b4b6] hover:underline px-3 py-2 bg-white rounded-xl border border-[#00b4b6]/30 cursor-pointer"
                 >
                   Текущ месец
                 </button>
               </div>
 
-              <div className="flex flex-wrap items-center gap-4 text-xs font-semibold">
+              {/* Legend with clean indicators and NO duplicate emojis */}
+              <div className="flex flex-wrap items-center gap-3 text-xs font-medium">
                 <div className="flex items-center space-x-2 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200 text-emerald-800">
                   <span className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>🟢 Свободна дата</span>
+                  <span>Свободна дата</span>
                 </div>
                 <div className="flex items-center space-x-2 bg-red-50 px-3 py-1.5 rounded-full border border-red-200 text-red-800">
                   <span className="w-3 h-3 rounded-full bg-red-500" />
-                  <span>🔴 Заета дата</span>
+                  <span>Заета дата</span>
                 </div>
                 <div className="flex items-center space-x-2 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200 text-gray-500">
                   <span className="w-3 h-3 rounded-full bg-gray-300" />
-                  <span>⚪ Изминала дата</span>
+                  <span>Изминала дата</span>
                 </div>
               </div>
             </div>
 
             <div className="space-y-3">
-              <div className="grid grid-cols-7 gap-2 text-center text-xs font-bold text-brand-dark/70 uppercase tracking-wider py-2 bg-[#00b4b6]/10 rounded-2xl">
+              <div className="grid grid-cols-7 gap-2 text-center text-xs font-bold text-[#182b2c] uppercase tracking-wider py-2 bg-[#00b4b6]/15 rounded-2xl">
                 {dayNamesBg.map((d) => (
                   <div key={d}>{d}</div>
                 ))}
@@ -223,7 +224,7 @@ export default function PublicCalendarPage() {
                     return (
                       <div
                         key={`empty-${idx}`}
-                        className="h-24 sm:h-28 rounded-2xl bg-brand-cream/20 border border-transparent opacity-30"
+                        className="h-24 sm:h-28 rounded-2xl bg-white/40 border border-transparent opacity-30"
                       />
                     );
                   }
@@ -243,22 +244,22 @@ export default function PublicCalendarPage() {
                       disabled={!isAvailable}
                       className={`h-24 sm:h-28 rounded-2xl p-2 sm:p-3 border text-left flex flex-col justify-between transition-all relative ${
                         isBooked
-                          ? "bg-red-50/70 border-red-200 text-red-900 cursor-not-allowed"
+                          ? "bg-red-50/80 border-red-300 text-red-900 cursor-not-allowed"
                           : isPast
-                          ? "bg-gray-50 border-gray-200 text-gray-400 cursor-not-allowed opacity-60"
+                          ? "bg-gray-100/70 border-gray-200 text-gray-400 cursor-not-allowed opacity-60"
                           : isToday
-                          ? "bg-emerald-50 border-emerald-400 text-emerald-900 shadow-md ring-2 ring-emerald-400/50 cursor-pointer"
-                          : "bg-emerald-50/40 hover:bg-emerald-100/70 border-emerald-300/60 text-emerald-950 shadow-xs cursor-pointer"
+                          ? "bg-white border-2 border-[#00b4b6] text-emerald-950 shadow-md ring-2 ring-[#00b4b6]/40 cursor-pointer"
+                          : "bg-white hover:bg-emerald-50/80 border-2 border-[#00b4b6]/40 text-emerald-950 shadow-xs cursor-pointer"
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <span
                           className={`text-sm sm:text-base font-bold rounded-full w-7 h-7 flex items-center justify-center ${
                             isToday
-                              ? "bg-emerald-600 text-white"
+                              ? "bg-[#00b4b6] text-white"
                               : isBooked
                               ? "text-red-700 font-bold"
-                              : "text-brand-dark"
+                              : "text-[#182b2c]"
                           }`}
                         >
                           {dayNum}
@@ -291,30 +292,28 @@ export default function PublicCalendarPage() {
                 })}
               </div>
             </div>
-          </Card>
+          </div>
 
-          <div className="bg-[#2d3a37] text-white p-8 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl border border-white/10">
+          {/* Bottom CTA Banner */}
+          <div className="bg-[#2d3a37] text-white p-6 sm:p-8 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl border border-white/10">
             <div className="space-y-2 text-center sm:text-left">
-              <h3 className="font-display text-2xl font-bold">
-                Открихте ли Вашата перфектна дата?
+              <h3 className="font-salongbeach text-xl sm:text-2xl lg:text-3xl font-bold uppercase tracking-wider text-white">
+                ОТКРИХТЕ ЛИ ВАШАТА ПЕРФЕКТНА ДАТА?
               </h3>
-              <p className="text-white/80 text-sm font-sans">
+              <p className="text-white/80 text-sm sm:text-base font-sans font-light">
                 Натиснете върху дата или попълнете формата за резервация директно.
               </p>
             </div>
-            <Button
-              variant="primary"
-              size="lg"
+            <button
               onClick={() => router.push("/booking")}
-              className="flex items-center space-x-2 text-base px-8 whitespace-nowrap bg-[#00b4b6] hover:bg-[#009da0] text-white border-0"
+              className="inline-flex items-center justify-center space-x-2.5 px-8 py-3.5 rounded-full bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-lg sm:text-xl font-bold uppercase tracking-wider transition-all duration-300 shadow-lg hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer"
             >
-              <span>Резервирай сега</span>
-              <ArrowRight className="w-4 h-4" />
-            </Button>
+              <span>РЕЗЕРВИРАЙ СЕГА</span>
+              <ArrowRight className="w-5 h-5" />
+            </button>
           </div>
         </section>
       </div>
     </PageWrapper>
   );
 }
-

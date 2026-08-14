@@ -5,29 +5,39 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   CheckCircle2,
-  Send,
-  Calendar as CalendarIcon,
   AlertTriangle,
   ArrowRight,
   ShieldAlert,
+  Check,
 } from "lucide-react";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageWrapper } from "@/components/layout/page-wrapper";
 
+const paperKeepsakeOptions = [
+  { id: "марка", label: "МАРКА" },
+  { id: "картичка", label: "КАРТИЧКА" },
+  { id: "стикер", label: "СТИКЕР" },
+  { id: "татуировка", label: "ТАТУИРОВКА" },
+  { id: "карти-с-предизвикателства", label: "ПРЕДИЗВИКАТЕЛСТВА" },
+  { id: "благодарствени-картички", label: "БЛАГОДАРСТВЕНИ КАРТИЧКИ" },
+  { id: "друго", label: "ДРУГО" },
+];
+
 const bookingSchema = z.object({
-  fullName: z.string().min(2, { message: "Моля, въведете Вашето име" }),
+  eventType: z.enum(["сватба", "кръщене", "юбилей", "друго"]),
+  customEventType: z.string().optional(),
+  eventDate: z.string().min(1, { message: "Моля, изберете дата на събитието" }),
+  fullName: z.string().min(2, { message: "Моля, въведете имена" }),
   phone: z.string().min(6, { message: "Моля, въведете валиден телефонен номер" }),
   email: z.string().email({ message: "Моля, въведете валиден имейл адрес" }),
-  eventDate: z.string().min(1, { message: "Моля, изберете дата на събитието" }),
-  eventType: z.string().min(1, { message: "Моля, изберете вид събитие" }),
-  venueLocation: z.string().min(2, { message: "Моля, въведете град или наименование на мястото" }),
-  guestCount: z.coerce.number().min(10, { message: "Моля, въведете реален брой гости (мин. 10)" }),
-  preferredContact: z.enum(["phone", "email", "viber", "instagram"]),
-  message: z.string().optional(),
+  paperKeepsakes: z.array(z.string()).min(1, { message: "Моля, изберете поне един вид хартиен носител" }),
+  guestCount: z.coerce.number().min(1, { message: "Моля, въведете брой гости" }),
+  venueLocation: z.string().min(2, { message: "Моля, въведете точна локация на събитието" }),
+  preferredContact: z.enum(["instagram", "email", "viber"]),
 });
 
 type BookingFormData = z.infer<typeof bookingSchema>;
@@ -79,12 +89,15 @@ function BookingFormContent() {
     defaultValues: {
       eventDate: queryDate,
       eventType: "сватба",
-      preferredContact: "phone",
+      paperKeepsakes: ["картичка"],
+      preferredContact: "viber",
       guestCount: 100,
     },
   });
 
   const selectedDate = watch("eventDate");
+  const selectedEventType = watch("eventType");
+  const selectedKeepsakes = watch("paperKeepsakes") || [];
 
   useEffect(() => {
     fetch("/api/calendar")
@@ -113,6 +126,16 @@ function BookingFormContent() {
     }
   }, [selectedDate, bookedDates]);
 
+  const toggleKeepsake = (id: string) => {
+    const current = new Set(selectedKeepsakes);
+    if (current.has(id)) {
+      current.delete(id);
+    } else {
+      current.add(id);
+    }
+    setValue("paperKeepsakes", Array.from(current), { shouldValidate: true });
+  };
+
   const onSubmit = async (data: BookingFormData) => {
     if (bookedDates.has(data.eventDate)) {
       setErrorMessage(
@@ -124,11 +147,34 @@ function BookingFormContent() {
     setLoading(true);
     setErrorMessage("");
 
+    const finalEventType =
+      data.eventType === "друго" && data.customEventType
+        ? `Друго (${data.customEventType})`
+        : data.eventType === "сватба"
+        ? "Сватбено тържество"
+        : data.eventType === "кръщене"
+        ? "Кръщене"
+        : data.eventType === "юбилей"
+        ? "Юбилей / Рожден ден"
+        : "Друго";
+
+    const payload = {
+      fullName: data.fullName,
+      phone: data.phone,
+      email: data.email,
+      eventDate: data.eventDate,
+      eventType: finalEventType,
+      venueLocation: data.venueLocation,
+      guestCount: data.guestCount,
+      preferredContact: data.preferredContact,
+      message: `Вид хартиен носител: ${data.paperKeepsakes.join(", ")}`,
+    };
+
     try {
       const response = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
       const resData = await response.json();
@@ -151,54 +197,70 @@ function BookingFormContent() {
     }
   };
 
+  const isWedding = selectedEventType === "сватба";
 
   return (
-    <div className="space-y-16 pb-24 font-sans">
-      {/* Header */}
-      <section className="bg-brand-cream py-16 sm:py-24 border-b border-[#00b4b6]/20">
-        <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
-          <span className="text-xs uppercase tracking-widest text-[#00b4b6] font-semibold">
-            Резервация & Наличност
-          </span>
-          <h1 className="font-display text-4xl sm:text-6xl font-bold text-brand-dark">
-            Запазете дата за Вашето събитие
+    <div className="space-y-12 pb-24 font-sans select-none">
+      {/* Top Banner */}
+      <section className="bg-[#00b4b6] text-white py-12 sm:py-16 px-4 relative overflow-hidden border-b border-white/20">
+        <div className="max-w-4xl mx-auto text-center space-y-4">
+          <h1 className="font-salongbeach text-3xl sm:text-5xl font-bold uppercase tracking-wider text-white leading-tight">
+            ЗАПАЗЕТЕ ПОЩИЧКА ЗА ВАШИЯ ПОВОД
           </h1>
-          <p className="text-brand-dark/80 text-lg sm:text-xl font-sans max-w-2xl mx-auto font-light leading-relaxed">
-            Попълнете кратката форма по-долу и ние ще съставим индивидуална оферта и ще потвърдим наличността в рамките на няколко часа.
+          <p className="font-sans text-sm sm:text-base lg:text-lg font-light text-white/95 max-w-2xl mx-auto italic">
+            Попълнете кратката форма по-долу и ние ще съставим индивидуална оферта и ще потвърдим наличността в рамките на 24 часа.
           </p>
 
-          <div className="pt-2">
+          <div className="pt-3 flex flex-col items-center justify-center relative">
             <button
               onClick={() => router.push("/calendar")}
-              className="inline-flex items-center space-x-2 text-xs font-semibold bg-white px-4 py-2 rounded-full border border-[#00b4b6]/30 text-[#00b4b6] hover:bg-[#00b4b6]/10 transition-colors"
+              className="inline-flex items-center justify-center px-7 py-3 rounded-full border-2 border-white bg-white/10 hover:bg-white hover:text-[#00b4b6] backdrop-blur-sm text-white font-salongbeach text-base sm:text-lg font-bold uppercase tracking-wider transition-all duration-300 shadow-xl group cursor-pointer"
             >
-              <CalendarIcon className="w-4 h-4" />
-              <span>Вижте публичния календар със свободни дати →</span>
+              <span>СВОБОДНИ ДАТИ</span>
             </button>
+
+            {/* Curly Arrow pointing down */}
+            <div className="mt-2 flex items-center justify-center pointer-events-none">
+              <Image
+                src="/media/Main Page/curly-arrow-left.png"
+                alt="Стрелка"
+                width={50}
+                height={50}
+                className="w-8 sm:w-10 h-auto object-contain opacity-90 rotate-90"
+              />
+            </div>
           </div>
         </div>
       </section>
 
+      {/* Main Questionnaire Section */}
       <section className="max-w-4xl mx-auto px-4 sm:px-8">
         {submitted ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-3xl p-10 sm:p-16 border border-[#00b4b6]/30 text-center space-y-6 shadow-2xl"
+            className="bg-white rounded-[40px] p-10 sm:p-16 border-2 border-[#00b4b6] text-center space-y-6 shadow-2xl"
           >
             <div className="w-20 h-20 rounded-full bg-[#00b4b6]/10 text-[#00b4b6] mx-auto flex items-center justify-center">
-              <CheckCircle2 className="w-10 h-10" />
+              <CheckCircle2 className="w-10 h-10 text-[#00b4b6]" />
             </div>
-            <h2 className="font-display text-3xl font-bold text-brand-dark">
+            <h2 className="font-salongbeach text-3xl sm:text-4xl font-bold uppercase text-[#00b4b6]">
               Благодарим Ви за запитването!
             </h2>
-            <p className="text-brand-dark/80 font-sans text-base max-w-lg mx-auto leading-relaxed">
-              Получихме Вашата резервация. Нашият екип ще се свърже с Вас по предпочитания от Вас начин в най-кратки срокове.
+            <p className="text-[#182b2c] font-sans text-base max-w-lg mx-auto leading-relaxed">
+              Получихме Вашата анкета. Нашият екип ще се свърже с Вас по предпочитания от Вас начин в най-кратки срокове.
             </p>
           </motion.div>
         ) : (
-          <Card className="p-8 sm:p-12 shadow-2xl border-2 border-[#00b4b6]/30 bg-white">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div className="bg-[#f9f6f0] rounded-[40px] border-2 border-[#2d3a37]/80 p-6 sm:p-12 shadow-2xl space-y-8">
+            {/* Title */}
+            <div className="text-center">
+              <h2 className="font-salongbeach text-3xl sm:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-[#00b4b6]">
+                АНКЕТА
+              </h2>
+            </div>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
               {errorMessage && (
                 <div className="p-4 rounded-2xl bg-red-50 text-red-800 text-sm font-sans border border-red-200 flex items-start space-x-3">
                   <ShieldAlert className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
@@ -236,17 +298,51 @@ function BookingFormContent() {
                 </div>
               )}
 
-              {/* Personal Info */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <div className="space-y-1">
-                  <label className="text-xs font-sans font-medium text-brand-dark">
-                    Име и фамилия *
+              {/* 1. Вид събитие */}
+              <div className="space-y-2 text-center max-w-md mx-auto">
+                <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                  Вид събитие *
+                </label>
+                <div className="relative">
+                  <select
+                    {...register("eventType")}
+                    className="w-full px-6 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center appearance-none focus:outline-none focus:ring-2 focus:ring-[#00b4b6] cursor-pointer shadow-sm"
+                  >
+                    <option value="сватба">Сватбено тържество</option>
+                    <option value="кръщене">Кръщене</option>
+                    <option value="юбилей">Юбилей / Рожден ден</option>
+                    <option value="друго">Друго събитие</option>
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-5 flex items-center text-[#00b4b6]">
+                    ▼
+                  </div>
+                </div>
+
+                {/* If "Друго" selected -> Show custom event type input */}
+                {selectedEventType === "друго" && (
+                  <div className="pt-2">
+                    <input
+                      type="text"
+                      {...register("customEventType")}
+                      placeholder="Опишете вида на събитието..."
+                      className="w-full px-6 py-3 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* 2. Имена, Дата, Телефон (3-Column Grid) */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                {/* Имена */}
+                <div className="space-y-2">
+                  <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                    {isWedding ? "Имена на двамата младоженци *" : "Име и фамилия *"}
                   </label>
                   <input
                     type="text"
                     {...register("fullName")}
-                    placeholder="Мария Иванова"
-                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
+                    placeholder={isWedding ? "Мария и Иван" : "Иван Иванов"}
+                    className="w-full px-5 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm"
                   />
                   {errors.fullName && (
                     <p className="text-xs text-red-500 font-sans mt-1">
@@ -255,51 +351,15 @@ function BookingFormContent() {
                   )}
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-xs font-sans font-medium text-brand-dark">
-                    Телефон *
-                  </label>
-                  <input
-                    type="tel"
-                    {...register("phone")}
-                    placeholder="+359 888 123 456"
-                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
-                  />
-                  {errors.phone && (
-                    <p className="text-xs text-red-500 font-sans mt-1">
-                      {errors.phone.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-sans font-medium text-brand-dark">
-                    Имейл адрес *
-                  </label>
-                  <input
-                    type="email"
-                    {...register("email")}
-                    placeholder="maria@example.com"
-                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
-                  />
-                  {errors.email && (
-                    <p className="text-xs text-red-500 font-sans mt-1">
-                      {errors.email.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Event Info */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <div className="space-y-1">
-                  <label className="text-xs font-sans font-medium text-brand-dark">
-                    Дата на събитието *
+                {/* Дата */}
+                <div className="space-y-2">
+                  <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                    Дата *
                   </label>
                   <input
                     type="date"
                     {...register("eventDate")}
-                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
+                    className="w-full px-5 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm"
                   />
                   {errors.eventDate && (
                     <p className="text-xs text-red-500 font-sans mt-1">
@@ -308,32 +368,73 @@ function BookingFormContent() {
                   )}
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-xs font-sans font-medium text-brand-dark">
-                    Вид събитие *
+                {/* Телефон */}
+                <div className="space-y-2">
+                  <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                    Телефон *
                   </label>
-                  <select
-                    {...register("eventType")}
-                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
-                  >
-                    <option value="сватба">Сватбено тържество</option>
-                    <option value="корпоративно">Корпоративно събитие / Брандинг</option>
-                    <option value="рожден-ден">Рожден ден / Юбилей</option>
-                    <option value="бейби-шауър">Бейби шауър / Кръщене</option>
-                    <option value="фестивал">Фестивал / Маркетинг активация</option>
-                    <option value="друго">Друго събитие</option>
-                  </select>
+                  <input
+                    type="tel"
+                    {...register("phone")}
+                    placeholder="+359 99 999 999"
+                    className="w-full px-5 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm"
+                  />
+                  {errors.phone && (
+                    <p className="text-xs text-red-500 font-sans mt-1">
+                      {errors.phone.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* 3. Имейл, Брой гости, Точна локация (3-Column Grid) */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                {/* Имейл */}
+                <div className="space-y-2">
+                  <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                    Имейл *
+                  </label>
+                  <input
+                    type="email"
+                    {...register("email")}
+                    placeholder="ivanivanov@gmail.com"
+                    className="w-full px-5 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm"
+                  />
+                  {errors.email && (
+                    <p className="text-xs text-red-500 font-sans mt-1">
+                      {errors.email.message}
+                    </p>
+                  )}
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-xs font-sans font-medium text-brand-dark">
-                    Град / Локация / Веню *
+                {/* Брой гости */}
+                <div className="space-y-2">
+                  <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                    Брой гости *
+                  </label>
+                  <input
+                    type="number"
+                    {...register("guestCount")}
+                    placeholder="100"
+                    className="w-full px-5 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm"
+                  />
+                  {errors.guestCount && (
+                    <p className="text-xs text-red-500 font-sans mt-1">
+                      {errors.guestCount.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* Точна локация */}
+                <div className="space-y-2">
+                  <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                    Локация на събитието *
                   </label>
                   <input
                     type="text"
                     {...register("venueLocation")}
-                    placeholder="напр. Созопол, Комплекс Морски Бриз"
-                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
+                    placeholder="напр. Бургас, Ресторант Морски Бриз"
+                    className="w-full px-5 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm"
                   />
                   {errors.venueLocation && (
                     <p className="text-xs text-red-500 font-sans mt-1">
@@ -343,69 +444,77 @@ function BookingFormContent() {
                 </div>
               </div>
 
-              {/* Guests & Preferred Contact */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-1">
-                  <label className="text-xs font-sans font-medium text-brand-dark">
-                    Очакван брой гости *
-                  </label>
-                  <input
-                    type="number"
-                    {...register("guestCount")}
-                    placeholder="100"
-                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
-                  />
-                  {errors.guestCount && (
-                    <p className="text-xs text-red-500 font-sans mt-1">
-                      {errors.guestCount.message}
-                    </p>
-                  )}
-                </div>
+              {/* 4. Какъв вид хартиен носител искате */}
+              <div className="space-y-4 text-center pt-2">
+                <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                  Вид хартиен носител *
+                </label>
 
-                <div className="space-y-1">
-                  <label className="text-xs font-sans font-medium text-brand-dark">
-                    Предпочитан начин за контакт *
-                  </label>
+                <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 pt-1">
+                  {paperKeepsakeOptions.map((opt) => {
+                    const isChecked = selectedKeepsakes.includes(opt.id);
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => toggleKeepsake(opt.id)}
+                        className="flex items-center space-x-2.5 cursor-pointer group focus:outline-none"
+                      >
+                        <div
+                          className={`w-6 h-6 rounded-lg border-2 border-[#00b4b6] flex items-center justify-center transition-all duration-200 ${
+                            isChecked ? "bg-[#00b4b6] text-white shadow-sm" : "bg-white group-hover:border-[#008b8d]"
+                          }`}
+                        >
+                          {isChecked && <Check className="w-4 h-4 stroke-[3]" />}
+                        </div>
+                        <span className="font-salongbeach text-sm sm:text-base font-bold uppercase tracking-wider text-[#182b2c] group-hover:text-[#00b4b6] transition-colors">
+                          {opt.label}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+                {errors.paperKeepsakes && (
+                  <p className="text-xs text-red-500 font-sans mt-1">
+                    {errors.paperKeepsakes.message}
+                  </p>
+                )}
+              </div>
+
+              {/* 5. Предпочитан начин за комуникация */}
+              <div className="space-y-2 text-center max-w-md mx-auto pt-2">
+                <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                  Предпочитан начин за комуникация *
+                </label>
+                <div className="relative">
                   <select
                     {...register("preferredContact")}
-                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
+                    className="w-full px-6 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center appearance-none focus:outline-none focus:ring-2 focus:ring-[#00b4b6] cursor-pointer shadow-sm"
                   >
-                    <option value="phone">Телефонно обаждане</option>
-                    <option value="email">Имейл</option>
-                    <option value="viber">Viber / WhatsApp</option>
+                    <option value="viber">Viber</option>
                     <option value="instagram">Instagram</option>
+                    <option value="email">Имейл</option>
                   </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-5 flex items-center text-[#00b4b6]">
+                    ▼
+                  </div>
                 </div>
               </div>
 
-              {/* Message */}
-              <div className="space-y-1">
-                <label className="text-xs font-sans font-medium text-brand-dark">
-                  Допълнително съобщение или специални изисквания
-                </label>
-                <textarea
-                  rows={4}
-                  {...register("message")}
-                  placeholder="Споделете подробности за тема, стил или въпроси..."
-                  className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 bg-brand-cream text-brand-dark font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
-                />
+              {/* Submit Button */}
+              <div className="pt-6 flex justify-center">
+                <button
+                  type="submit"
+                  disabled={loading || Boolean(availabilityWarning)}
+                  className="w-full max-w-md bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider py-4 rounded-full shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 cursor-pointer"
+                >
+                  <span>{loading ? "ИЗПРАЩАНЕ..." : "ИЗПРАТИ ЗАПИТВАНЕ"}</span>
+                </button>
               </div>
-
-              <Button
-                variant="accent"
-                size="lg"
-                type="submit"
-                disabled={loading || Boolean(availabilityWarning)}
-                className="w-full flex items-center justify-center space-x-2 text-base py-4 disabled:opacity-50"
-              >
-                <span>{loading ? "Изпращане..." : "Изпрати запитване за дата"}</span>
-                <Send className="w-4 h-4" />
-              </Button>
             </form>
-          </Card>
+          </div>
         )}
       </section>
     </div>
   );
 }
-

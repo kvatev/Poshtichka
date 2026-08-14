@@ -29,8 +29,9 @@ export const TopBar = () => {
     } catch {}
 
     fetch("/api/content")
-      .then((res) => res.json())
+      .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
+        if (!data) return;
         if (data.homepage?.topBarPhrases && Array.isArray(data.homepage.topBarPhrases) && data.homepage.topBarPhrases.length > 0) {
           setPhrases(data.homepage.topBarPhrases.map((p: string) => p.replace(/✦/g, "").trim()));
         }

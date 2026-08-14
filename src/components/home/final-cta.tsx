@@ -13,8 +13,9 @@ export const FinalCTA = () => {
 
   React.useEffect(() => {
     fetch("/api/content")
-      .then((res) => res.json())
+      .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
+        if (!data) return;
         if (data.homepage?.finalCtaTitle) {
           setTitle(data.homepage.finalCtaTitle.toUpperCase());
         }
