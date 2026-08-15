@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
+import { readCloudOrFileData, writeCloudAndFileData } from "@/lib/server-storage";
 import { createClient } from "@/lib/supabase/server";
-import { readPersistentData, writePersistentData } from "@/lib/server-storage";
 
 export interface CityPreset {
   id: string;
@@ -11,6 +11,7 @@ export interface CityPreset {
 }
 
 declare global {
+  // eslint-disable-next-line no-var
   var __POSHTICHKA_CITIES__: CityPreset[] | undefined;
 }
 
@@ -26,55 +27,40 @@ const defaultCities: CityPreset[] = [
   { id: "c9", name: "Варна", lat: 43.2141, lng: 27.9147 },
 ];
 
-function getStoredCities(): CityPreset[] {
-  if (globalThis.__POSHTICHKA_CITIES__ && globalThis.__POSHTICHKA_CITIES__.length > 0) {
-    return globalThis.__POSHTICHKA_CITIES__;
-  }
-  const fromFile = readPersistentData<CityPreset[]>("cities", defaultCities);
-  globalThis.__POSHTICHKA_CITIES__ = fromFile;
-  return fromFile;
+async function getStoredCities(): Promise<CityPreset[]> {
+  return await readCloudOrFileData<CityPreset[]>("cities", defaultCities);
 }
 
-function saveStoredCities(cities: CityPreset[]): void {
+async function saveStoredCities(cities: CityPreset[]): Promise<void> {
   globalThis.__POSHTICHKA_CITIES__ = cities;
-  writePersistentData("cities", cities);
-}
-
-function isSupabaseConfigured() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  return Boolean(url && !url.includes("placeholder") && !url.includes("example"));
+  await writeCloudAndFileData("cities", cities);
 }
 
 /**
  * GET: Fetch all city presets
  */
 export async function GET() {
-  const current = getStoredCities();
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("cities")
+      .select("*")
+      .order("name", { ascending: true });
 
-  if (isSupabaseConfigured()) {
-    try {
-      const supabase = await createClient();
-      const { data, error } = await supabase
-        .from("cities")
-        .select("*")
-        .order("name", { ascending: true });
+    if (!error && data && data.length > 0) {
+      const formatted: CityPreset[] = data.map((c) => ({
+        id: c.id,
+        name: c.name,
+        lat: Number(c.lat),
+        lng: Number(c.lng),
+      }));
 
-      if (!error && data && data.length > 0) {
-        const formatted: CityPreset[] = data.map((c) => ({
-          id: c.id,
-          name: c.name,
-          lat: Number(c.lat),
-          lng: Number(c.lng),
-        }));
-
-        saveStoredCities(formatted);
-        return NextResponse.json({ cities: formatted });
-      }
-    } catch {
-      // Fallback
+      await saveStoredCities(formatted);
+      return NextResponse.json({ cities: formatted });
     }
-  }
+  } catch {}
 
+  const current = await getStoredCities();
   return NextResponse.json({ cities: current });
 }
 
@@ -101,27 +87,23 @@ export async function POST(req: NextRequest) {
       lng: newLng,
     };
 
-    if (isSupabaseConfigured()) {
-      try {
-        const supabase = await createClient();
-        const { data, error } = await supabase
-          .from("cities")
-          .insert([{ name: newCityName, lat: newLat, lng: newLng }])
-          .select()
-          .single();
+    try {
+      const supabase = await createClient();
+      const { data, error } = await supabase
+        .from("cities")
+        .insert([{ name: newCityName, lat: newLat, lng: newLng }])
+        .select()
+        .single();
 
-        if (!error && data) {
-          newCity.id = data.id;
-        }
-      } catch (dbErr) {
-        console.warn("Supabase city insert notice:", dbErr);
+      if (!error && data) {
+        newCity.id = data.id;
       }
-    }
+    } catch {}
 
-    const current = getStoredCities();
+    const current = await getStoredCities();
     const exists = current.some((c) => c.name.toLowerCase() === newCityName.toLowerCase());
     const updated = exists ? current : [...current, newCity];
-    saveStoredCities(updated);
+    await saveStoredCities(updated);
 
     try {
       revalidatePath("/gallery");
@@ -148,24 +130,20 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: "Липсва ИД или име на града." }, { status: 400 });
     }
 
-    if (isSupabaseConfigured()) {
-      try {
-        const supabase = await createClient();
-        if (id) {
-          await supabase.from("cities").delete().eq("id", id);
-        } else if (name) {
-          await supabase.from("cities").delete().eq("name", name);
-        }
-      } catch (dbErr) {
-        console.warn("Supabase city delete notice:", dbErr);
+    try {
+      const supabase = await createClient();
+      if (id) {
+        await supabase.from("cities").delete().eq("id", id);
+      } else if (name) {
+        await supabase.from("cities").delete().eq("name", name);
       }
-    }
+    } catch {}
 
-    const current = getStoredCities();
+    const current = await getStoredCities();
     const updated = current.filter((c) =>
       id ? c.id !== id : c.name.toLowerCase() !== name?.toLowerCase()
     );
-    saveStoredCities(updated);
+    await saveStoredCities(updated);
 
     try {
       revalidatePath("/gallery");

@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
+import { readCloudOrFileData, writeCloudAndFileData } from "@/lib/server-storage";
 import { createClient } from "@/lib/supabase/server";
-import { readPersistentData, writePersistentData } from "@/lib/server-storage";
 
 export interface ServiceItem {
   id: string;
@@ -14,6 +14,7 @@ export interface ServiceItem {
 }
 
 declare global {
+  // eslint-disable-next-line no-var
   var __POSHTICHKA_SERVICES__: ServiceItem[] | undefined;
 }
 
@@ -66,58 +67,43 @@ const initialServices: ServiceItem[] = [
   },
 ];
 
-function getStoredServices(): ServiceItem[] {
-  if (globalThis.__POSHTICHKA_SERVICES__ && globalThis.__POSHTICHKA_SERVICES__.length > 0) {
-    return globalThis.__POSHTICHKA_SERVICES__;
-  }
-  const fromFile = readPersistentData<ServiceItem[]>("services", initialServices);
-  globalThis.__POSHTICHKA_SERVICES__ = fromFile;
-  return fromFile;
+async function getStoredServices(): Promise<ServiceItem[]> {
+  return await readCloudOrFileData<ServiceItem[]>("services", initialServices);
 }
 
-function saveStoredServices(services: ServiceItem[]): void {
+async function saveStoredServices(services: ServiceItem[]): Promise<void> {
   globalThis.__POSHTICHKA_SERVICES__ = services;
-  writePersistentData("services", services);
-}
-
-function isSupabaseConfigured() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  return Boolean(url && !url.includes("placeholder") && !url.includes("example"));
+  await writeCloudAndFileData("services", services);
 }
 
 /**
  * GET: Fetch services list
  */
 export async function GET() {
-  const current = getStoredServices();
+  try {
+    const supabase = await createClient();
+    const { data: dbServices, error } = await supabase
+      .from("services")
+      .select("*")
+      .order("created_at", { ascending: true });
 
-  if (isSupabaseConfigured()) {
-    try {
-      const supabase = await createClient();
-      const { data: dbServices, error } = await supabase
-        .from("services")
-        .select("*")
-        .order("created_at", { ascending: true });
+    if (!error && dbServices && dbServices.length > 0) {
+      const formatted: ServiceItem[] = dbServices.map((s) => ({
+        id: s.id,
+        title: s.title,
+        subtitle: s.subtitle || "",
+        description: s.description || "",
+        features: Array.isArray(s.features) ? s.features : [],
+        image: s.image || "/media/gallery/Tezza_2025_07_13_155326413.webp",
+        badgeAsset: s.badge_asset || "",
+      }));
 
-      if (!error && dbServices && dbServices.length > 0) {
-        const formatted: ServiceItem[] = dbServices.map((s) => ({
-          id: s.id,
-          title: s.title,
-          subtitle: s.subtitle || "",
-          description: s.description || "",
-          features: Array.isArray(s.features) ? s.features : [],
-          image: s.image || "/media/gallery/Tezza_2025_07_13_155326413.webp",
-          badgeAsset: s.badge_asset || "",
-        }));
-
-        saveStoredServices(formatted);
-        return NextResponse.json({ services: formatted });
-      }
-    } catch {
-      // Fallback
+      await saveStoredServices(formatted);
+      return NextResponse.json({ services: formatted });
     }
-  }
+  } catch {}
 
+  const current = await getStoredServices();
   return NextResponse.json({ services: current });
 }
 
@@ -143,35 +129,31 @@ export async function POST(req: NextRequest) {
       badgeAsset: badgeAsset || "/media/Услуги/Asset 88@2x.png",
     };
 
-    if (isSupabaseConfigured()) {
-      try {
-        const supabase = await createClient();
-        const { data, error } = await supabase
-          .from("services")
-          .insert([
-            {
-              title: newService.title,
-              subtitle: newService.subtitle,
-              description: newService.description,
-              features: newService.features,
-              image: newService.image,
-              badge_asset: newService.badgeAsset,
-            },
-          ])
-          .select()
-          .single();
+    try {
+      const supabase = await createClient();
+      const { data, error } = await supabase
+        .from("services")
+        .insert([
+          {
+            title: newService.title,
+            subtitle: newService.subtitle,
+            description: newService.description,
+            features: newService.features,
+            image: newService.image,
+            badge_asset: newService.badgeAsset,
+          },
+        ])
+        .select()
+        .single();
 
-        if (!error && data) {
-          newService.id = data.id;
-        }
-      } catch (dbErr) {
-        console.warn("Supabase service insert notice:", dbErr);
+      if (!error && data) {
+        newService.id = data.id;
       }
-    }
+    } catch {}
 
-    const current = getStoredServices();
+    const current = await getStoredServices();
     const updated = [...current, newService];
-    saveStoredServices(updated);
+    await saveStoredServices(updated);
 
     try {
       revalidatePath("/services");
@@ -199,40 +181,36 @@ export async function PUT(req: NextRequest) {
 
     let updatedService: ServiceItem | null = null;
 
-    if (isSupabaseConfigured()) {
-      try {
-        const supabase = await createClient();
-        const { data, error } = await supabase
-          .from("services")
-          .update({
-            title,
-            subtitle,
-            description,
-            features: Array.isArray(features) ? features : [],
-            image,
-            badge_asset: badgeAsset,
-          })
-          .eq("id", id)
-          .select()
-          .single();
+    try {
+      const supabase = await createClient();
+      const { data, error } = await supabase
+        .from("services")
+        .update({
+          title,
+          subtitle,
+          description,
+          features: Array.isArray(features) ? features : [],
+          image,
+          badge_asset: badgeAsset,
+        })
+        .eq("id", id)
+        .select()
+        .single();
 
-        if (!error && data) {
-          updatedService = {
-            id: data.id,
-            title: data.title,
-            subtitle: data.subtitle,
-            description: data.description,
-            features: data.features || [],
-            image: data.image,
-            badgeAsset: data.badge_asset,
-          };
-        }
-      } catch (dbErr) {
-        console.warn("Supabase service update notice:", dbErr);
+      if (!error && data) {
+        updatedService = {
+          id: data.id,
+          title: data.title,
+          subtitle: data.subtitle,
+          description: data.description,
+          features: data.features || [],
+          image: data.image,
+          badgeAsset: data.badge_asset,
+        };
       }
-    }
+    } catch {}
 
-    const current = getStoredServices();
+    const current = await getStoredServices();
     const updated = current.map((s) => {
       if (s.id === id) {
         return {
@@ -248,7 +226,7 @@ export async function PUT(req: NextRequest) {
       return s;
     });
 
-    saveStoredServices(updated);
+    await saveStoredServices(updated);
 
     try {
       revalidatePath("/services");
@@ -277,18 +255,14 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: "Липсва ИД за изтриване." }, { status: 400 });
     }
 
-    if (isSupabaseConfigured()) {
-      try {
-        const supabase = await createClient();
-        await supabase.from("services").delete().eq("id", id);
-      } catch (dbErr) {
-        console.warn("Supabase service delete notice:", dbErr);
-      }
-    }
+    try {
+      const supabase = await createClient();
+      await supabase.from("services").delete().eq("id", id);
+    } catch {}
 
-    const current = getStoredServices();
+    const current = await getStoredServices();
     const updated = current.filter((s) => s.id !== id);
-    saveStoredServices(updated);
+    await saveStoredServices(updated);
 
     try {
       revalidatePath("/services");

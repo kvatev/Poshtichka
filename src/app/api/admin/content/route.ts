@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { readPersistentData, writePersistentData } from "@/lib/server-storage";
+import { readCloudOrFileData, writeCloudAndFileData } from "@/lib/server-storage";
 import {
   defaultGeneralSettings,
   defaultSeoSettings,
@@ -12,6 +12,7 @@ import {
 } from "@/lib/content-store";
 
 declare global {
+  // eslint-disable-next-line no-var
   var __POSHTICHKA_STORE__: Record<string, any> | undefined;
 }
 
@@ -24,20 +25,6 @@ const defaultContentStore: Record<string, any> = {
   faq_items: defaultFaqs,
 };
 
-function getStoredContent(): Record<string, any> {
-  if (globalThis.__POSHTICHKA_STORE__ && Object.keys(globalThis.__POSHTICHKA_STORE__).length > 0) {
-    return globalThis.__POSHTICHKA_STORE__;
-  }
-  const fromFile = readPersistentData<Record<string, any>>("content-store", defaultContentStore);
-  globalThis.__POSHTICHKA_STORE__ = fromFile;
-  return fromFile;
-}
-
-function isSupabaseConfigured() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  return Boolean(url && !url.includes("placeholder") && !url.includes("example"));
-}
-
 export async function POST(request: Request) {
   try {
     const { key, value } = await request.json();
@@ -49,27 +36,22 @@ export async function POST(request: Request) {
       );
     }
 
-    const currentStore = getStoredContent();
+    const currentStore = await readCloudOrFileData<Record<string, any>>(
+      "content-store",
+      defaultContentStore
+    );
     currentStore[key] = value;
     globalThis.__POSHTICHKA_STORE__ = currentStore;
 
-    // Persist permanently to disk
-    writePersistentData("content-store", currentStore);
+    // Persist permanently to Supabase cloud + disk
+    await writeCloudAndFileData("content-store", currentStore);
 
-    if (isSupabaseConfigured()) {
-      try {
-        const supabase = await createClient();
-        const { error } = await supabase
-          .from("settings")
-          .upsert({ key, value, updated_at: new Date().toISOString() });
-
-        if (error) {
-          console.warn("Supabase settings upsert note:", error.message);
-        }
-      } catch (dbErr) {
-        console.warn("Database save notice:", dbErr);
-      }
-    }
+    try {
+      const supabase = await createClient();
+      await supabase
+        .from("settings")
+        .upsert({ key, value, updated_at: new Date().toISOString() });
+    } catch {}
 
     // Purge Next.js cache so the public website updates instantly
     try {

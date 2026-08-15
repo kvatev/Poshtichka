@@ -1,20 +1,35 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { readCloudOrFileData, writeCloudAndFileData } from "@/lib/server-storage";
 import { createClient } from "@/lib/supabase/server";
-import { EventLocation } from "@/types/map-event";
-import { readPersistentData, writePersistentData } from "@/lib/server-storage";
 
-// Global in-memory store to guarantee persistence across requests & hot reloads
+export interface EventLocation {
+  id: string;
+  eventName: string;
+  cityName: string;
+  venueName?: string;
+  eventType?: string;
+  latitude: number;
+  longitude: number;
+  coverImage: string;
+  galleryImages: string[];
+  description?: string;
+  eventDate?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 declare global {
+  // eslint-disable-next-line no-var
   var __POSHTICHKA_MAP_EVENTS__: EventLocation[] | undefined;
 }
 
 const initialMapEvents: EventLocation[] = [
   {
     id: "MAP-01",
-    eventName: "ГЕРИ И КРАСИ",
+    eventName: "СВЕТЛАНА И ДИМИТЪР",
     cityName: "Созопол",
-    venueName: "Комплекс Свети Тома",
+    venueName: "Hacienda Beach",
     eventType: "сватбено тържество",
     latitude: 42.4175,
     longitude: 27.6958,
@@ -23,130 +38,131 @@ const initialMapEvents: EventLocation[] = [
       "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
       "/media/gallery/Tezza_2025_07_13_155324686.webp",
       "/media/gallery/Tezza_2025_07_13_155326413.webp",
+      "/media/gallery/Tezza_2025_07_13_155331795.webp",
     ],
-    description:
-      "За сватбения ден на Гери и Краси изготвихме 2 марки, стикер и татуировка. Младоженците искаха ключови локации, домашния си любимец и тях самите въплатени в дизайните. Машината се изпразни още на първия час от сватбения ден!",
-    eventDate: "2026-07-15",
+    description: "Незабравимо сватбено изживяване край морето в Созопол.",
+    eventDate: "2026-08-14",
     createdAt: new Date().toISOString(),
   },
   {
     id: "MAP-02",
-    eventName: "МИЛКА И АНДРЕЙ",
-    cityName: "София",
-    venueName: "Голф клуб Св. София",
+    eventName: "МАРТИНА И АЛЕКСАНДЪР",
+    cityName: "Каварна",
+    venueName: "Thracian Cliffs Resort",
     eventType: "сватбено тържество",
-    latitude: 42.6977,
-    longitude: 23.3219,
-    coverImage: "/media/gallery/Tezza_2025_07_13_155331795.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_13_155331795.webp",
-      "/media/gallery/Tezza_2025_07_13_155333570.webp",
-      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
-    ],
-    description: "Незабравима сватба в Голф клуб Св. София с персонализирани спомени.",
-    eventDate: "2026-06-20",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "MAP-03",
-    eventName: "СВЕТЛИН",
-    cityName: "Велико Търново",
-    venueName: "Park Hotel RAYA Garden",
-    eventType: "кръщение",
-    latitude: 43.0757,
-    longitude: 25.6172,
-    coverImage: "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
-      "/media/gallery/Tezza_2025_07_13_155324686.webp",
-    ],
-    description: "Празнично събитие с авторски картички в Park Hotel RAYA Garden, Велико Търново.",
-    eventDate: "2026-05-18",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "MAP-04",
-    eventName: "НИКОЛ И ДАНИЕЛ",
-    cityName: "Перущица",
-    venueName: "Вила Юстина",
-    eventType: "сватбено тържество",
-    latitude: 42.0567,
-    longitude: 24.5458,
+    latitude: 43.4358,
+    longitude: 28.3392,
     coverImage: "/media/gallery/Tezza_2025_07_13_155324686.webp",
     galleryImages: [
       "/media/gallery/Tezza_2025_07_13_155324686.webp",
       "/media/gallery/Tezza_2025_07_13_155326413.webp",
+      "/media/gallery/Tezza_2025_07_13_155331795.webp",
     ],
-    description: "Вълшебен сватбен ден във Вила Юстина, Перущица.",
-    eventDate: "2026-08-02",
+    description: "Сватбено тържество с гледка към скалите на Каварна.",
+    eventDate: "2026-08-20",
     createdAt: new Date().toISOString(),
   },
   {
-    id: "MAP-05",
-    eventName: "КРИСИ И ВИКТОР",
+    id: "MAP-03",
+    eventName: "ЕЛЕНА И ВИКТОР",
     cityName: "София",
-    venueName: "Голф клуб Св. София",
+    venueName: "Резиденция Бояна",
     eventType: "сватбено тържество",
     latitude: 42.6977,
     longitude: 23.3219,
     coverImage: "/media/gallery/Tezza_2025_07_13_155326413.webp",
     galleryImages: [
       "/media/gallery/Tezza_2025_07_13_155326413.webp",
-      "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
+      "/media/gallery/Tezza_2025_07_13_155331795.webp",
+      "/media/gallery/Tezza_2025_07_13_155333570.webp",
     ],
-    description: "Елегантен сватбен кът Пощичка в Голф клуб Св. София.",
+    description: "Стилно тържество в полите на Витоша.",
     eventDate: "2026-07-28",
     createdAt: new Date().toISOString(),
   },
   {
-    id: "MAP-06",
-    eventName: "РАЛИ И ЖЕЛЮ",
+    id: "MAP-04",
+    eventName: "КАЛИНА И ИВАЙЛО",
     cityName: "Червен",
-    venueName: "Midalidare Estate",
+    venueName: "Комплекс Червен",
     eventType: "сватбено тържество",
-    latitude: 43.6212,
-    longitude: 25.9961,
+    latitude: 43.6192,
+    longitude: 25.9758,
+    coverImage: "/media/gallery/Tezza_2025_07_13_155331795.webp",
+    galleryImages: [
+      "/media/gallery/Tezza_2025_07_13_155331795.webp",
+      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
+    ],
+    description: "Рустик сватбено тържество сред природата.",
+    eventDate: "2026-07-12",
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "MAP-05",
+    eventName: "АНА И БОРИС",
+    cityName: "Перущица",
+    venueName: "Вила Юстина",
+    eventType: "сватбено тържество",
+    latitude: 42.0544,
+    longitude: 24.5447,
+    coverImage: "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
+    galleryImages: [
+      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
+      "/media/gallery/Tezza_2025_07_13_155333570.webp",
+    ],
+    description: "Винен празник и романтика в полите на Родопите.",
+    eventDate: "2026-06-25",
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "MAP-06",
+    eventName: "ДИАНА И КРИСТИЯН",
+    cityName: "Велико Търново",
+    venueName: "Царевец Панорама",
+    eventType: "сватбено тържество",
+    latitude: 43.0757,
+    longitude: 25.6172,
     coverImage: "/media/gallery/Tezza_2025_07_13_155333570.webp",
     galleryImages: [
       "/media/gallery/Tezza_2025_07_13_155333570.webp",
-      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
+      "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
     ],
-    description: "Сватбено гостуване в Midalidare Estate, Червен.",
-    eventDate: "2026-06-10",
+    description: "Вълшебно празненство в старата българска столица.",
+    eventDate: "2026-06-08",
     createdAt: new Date().toISOString(),
   },
   {
     id: "MAP-07",
-    eventName: "МАРИНА И ИВАН",
-    cityName: "Каварна",
-    venueName: "Вила Калиакра и Градина",
-    eventType: "сватбено тържество",
-    latitude: 43.4342,
-    longitude: 28.3392,
-    coverImage: "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
+    eventName: "DEVTECH ANNUAL SUMMIT",
+    cityName: "Бургас",
+    venueName: "Flora Expo Center",
+    eventType: "корпоративно събитие",
+    latitude: 42.5048,
+    longitude: 27.4626,
+    coverImage: "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
     galleryImages: [
-      "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
-      "/media/gallery/Tezza_2025_07_13_155331795.webp",
+      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
+      "/media/gallery/Tezza_2025_07_13_155333570.webp",
     ],
-    description: "Красиви спомени във Вила Калиакра и Градина, Каварна.",
-    eventDate: "2026-08-12",
+    description: "Корпоративен брандинг и персонализирани подаръци за 200+ гости.",
+    eventDate: "2026-08-22",
     createdAt: new Date().toISOString(),
   },
   {
     id: "MAP-08",
-    eventName: "МАЯ И НИКО",
-    cityName: "София",
-    venueName: "Голф клуб Св. София",
-    eventType: "сватбено тържество",
-    latitude: 42.6977,
-    longitude: 23.3219,
-    coverImage: "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
+    eventName: "ЮБИЛЕЙ 50Г - WAVE RESORT",
+    cityName: "Поморие",
+    venueName: "Wave Resort",
+    eventType: "рожден ден",
+    latitude: 42.5583,
+    longitude: 27.6444,
+    coverImage: "/media/gallery/Tezza_2025_07_13_155331795.webp",
     galleryImages: [
-      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
-      "/media/gallery/Tezza_2025_07_13_155324686.webp",
+      "/media/gallery/Tezza_2025_07_13_155331795.webp",
+      "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
     ],
-    description: "Забавни моменти и картички за гостите в Голф клуб Св. София.",
-    eventDate: "2026-09-01",
+    description: "Стилен юбилей с авторски картички и сувенири.",
+    eventDate: "2026-08-28",
     createdAt: new Date().toISOString(),
   },
   {
@@ -168,65 +184,52 @@ const initialMapEvents: EventLocation[] = [
   },
 ];
 
-function getStoredEvents(): EventLocation[] {
-  if (globalThis.__POSHTICHKA_MAP_EVENTS__ && globalThis.__POSHTICHKA_MAP_EVENTS__.length > 0) {
-    return globalThis.__POSHTICHKA_MAP_EVENTS__;
-  }
-  const fromFile = readPersistentData<EventLocation[]>("map-events", initialMapEvents);
-  globalThis.__POSHTICHKA_MAP_EVENTS__ = fromFile;
-  return fromFile;
+async function getStoredEvents(): Promise<EventLocation[]> {
+  return await readCloudOrFileData<EventLocation[]>("map-events", initialMapEvents);
 }
 
-function saveStoredEvents(events: EventLocation[]): void {
+async function saveStoredEvents(events: EventLocation[]): Promise<void> {
   globalThis.__POSHTICHKA_MAP_EVENTS__ = events;
-  writePersistentData("map-events", events);
-}
-
-function isSupabaseConfigured() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  return Boolean(url && !url.includes("placeholder") && !url.includes("example"));
+  await writeCloudAndFileData("map-events", events);
 }
 
 /**
  * GET: Fetch all map events
  */
 export async function GET() {
-  const currentEvents = getStoredEvents();
+  // First try native map_events table
+  try {
+    const supabase = await createClient();
+    const { data: dbEvents, error } = await supabase
+      .from("map_events")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-  if (isSupabaseConfigured()) {
-    try {
-      const supabase = await createClient();
-      const { data: dbEvents, error } = await supabase
-        .from("map_events")
-        .select("*")
-        .order("created_at", { ascending: false });
+    if (!error && dbEvents && dbEvents.length > 0) {
+      const formattedEvents: EventLocation[] = dbEvents.map((item) => ({
+        id: item.id,
+        eventName: item.event_name || "",
+        cityName: item.city_name,
+        venueName: item.venue_name || "",
+        eventType: item.event_type || "",
+        latitude: Number(item.latitude),
+        longitude: Number(item.longitude),
+        coverImage: item.cover_image || "",
+        galleryImages: Array.isArray(item.gallery_images) ? item.gallery_images : [],
+        description: item.description || "",
+        eventDate: item.event_date || "",
+        createdAt: item.created_at,
+        updatedAt: item.updated_at,
+      }));
 
-      if (!error && dbEvents && dbEvents.length > 0) {
-        const formattedEvents: EventLocation[] = dbEvents.map((item) => ({
-          id: item.id,
-          eventName: item.event_name || "",
-          cityName: item.city_name,
-          venueName: item.venue_name || "",
-          eventType: item.event_type || "",
-          latitude: Number(item.latitude),
-          longitude: Number(item.longitude),
-          coverImage: item.cover_image || "",
-          galleryImages: Array.isArray(item.gallery_images) ? item.gallery_images : [],
-          description: item.description || "",
-          eventDate: item.event_date || "",
-          createdAt: item.created_at,
-          updatedAt: item.updated_at,
-        }));
-
-        saveStoredEvents(formattedEvents);
-        return NextResponse.json({ events: formattedEvents, source: "database" });
-      }
-    } catch (err) {
-      console.warn("Supabase fetch notice:", err);
+      await saveStoredEvents(formattedEvents);
+      return NextResponse.json({ events: formattedEvents, source: "database" });
     }
-  }
+  } catch {}
 
-  return NextResponse.json({ events: currentEvents, source: "storage" });
+  // Cloud store priority
+  const currentEvents = await getStoredEvents();
+  return NextResponse.json({ events: currentEvents, source: "cloud" });
 }
 
 /**
@@ -276,39 +279,36 @@ export async function POST(req: NextRequest) {
       createdAt: new Date().toISOString(),
     };
 
-    if (isSupabaseConfigured()) {
-      try {
-        const supabase = await createClient();
-        const { data, error } = await supabase
-          .from("map_events")
-          .insert([
-            {
-              event_name: finalEventName,
-              city_name: newEvent.cityName,
-              venue_name: finalVenueName,
-              event_type: finalEventType,
-              latitude: Number(latitude),
-              longitude: Number(longitude),
-              cover_image: newEvent.coverImage,
-              gallery_images: newEvent.galleryImages,
-              description: newEvent.description,
-              event_date: newEvent.eventDate || null,
-            },
-          ])
-          .select()
-          .single();
+    // Try insert into native Supabase table if exists
+    try {
+      const supabase = await createClient();
+      const { data, error } = await supabase
+        .from("map_events")
+        .insert([
+          {
+            event_name: finalEventName,
+            city_name: newEvent.cityName,
+            venue_name: finalVenueName,
+            event_type: finalEventType,
+            latitude: Number(latitude),
+            longitude: Number(longitude),
+            cover_image: newEvent.coverImage,
+            gallery_images: newEvent.galleryImages,
+            description: newEvent.description,
+            event_date: newEvent.eventDate || null,
+          },
+        ])
+        .select()
+        .single();
 
-        if (!error && data) {
-          newEvent.id = data.id;
-        }
-      } catch (dbErr) {
-        console.warn("Supabase insert notice:", dbErr);
+      if (!error && data) {
+        newEvent.id = data.id;
       }
-    }
+    } catch {}
 
-    const currentList = getStoredEvents();
+    const currentList = await getStoredEvents();
     const updatedList = [newEvent, ...currentList.filter((e) => e.id !== newEvent.id)];
-    saveStoredEvents(updatedList);
+    await saveStoredEvents(updatedList);
 
     try {
       revalidatePath("/gallery");
@@ -355,49 +355,45 @@ export async function PUT(req: NextRequest) {
 
     let updatedEvent: EventLocation | null = null;
 
-    if (isSupabaseConfigured()) {
-      try {
-        const supabase = await createClient();
-        const { data, error } = await supabase
-          .from("map_events")
-          .update({
-            event_name: finalEventName,
-            city_name: cityName,
-            venue_name: finalVenueName,
-            event_type: finalEventType,
-            latitude: Number(latitude),
-            longitude: Number(longitude),
-            cover_image: finalCoverImage,
-            gallery_images: finalGalleryImages,
-            description: description || "",
-            event_date: eventDate || null,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", id)
-          .select()
-          .single();
+    try {
+      const supabase = await createClient();
+      const { data, error } = await supabase
+        .from("map_events")
+        .update({
+          event_name: finalEventName,
+          city_name: cityName,
+          venue_name: finalVenueName,
+          event_type: finalEventType,
+          latitude: Number(latitude),
+          longitude: Number(longitude),
+          cover_image: finalCoverImage,
+          gallery_images: finalGalleryImages,
+          description: description || "",
+          event_date: eventDate || null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", id)
+        .select()
+        .single();
 
-        if (!error && data) {
-          updatedEvent = {
-            id: data.id,
-            eventName: data.event_name,
-            cityName: data.city_name,
-            venueName: data.venue_name,
-            eventType: data.event_type,
-            latitude: Number(data.latitude),
-            longitude: Number(data.longitude),
-            coverImage: data.cover_image,
-            galleryImages: data.gallery_images || [],
-            description: data.description,
-            eventDate: data.event_date,
-          };
-        }
-      } catch (dbErr) {
-        console.warn("Supabase update notice:", dbErr);
+      if (!error && data) {
+        updatedEvent = {
+          id: data.id,
+          eventName: data.event_name,
+          cityName: data.city_name,
+          venueName: data.venue_name,
+          eventType: data.event_type,
+          latitude: Number(data.latitude),
+          longitude: Number(data.longitude),
+          coverImage: data.cover_image,
+          galleryImages: data.gallery_images || [],
+          description: data.description,
+          eventDate: data.event_date,
+        };
       }
-    }
+    } catch {}
 
-    const currentList = getStoredEvents();
+    const currentList = await getStoredEvents();
     const updatedList = currentList.map((ev) => {
       if (ev.id === id) {
         return {
@@ -418,16 +414,14 @@ export async function PUT(req: NextRequest) {
       return ev;
     });
 
-    saveStoredEvents(updatedList);
+    await saveStoredEvents(updatedList);
 
     try {
       revalidatePath("/gallery");
       revalidatePath("/");
     } catch {}
 
-    const result =
-      updatedEvent || updatedList.find((e) => e.id === id);
-
+    const result = updatedEvent || updatedList.find((e) => e.id === id);
     return NextResponse.json({ success: true, event: result });
   } catch (err: unknown) {
     console.error("Update event error:", err);
@@ -448,18 +442,14 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: "Липсва ИД за изтриване." }, { status: 400 });
     }
 
-    if (isSupabaseConfigured()) {
-      try {
-        const supabase = await createClient();
-        await supabase.from("map_events").delete().eq("id", id);
-      } catch (dbErr) {
-        console.warn("Supabase delete notice:", dbErr);
-      }
-    }
+    try {
+      const supabase = await createClient();
+      await supabase.from("map_events").delete().eq("id", id);
+    } catch {}
 
-    const currentList = getStoredEvents();
+    const currentList = await getStoredEvents();
     const updatedList = currentList.filter((ev) => ev.id !== id);
-    saveStoredEvents(updatedList);
+    await saveStoredEvents(updatedList);
 
     try {
       revalidatePath("/gallery");

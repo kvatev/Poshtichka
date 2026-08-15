@@ -1,9 +1,10 @@
 import { NextResponse, NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
+import { readCloudOrFileData, writeCloudAndFileData } from "@/lib/server-storage";
 import { createClient } from "@/lib/supabase/server";
-import { readPersistentData, writePersistentData } from "@/lib/server-storage";
 
 declare global {
+  // eslint-disable-next-line no-var
   var __POSHTICHKA_EVENT_TYPES__: string[] | undefined;
 }
 
@@ -19,50 +20,36 @@ const defaultEventTypes: string[] = [
   "бебешко парти",
 ];
 
-function getStoredEventTypes(): string[] {
-  if (globalThis.__POSHTICHKA_EVENT_TYPES__ && globalThis.__POSHTICHKA_EVENT_TYPES__.length > 0) {
-    return globalThis.__POSHTICHKA_EVENT_TYPES__;
-  }
-  const fromFile = readPersistentData<string[]>("event-types", defaultEventTypes);
-  globalThis.__POSHTICHKA_EVENT_TYPES__ = fromFile;
-  return fromFile;
+async function getStoredEventTypes(): Promise<string[]> {
+  return await readCloudOrFileData<string[]>("event-types", defaultEventTypes);
 }
 
-function saveStoredEventTypes(types: string[]): void {
+async function saveStoredEventTypes(types: string[]): Promise<void> {
   globalThis.__POSHTICHKA_EVENT_TYPES__ = types;
-  writePersistentData("event-types", types);
-}
-
-function isSupabaseConfigured() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  return Boolean(url && !url.includes("placeholder") && !url.includes("example"));
+  await writeCloudAndFileData("event-types", types);
 }
 
 /**
  * GET: Fetch all saved event types
  */
 export async function GET() {
-  const current = getStoredEventTypes();
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("event_types")
+      .select("name")
+      .order("name", { ascending: true });
 
-  if (isSupabaseConfigured()) {
-    try {
-      const supabase = await createClient();
-      const { data, error } = await supabase
-        .from("event_types")
-        .select("name")
-        .order("name", { ascending: true });
-
-      if (!error && data && data.length > 0) {
-        const types = data.map((d) => d.name).filter(Boolean);
-        const combined = Array.from(new Set([...current, ...types]));
-        saveStoredEventTypes(combined);
-        return NextResponse.json({ types: combined });
-      }
-    } catch {
-      // Fallback
+    if (!error && data && data.length > 0) {
+      const types = data.map((d) => d.name).filter(Boolean);
+      const current = await getStoredEventTypes();
+      const combined = Array.from(new Set([...current, ...types]));
+      await saveStoredEventTypes(combined);
+      return NextResponse.json({ types: combined });
     }
-  }
+  } catch {}
 
+  const current = await getStoredEventTypes();
   return NextResponse.json({ types: current });
 }
 
@@ -80,19 +67,15 @@ export async function POST(req: NextRequest) {
 
     const trimmed = String(name).trim();
 
-    if (isSupabaseConfigured()) {
-      try {
-        const supabase = await createClient();
-        await supabase.from("event_types").insert([{ name: trimmed }]);
-      } catch (dbErr) {
-        console.warn("Supabase event type insert notice:", dbErr);
-      }
-    }
+    try {
+      const supabase = await createClient();
+      await supabase.from("event_types").insert([{ name: trimmed }]);
+    } catch {}
 
-    const current = getStoredEventTypes();
+    const current = await getStoredEventTypes();
     const exists = current.some((t) => t.toLowerCase() === trimmed.toLowerCase());
     const updated = exists ? current : [...current, trimmed];
-    saveStoredEventTypes(updated);
+    await saveStoredEventTypes(updated);
 
     try {
       revalidatePath("/gallery");
@@ -120,18 +103,14 @@ export async function PUT(req: NextRequest) {
 
     const trimmedNew = String(newName).trim();
 
-    if (isSupabaseConfigured()) {
-      try {
-        const supabase = await createClient();
-        await supabase.from("event_types").update({ name: trimmedNew }).eq("name", oldName);
-      } catch (dbErr) {
-        console.warn("Supabase event type update notice:", dbErr);
-      }
-    }
+    try {
+      const supabase = await createClient();
+      await supabase.from("event_types").update({ name: trimmedNew }).eq("name", oldName);
+    } catch {}
 
-    const current = getStoredEventTypes();
+    const current = await getStoredEventTypes();
     const updated = current.map((t) => (t === oldName ? trimmedNew : t));
-    saveStoredEventTypes(updated);
+    await saveStoredEventTypes(updated);
 
     try {
       revalidatePath("/gallery");
@@ -157,18 +136,14 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: "Липсва име за изтриване." }, { status: 400 });
     }
 
-    if (isSupabaseConfigured()) {
-      try {
-        const supabase = await createClient();
-        await supabase.from("event_types").delete().eq("name", name);
-      } catch (dbErr) {
-        console.warn("Supabase event type delete notice:", dbErr);
-      }
-    }
+    try {
+      const supabase = await createClient();
+      await supabase.from("event_types").delete().eq("name", name);
+    } catch {}
 
-    const current = getStoredEventTypes();
+    const current = await getStoredEventTypes();
     const updated = current.filter((t) => t.toLowerCase() !== name.toLowerCase());
-    saveStoredEventTypes(updated);
+    await saveStoredEventTypes(updated);
 
     try {
       revalidatePath("/gallery");
