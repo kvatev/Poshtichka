@@ -32,10 +32,10 @@ export interface ServiceItem {
 }
 
 const availableAssets = [
-  { path: "/media/Услуги/Asset 88@2x.png", label: "Asset 88 (Тюркоазен значка)" },
-  { path: "/media/Услуги/Asset 89@2x.png", label: "Asset 89 (Значка 2)" },
-  { path: "/media/Услуги/Asset 90@2x.png", label: "Asset 90 (Значка 3)" },
-  { path: "/media/Услуги/Asset 86@2x.png", label: "Asset 86 (Декоративен елемент)" },
+  { path: "/media/Услуги/Asset 86@2x.png", label: "Рисувано кръгче с тикче (Отметка)" },
+  { path: "/media/Услуги/Asset 88@2x.png", label: "Тюркоазена лента" },
+  { path: "/media/Услуги/Asset 89@2x.png", label: "Банер 'Всички услуги'" },
+  { path: "/media/Услуги/Asset 90@2x.png", label: "Заоблена рамка за картичка" },
 ];
 
 export const ServicesManager = () => {
@@ -599,22 +599,52 @@ export const ServicesManager = () => {
                   </div>
                 </div>
 
-                {/* Badge Icon Asset */}
-                <div className="space-y-1 pt-2">
-                  <label className="text-xs font-semibold text-[#182b2c]">
-                    Декоративен елемент / Значка от папка Услуги
-                  </label>
-                  <select
-                    value={badgeAsset}
-                    onChange={(e) => setBadgeAsset(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6] cursor-pointer"
-                  >
-                    {availableAssets.map((a) => (
-                      <option key={a.path} value={a.path}>
-                        {a.label}
-                      </option>
-                    ))}
-                  </select>
+                {/* Badge Icon Asset Visual Selector with Image Thumbnails */}
+                <div className="space-y-2 pt-2 border-t border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-[#182b2c]">
+                      Декоративен елемент / Значка:
+                    </label>
+                    <span className="text-[11px] text-[#00b4b6] font-bold">
+                      {availableAssets.find((a) => a.path === badgeAsset)?.label || "Изберете елемент"}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {availableAssets.map((a) => {
+                      const isSelected = badgeAsset === a.path;
+                      return (
+                        <button
+                          key={a.path}
+                          type="button"
+                          onClick={() => setBadgeAsset(a.path)}
+                          className={`flex items-center space-x-3 p-2.5 rounded-2xl border-2 transition-all cursor-pointer text-left ${
+                            isSelected
+                              ? "border-[#00b4b6] bg-[#00b4b6]/10 shadow-sm ring-2 ring-[#00b4b6]/30"
+                              : "border-gray-200 bg-white hover:border-[#00b4b6]/40 hover:bg-gray-50"
+                          }`}
+                        >
+                          {/* Miniature icon image */}
+                          <div className="relative w-11 h-11 rounded-xl bg-[#f9f6f0] border border-gray-200 flex-shrink-0 p-1 flex items-center justify-center overflow-hidden">
+                            <Image
+                              src={encodeURI(a.path)}
+                              alt={a.label}
+                              fill
+                              className="object-contain p-1"
+                              unoptimized
+                            />
+                          </div>
+
+                          <div className="flex-grow min-w-0">
+                            <p className="text-xs font-bold text-[#182b2c] truncate">{a.label}</p>
+                            <p className={`text-[10px] ${isSelected ? "text-[#00b4b6] font-bold" : "text-gray-400"} truncate`}>
+                              {isSelected ? "✓ Избран елемент" : "Кликнете за избор"}
+                            </p>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </form>
             </div>
