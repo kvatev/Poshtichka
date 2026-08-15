@@ -14,7 +14,7 @@ export const metadata = {
     "Разгледайте нашите първокласни услуги за събития - персонализирани спомени, ретро вендинг машина, автентични печати и интерактивни изживявания.",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function ServicesPage() {
   const services = await readCloudOrFileData<ServiceItem[]>("services", []);

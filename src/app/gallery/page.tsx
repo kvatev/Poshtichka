@@ -10,7 +10,7 @@ export const metadata = {
     "Разгледайте автентичната галерия от събития с Пощичка - интерактивна карта с вендинг машина и кадри от наши събития из цяла България.",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function GalleryPage() {
   const rawEvents = await readCloudOrFileData<EventLocation[]>("map-events", []);
