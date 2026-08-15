@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageWrapper } from "@/components/layout/page-wrapper";
+import { PageHeaderBanner } from "@/components/layout/page-header-banner";
 import { readCloudOrFileData } from "@/lib/server-storage";
 import { ServiceItem } from "@/components/admin/services-manager";
 
@@ -21,28 +22,11 @@ export default async function ServicesPage() {
   return (
     <PageWrapper>
       <div className="pb-24 space-y-12 sm:space-y-16 bg-[#f9f6f0] text-[#182b2c] min-h-screen">
-        {/* Top Header Banner with Asset 88@2x.png Background: Edge-to-Edge Full Width */}
-        <section className="relative w-full overflow-hidden flex items-center justify-center py-14 sm:py-20 md:py-24 px-4 sm:px-8 text-center border-b border-black/10">
-          {/* Background Image: Asset 88@2x.png */}
-          <Image
-            src={encodeURI("/media/Услуги/Asset 88@2x.png")}
-            alt="Всички услуги"
-            fill
-            priority
-            className="object-cover object-center"
-            unoptimized
-          />
-
-          {/* Banner Text Content */}
-          <div className="relative z-10 space-y-3 sm:space-y-4 max-w-4xl mx-auto px-2">
-            <h1 className="font-salongbeach text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold uppercase tracking-wider text-white leading-tight drop-shadow-sm">
-              ВСИЧКИ УСЛУГИ
-            </h1>
-            <p className="font-stampatello text-sm sm:text-base md:text-lg lg:text-xl text-[#182b2c] font-normal max-w-3xl mx-auto leading-relaxed">
-              Предлагаме широка гама от услуги, подходящи за вашето събитие – от поканата, до подарък за самия повод!
-            </p>
-          </div>
-        </section>
+        {/* Unified Top Header Banner */}
+        <PageHeaderBanner
+          title="ВСИЧКИ УСЛУГИ"
+          subtitle="Предлагаме широка гама от услуги, подходящи за вашето събитие – от поканата, до подарък за самия повод!"
+        />
 
         <section className="max-w-6xl mx-auto px-4 sm:px-8 space-y-12">
           {services.map((service, index) => {

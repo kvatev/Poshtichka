@@ -8,6 +8,8 @@ import { X } from "lucide-react";
 import { EventLocation } from "@/types/map-event";
 import { BG_LOCATIONS_DATABASE } from "@/lib/bg-locations";
 
+import { PageHeaderBanner } from "@/components/layout/page-header-banner";
+
 interface MapGalleryProps {
   initialEvents?: EventLocation[];
 }
@@ -262,27 +264,13 @@ export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
   };
 
   return (
-    <div className="space-y-12 sm:space-y-16 py-6 font-sans select-none bg-[#f9f6f0]">
-      {/* 1. Header Section */}
-      <div className="text-center max-w-3xl mx-auto space-y-3 px-4">
-        <h1 className="font-salongbeach text-3xl sm:text-5xl lg:text-6xl font-bold uppercase tracking-wider text-[#00b4b6] leading-tight">
-          ГАЛЕРИЯ ОТ ИЗМИНАЛИ СЪБИТИЯ
-        </h1>
-        <p className="font-sans text-sm sm:text-base lg:text-lg text-[#182b2c]/80 italic">
-          Разгледайте истински кадри от пътуването на Пощичка.
-        </p>
-
-        {/* Curly Arrow pointing down */}
-        <div className="pt-2 flex justify-center pointer-events-none">
-          <Image
-            src={encodeURI("/media/Main Page/curly-arrow-left.png")}
-            alt="Стрелка"
-            width={44}
-            height={44}
-            className="w-8 sm:w-10 h-auto object-contain opacity-85 -rotate-90"
-          />
-        </div>
-      </div>
+    <div className="space-y-12 sm:space-y-16 font-sans select-none bg-[#f9f6f0]">
+      {/* 1. Universal Top Header Banner */}
+      <PageHeaderBanner
+        title="ГАЛЕРИЯ ОТ ИЗМИНАЛИ СЪБИТИЯ"
+        subtitle="Разгледайте истински кадри от пътуването на Пощичка."
+        showCurlyArrow={true}
+      />
 
       {/* 2. City Filter Oval Tabs */}
       <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 px-4 max-w-5xl mx-auto">

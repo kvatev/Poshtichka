@@ -5,6 +5,7 @@ import Image from "next/image";
 import { MapPin, Mail, Instagram, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { PageWrapper } from "@/components/layout/page-wrapper";
+import { PageHeaderBanner } from "@/components/layout/page-header-banner";
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -78,27 +79,11 @@ export default function ContactPage() {
     <PageWrapper>
       <div className="space-y-12 pb-24 font-sans select-none">
         {/* Top Banner */}
-        <section className="bg-[#00b4b6] text-white py-10 sm:py-16 px-4 relative overflow-hidden border-b border-white/20">
-          <div className="max-w-4xl mx-auto text-center space-y-3 sm:space-y-4">
-            <h1 className="font-salongbeach text-2xl sm:text-4xl md:text-5xl font-bold uppercase tracking-wider text-white leading-snug sm:leading-tight px-2">
-              СВЪРЖЕТЕ СЕ С ЕКИПА НА ПОЩИЧКА
-            </h1>
-            <p className="font-sans text-sm sm:text-base lg:text-lg font-light text-white/95 max-w-2xl mx-auto italic">
-              Имате въпрос или друг тип запитване? Свържете се с нас, за да Ви помогнем!
-            </p>
-
-            {/* Curly Arrow pointing down */}
-            <div className="pt-2 flex items-center justify-center pointer-events-none">
-              <Image
-                src="/media/Main Page/curly-arrow-left.png"
-                alt="Стрелка"
-                width={50}
-                height={50}
-                className="w-7 sm:w-10 h-auto object-contain opacity-90 -rotate-90"
-              />
-            </div>
-          </div>
-        </section>
+        <PageHeaderBanner
+          title="СВЪРЖЕТЕ СЕ С ЕКИПА НА ПОЩИЧКА"
+          subtitle="Имате въпрос или друг тип запитване? Свържете се с нас, за да Ви помогнем!"
+          showCurlyArrow={true}
+        />
 
         {/* Main 2-Column Responsive Layout */}
         <section className="max-w-6xl mx-auto px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">

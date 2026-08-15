@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { PageWrapper } from "@/components/layout/page-wrapper";
+import { PageHeaderBanner } from "@/components/layout/page-header-banner";
 import { FAQContent } from "@/components/faq-content";
 
 export default function FAQPage() {
@@ -11,27 +12,11 @@ export default function FAQPage() {
     <PageWrapper>
       <div className="space-y-12 pb-24 font-sans select-none">
         {/* Top Banner */}
-        <section className="bg-[#00b4b6] text-white py-12 sm:py-16 px-4 relative overflow-hidden border-b border-white/20">
-          <div className="max-w-4xl mx-auto text-center space-y-3">
-            <h1 className="font-salongbeach text-3xl sm:text-5xl font-bold uppercase tracking-wider text-white leading-tight">
-              ЧЕСТО ЗАДАВАНИ ВЪПРОСИ
-            </h1>
-            <p className="font-sans text-sm sm:text-base lg:text-lg font-light text-white/95 max-w-2xl mx-auto italic">
-              Събрали сме част от въпросите, които получаваме преди резервиране.
-            </p>
-
-            {/* Curly Arrow pointing down */}
-            <div className="pt-2 flex items-center justify-center pointer-events-none">
-              <Image
-                src="/media/Main Page/curly-arrow-left.png"
-                alt="Стрелка"
-                width={50}
-                height={50}
-                className="w-8 sm:w-10 h-auto object-contain opacity-90 -rotate-90"
-              />
-            </div>
-          </div>
-        </section>
+        <PageHeaderBanner
+          title="ЧЕСТО ЗАДАВАНИ ВЪПРОСИ"
+          subtitle="Събрали сме част от въпросите, които получаваме преди резервиране."
+          showCurlyArrow={true}
+        />
 
         {/* FAQ Accordion List */}
         <section className="max-w-4xl mx-auto px-4 sm:px-8">

@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageWrapper } from "@/components/layout/page-wrapper";
+import { PageHeaderBanner } from "@/components/layout/page-header-banner";
 
 const paperKeepsakeOptions = [
   { id: "марка", label: "МАРКА" },
@@ -204,36 +205,19 @@ function BookingFormContent() {
   return (
     <div className="space-y-12 pb-24 font-sans select-none">
       {/* Top Banner */}
-      <section className="bg-[#00b4b6] text-white py-12 sm:py-16 px-4 relative overflow-hidden border-b border-white/20">
-        <div className="max-w-4xl mx-auto text-center space-y-4">
-          <h1 className="font-salongbeach text-3xl sm:text-5xl font-bold uppercase tracking-wider text-white leading-tight">
-            ЗАПАЗЕТЕ ПОЩИЧКА ЗА ВАШИЯ ПОВОД
-          </h1>
-          <p className="font-sans text-sm sm:text-base lg:text-lg font-light text-white/95 max-w-2xl mx-auto italic">
-            Попълнете кратката форма по-долу и ние ще съставим индивидуална оферта и ще потвърдим наличността в рамките на 24 часа.
-          </p>
-
-          <div className="pt-3 flex flex-col items-center justify-center relative">
-            <button
-              onClick={() => router.push("/calendar")}
-              className="inline-flex items-center justify-center px-7 py-3 rounded-full border-2 border-white bg-white/10 hover:bg-white hover:text-[#00b4b6] backdrop-blur-sm text-white font-salongbeach text-base sm:text-lg font-bold uppercase tracking-wider transition-all duration-300 shadow-xl group cursor-pointer"
-            >
-              <span>СВОБОДНИ ДАТИ</span>
-            </button>
-
-            {/* Curly Arrow pointing down */}
-            <div className="mt-2 flex items-center justify-center pointer-events-none">
-              <Image
-                src="/media/Main Page/curly-arrow-left.png"
-                alt="Стрелка"
-                width={50}
-                height={50}
-                className="w-8 sm:w-10 h-auto object-contain opacity-90 rotate-90"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+      <PageHeaderBanner
+        title="ЗАПАЗЕТЕ ПОЩИЧКА ЗА ВАШИЯ ПОВОД"
+        subtitle="Попълнете кратката форма по-долу и ние ще съставим индивидуална оферта и ще потвърдим наличността в рамките на 24 часа."
+        showCurlyArrow={true}
+      >
+        <button
+          type="button"
+          onClick={() => router.push("/calendar")}
+          className="inline-flex items-center justify-center px-7 py-3 rounded-full border-2 border-white bg-white/15 hover:bg-white hover:text-[#00b4b6] backdrop-blur-sm text-white font-salongbeach text-base sm:text-lg font-bold uppercase tracking-wider transition-all duration-300 shadow-xl group cursor-pointer"
+        >
+          <span>СВОБОДНИ ДАТИ</span>
+        </button>
+      </PageHeaderBanner>
 
       {/* Main Questionnaire Section */}
       <section className="max-w-4xl mx-auto px-4 sm:px-8">
