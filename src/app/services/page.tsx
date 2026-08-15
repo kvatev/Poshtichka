@@ -24,6 +24,7 @@ const initialServices: ServiceItem[] = [
     ],
     image: "/media/gallery/Tezza_2025_07_13_155326413.webp",
     badgeAsset: "/media/Услуги/Asset 88@2x.png",
+    badgeAssets: ["/media/Услуги/Asset 88@2x.png", "/media/Услуги/Asset 86@2x.png"],
   },
   {
     id: "SRV-02",
@@ -38,7 +39,8 @@ const initialServices: ServiceItem[] = [
       "ДЕКОРАТИВЕН СТАНОК И МОНТАЖ НА МЯСТО НА СЪБИТИЕТО",
     ],
     image: "/media/gallery/Tezza_2025_07_13_155324686.webp",
-    badgeAsset: "/media/Услуги/Asset 89@2x.png",
+    badgeAsset: "/media/Услуги/Asset 86@2x.png",
+    badgeAssets: ["/media/Услуги/Asset 86@2x.png"],
   },
   {
     id: "SRV-03",
@@ -54,13 +56,13 @@ const initialServices: ServiceItem[] = [
     ],
     image: "/media/gallery/Tezza_2025_07_13_155331795.webp",
     badgeAsset: "/media/Услуги/Asset 90@2x.png",
+    badgeAssets: ["/media/Услуги/Asset 86@2x.png"],
   },
 ];
 
 export default function ServicesPage() {
   const [services, setServices] = useState<ServiceItem[]>(initialServices);
 
-  // Load from local cache immediately on mount
   useEffect(() => {
     try {
       const cached = localStorage.getItem("poshtichka_cached_services");
@@ -75,7 +77,7 @@ export default function ServicesPage() {
     fetch("/api/services")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (data && Array.isArray(data.services) && data.services.length > 0) {
+        if (data && Array.isArray(data.services)) {
           setServices(data.services);
           try {
             localStorage.setItem("poshtichka_cached_services", JSON.stringify(data.services));
@@ -87,22 +89,21 @@ export default function ServicesPage() {
 
   return (
     <PageWrapper>
-      <div className="space-y-16 sm:space-y-24 py-10 pb-24 font-sans select-none bg-[#f9f6f0]/50">
-        {/* Header */}
-        <section className="text-center max-w-4xl mx-auto space-y-4 px-4">
-          <span className="text-xs uppercase tracking-widest text-[#00b4b6] font-semibold bg-[#00b4b6]/10 px-4 py-1.5 rounded-full">
+      <div className="pt-28 sm:pt-36 pb-24 space-y-16 sm:space-y-24 bg-[#fdfbf7] text-[#182b2c] min-h-screen">
+        <section className="relative px-4 text-center max-w-4xl mx-auto space-y-4">
+          <div className="inline-flex items-center space-x-2 bg-[#00b4b6]/10 text-[#00b4b6] px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold uppercase tracking-widest">
+            <span>Интерактивни преживявания за вашите гости</span>
+          </div>
+
+          <h1 className="font-salongbeach text-4xl sm:text-6xl md:text-7xl font-bold uppercase tracking-tight text-[#182b2c] leading-none">
             Нашите Услуги
-          </span>
-          <h1 className="font-salongbeach text-3xl sm:text-5xl md:text-6xl font-bold text-[#182b2c] uppercase tracking-wider leading-tight">
-            Преживяване, съобразено с <br className="hidden sm:inline" />
-            <span className="text-[#00b4b6]">Вашия специален повод</span>
           </h1>
-          <p className="text-[#182b2c]/80 text-base sm:text-xl font-sans max-w-2xl mx-auto font-light leading-relaxed">
-            Всяко събитие получава напълно индивидуален подход — от графичния дизайн до избора на продуктите в машината.
+
+          <p className="font-stampatello text-base sm:text-xl text-[#182b2c]/80 max-w-2xl mx-auto leading-relaxed">
+            Подарете на своите гости персонализирани спомени, създадени на живо по време на вашето събитие.
           </p>
         </section>
 
-        {/* Detailed Services Cards matching user screenshot layout */}
         <section className="max-w-6xl mx-auto px-4 sm:px-8 space-y-12">
           {services.map((service, index) => {
             const activeAssets = service.badgeAssets && service.badgeAssets.length > 0
@@ -113,7 +114,6 @@ export default function ServicesPage() {
 
             const hasCheckmarkAsset = activeAssets.includes("/media/Услуги/Asset 86@2x.png");
             const hasTealBarAsset = activeAssets.includes("/media/Услуги/Asset 88@2x.png");
-            const hasBannerAsset = activeAssets.includes("/media/Услуги/Asset 89@2x.png");
             const hasFrameAsset = activeAssets.includes("/media/Услуги/Asset 90@2x.png");
 
             return (
@@ -121,7 +121,6 @@ export default function ServicesPage() {
                 key={service.id || index}
                 className="relative bg-[#f9f6f0] border-2 border-[#182b2c] shadow-xl rounded-[40px] sm:rounded-[48px] p-6 sm:p-10 lg:p-12 transition-all duration-300 hover:shadow-2xl flex flex-col lg:flex-row items-center gap-8 lg:gap-14 overflow-hidden"
               >
-                {/* Decorative Frame Overlay if Asset 90 is selected */}
                 {hasFrameAsset && (
                   <div className="absolute inset-0 w-full h-full pointer-events-none z-10 opacity-70">
                     <Image
@@ -134,7 +133,6 @@ export default function ServicesPage() {
                   </div>
                 )}
 
-                {/* Left Side: Photo Frame */}
                 <div className="relative w-full lg:w-1/2 flex-shrink-0 flex items-center justify-center z-0">
                   <div className="relative w-full h-[360px] sm:h-[460px] lg:h-[520px] rounded-[32px] sm:rounded-[36px] overflow-hidden border-2 border-[#182b2c] shadow-lg bg-gray-100">
                     <Image
@@ -147,21 +145,7 @@ export default function ServicesPage() {
                   </div>
                 </div>
 
-                {/* Right Side: Title, Subtitle, Description & Bullet List */}
                 <div className="w-full lg:w-1/2 space-y-6 text-left z-0">
-                  {/* Decorative Banner if Asset 89 is selected */}
-                  {hasBannerAsset && (
-                    <div className="relative w-full max-w-sm h-12 mb-1">
-                      <Image
-                        src={encodeURI("/media/Услуги/Asset 89@2x.png")}
-                        alt="Банер услуги"
-                        fill
-                        className="object-contain object-left"
-                        unoptimized
-                      />
-                    </div>
-                  )}
-
                   <div className="space-y-2">
                     <h2 className="font-salongbeach text-3xl sm:text-4xl lg:text-5xl font-bold uppercase text-[#182b2c] tracking-wider leading-none">
                       {service.title}

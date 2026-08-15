@@ -35,7 +35,6 @@ export interface ServiceItem {
 const availableAssets = [
   { path: "/media/Услуги/Asset 86@2x.png", label: "Рисувано кръгче с тикче (Отметка)" },
   { path: "/media/Услуги/Asset 88@2x.png", label: "Тюркоазена лента" },
-  { path: "/media/Услуги/Asset 89@2x.png", label: "Банер 'Всички услуги'" },
   { path: "/media/Услуги/Asset 90@2x.png", label: "Заоблена рамка за картичка" },
 ];
 
