@@ -11,9 +11,7 @@ export const MapGallery = () => {
   const [events, setEvents] = useState<EventLocation[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCity, setSelectedCity] = useState<string>("");
-  const [cityPresets, setCityPresets] = useState<string[]>([
-    "Каварна", "София", "Перущица", "Велико Търново", "Пловдив", "Варна", "с. Равно поле, Елин Пелин", "В.С. Свети Тома", "Червен", "Бургас", "Поморие"
-  ]);
+  const [cityPresets, setCityPresets] = useState<string[]>([]);
   const [activeModalEvent, setActiveModalEvent] = useState<EventLocation | null>(null);
   const [activeLightboxIndex, setActiveLightboxIndex] = useState<number>(0);
 
@@ -39,7 +37,7 @@ export const MapGallery = () => {
     } catch {}
   }, []);
 
-  // Fetch API locations & cities
+  // Fetch API locations
   useEffect(() => {
     fetch("/api/map-events")
       .then((res) => (res.ok ? res.json() : null))
@@ -54,15 +52,6 @@ export const MapGallery = () => {
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-
-    fetch("/api/cities")
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data && Array.isArray(data.cities) && data.cities.length > 0) {
-          setCityPresets(data.cities.map((c: { name: string }) => c.name));
-        }
-      })
-      .catch(() => {});
   }, []);
 
   // Lock background body scroll whenever the modal is open
@@ -108,8 +97,8 @@ export const MapGallery = () => {
 
   const cityNamesList = useMemo(() => {
     const fromEvents = uniqueEvents.map((e) => e.cityName).filter(Boolean);
-    return Array.from(new Set([...cityPresets, ...fromEvents])).filter((c) => c.toLowerCase() !== "созопол");
-  }, [cityPresets, uniqueEvents]);
+    return Array.from(new Set(fromEvents)).filter((c) => c.toLowerCase() !== "созопол");
+  }, [uniqueEvents]);
 
   // Active events for the selected city (or all unique events if ВСИЧКИ is selected)
   const selectedCityEvents = useMemo(() => {

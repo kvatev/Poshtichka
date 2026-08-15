@@ -15,16 +15,7 @@ declare global {
   var __POSHTICHKA_CITIES__: CityPreset[] | undefined;
 }
 
-const defaultCities: CityPreset[] = [
-  { id: "c2", name: "Каварна", lat: 43.4342, lng: 28.3392 },
-  { id: "c3", name: "София", lat: 42.6977, lng: 23.3219 },
-  { id: "c4", name: "Червен", lat: 43.6212, lng: 25.9961 },
-  { id: "c5", name: "Перущица", lat: 42.0567, lng: 24.5458 },
-  { id: "c6", name: "Велико Търново", lat: 43.0757, lng: 25.6172 },
-  { id: "c7", name: "Бургас", lat: 42.5048, lng: 27.4626 },
-  { id: "c8", name: "Пловдив", lat: 42.1354, lng: 24.7453 },
-  { id: "c9", name: "Варна", lat: 43.2141, lng: 27.9147 },
-];
+const defaultCities: CityPreset[] = [];
 
 async function getStoredCities(): Promise<CityPreset[]> {
   return await readCloudOrFileData<CityPreset[]>("cities", defaultCities);
