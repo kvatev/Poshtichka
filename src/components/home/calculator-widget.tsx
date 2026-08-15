@@ -1,17 +1,68 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Check, Sparkles } from "lucide-react";
 
 const GUEST_STEPS = [70, 100, 150, "150+"] as const;
-const PRICE_PER_KM = 0.23;
 
 export const CalculatorWidget = () => {
   const [stepIndex, setStepIndex] = useState<number>(1); // Default: index 1 (100 guests)
   const [distance, setDistance] = useState<number>(50); // Default: 50 km one-way (free threshold)
   const [addInitials, setAddInitials] = useState<boolean>(false);
+
+  const [pricing, setPricing] = useState({
+    price70: 330,
+    price100: 350,
+    price150: 380,
+    designPrice: 50,
+    freeDistance: 50,
+    ratePerKm: 0.23,
+  });
+
+  useEffect(() => {
+    try {
+      const cached = localStorage.getItem("poshtichka_content_pricing_settings");
+      if (cached) {
+        const p = JSON.parse(cached);
+        if (p && typeof p === "object") {
+          setPricing((prev) => ({
+            ...prev,
+            price70: Number(p.price70) || prev.price70,
+            price100: Number(p.price100) || Number(p.rentalPrice) || prev.price100,
+            price150: Number(p.price150) || prev.price150,
+            designPrice: Number(p.designPrice) || prev.designPrice,
+            freeDistance: Number(p.freeDistance) || prev.freeDistance,
+            ratePerKm: Number(p.ratePerKm) || prev.ratePerKm,
+          }));
+        }
+      }
+    } catch {}
+
+    fetch("/api/content", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        const p = data?.pricing_settings || data?.pricing;
+        if (p) {
+          setPricing((prev) => {
+            const updated = {
+              price70: Number(p.price70) || prev.price70,
+              price100: Number(p.price100) || Number(p.rentalPrice) || prev.price100,
+              price150: Number(p.price150) || prev.price150,
+              designPrice: Number(p.designPrice) || prev.designPrice,
+              freeDistance: Number(p.freeDistance) || prev.freeDistance,
+              ratePerKm: Number(p.ratePerKm) || prev.ratePerKm,
+            };
+            try {
+              localStorage.setItem("poshtichka_content_pricing_settings", JSON.stringify(updated));
+            } catch {}
+            return updated;
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const currentStep = GUEST_STEPS[stepIndex];
   const isLargeEvent = currentStep === "150+";
@@ -20,28 +71,26 @@ export const CalculatorWidget = () => {
 
   const numericGuests = typeof currentStep === "number" ? currentStep : 150;
 
-  // STRICT DISTANCE MATHEMATICS:
+  // DYNAMIC DISTANCE MATHEMATICS:
   // 1. Slider value (distance) = one-way distance from Burgas (50 km to 450 km)
   // 2. twoWayDistance = distance * 2
-  // 3. First 50 km one-way (100 km two-way) is FREE
-  // 4. chargeableDistance = Math.max(0, twoWayDistance - 100)
-  // 5. travelCost = chargeableDistance * PRICE_PER_KM (0.23 €/km)
+  // 3. Free threshold two-way = freeDistance * 2
+  // 4. chargeableDistance = Math.max(0, twoWayDistance - freeThresholdTwoWay)
+  // 5. travelCost = chargeableDistance * ratePerKm
   const twoWayDistance = distance * 2;
-  const chargeableDistance = Math.max(0, twoWayDistance - 100);
-  const travelCost = chargeableDistance * PRICE_PER_KM;
+  const freeThresholdTwoWay = pricing.freeDistance * 2;
+  const chargeableDistance = Math.max(0, twoWayDistance - freeThresholdTwoWay);
+  const travelCost = chargeableDistance * pricing.ratePerKm;
 
-  // BASE GUEST PRICING MAPPING:
-  // 70 guests = 330 €
-  // 100 guests = 350 €
-  // 150 guests = 380 €
+  // DYNAMIC GUEST BASE PRICING:
   const getGuestBasePrice = (idx: number): number => {
-    if (idx === 0) return 330;
-    if (idx === 1) return 350;
-    return 380;
+    if (idx === 0) return pricing.price70;
+    if (idx === 1) return pricing.price100;
+    return pricing.price150;
   };
 
   const basePrice = getGuestBasePrice(stepIndex);
-  const initialsCost = addInitials ? 50 : 0;
+  const initialsCost = addInitials ? pricing.designPrice : 0;
 
   // SINGLE EXACT TOTAL PRICE: Base Price + Add-ons + Travel Cost
   const totalPrice = Math.round(basePrice + travelCost + initialsCost);
@@ -174,15 +223,15 @@ export const CalculatorWidget = () => {
                 </motion.div>
               ) : (
                 <p className="text-xs text-[#00b4b6] font-medium italic pt-0.5">
-                  *Километрите се изчисляват двупосочно (отиване и връщане от Бургас). Първите 50 км в посока (общо 100 км двупосочно) са безплатни!
+                  *Километрите се изчисляват двупосочно (отиване и връщане от Бургас). Първите {pricing.freeDistance} км в посока (общо {pricing.freeDistance * 2} км двупосочно) са безплатни!
                 </p>
               )}
             </div>
 
-            {/* Custom Checkbox: Add Initials (+50 EUR) - Centered & 2x Smaller */}
+            {/* Custom Checkbox: Add Initials (+designPrice EUR) - Centered & 2x Smaller */}
             <div className="space-y-1 pt-1 flex flex-col items-center">
               <h3 className="font-display text-base sm:text-lg font-bold uppercase tracking-wider text-[#00b4b6]">
-                ДОБАВЯНЕ НА ИНИЦИАЛИ (+50 €)
+                ДОБАВЯНЕ НА ИНИЦИАЛИ (+{pricing.designPrice} €)
               </h3>
               <button
                 type="button"

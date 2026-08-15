@@ -1,17 +1,20 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Tag, Save, Sparkles, CheckCircle2, Truck, Palette, Check } from "lucide-react";
+import { Save, Sparkles, Truck, Palette, Check } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 export const PricingManager = () => {
-  const [minRental, setMinRental] = useState("350");
-  const [maxRental, setMaxRental] = useState("500");
+  // Machine Rental Exact Prices
+  const [price70, setPrice70] = useState("330");
+  const [price100, setPrice100] = useState("350");
+  const [price150, setPrice150] = useState("380");
 
-  const [minDesign, setMinDesign] = useState("25");
-  const [maxDesign, setMaxDesign] = useState("50");
+  // Design Price
+  const [designPrice, setDesignPrice] = useState("50");
 
+  // Transport Settings
   const [freeDistance, setFreeDistance] = useState("50");
   const [ratePerKm, setRatePerKm] = useState("0.23");
 
@@ -22,30 +25,38 @@ export const PricingManager = () => {
     fetch("/api/content")
       .then((res) => res.json())
       .then((data) => {
-        if (data.pricing) {
-          if (data.pricing.minRental) setMinRental(String(data.pricing.minRental));
-          if (data.pricing.maxRental) setMaxRental(String(data.pricing.maxRental));
-          if (data.pricing.minDesign) setMinDesign(String(data.pricing.minDesign));
-          if (data.pricing.maxDesign) setMaxDesign(String(data.pricing.maxDesign));
-          if (data.pricing.freeDistance) setFreeDistance(String(data.pricing.freeDistance));
-          if (data.pricing.ratePerKm) setRatePerKm(String(data.pricing.ratePerKm));
+        const p = data.pricing_settings || data.pricing;
+        if (p) {
+          if (p.price70) setPrice70(String(p.price70));
+          if (p.price100) setPrice100(String(p.price100));
+          else if (p.rentalPrice) setPrice100(String(p.rentalPrice));
+          else if (p.minRental) setPrice100(String(p.minRental));
+
+          if (p.price150) setPrice150(String(p.price150));
+          if (p.designPrice) setDesignPrice(String(p.designPrice));
+          else if (p.maxDesign) setDesignPrice(String(p.maxDesign));
+          else if (p.minDesign) setDesignPrice(String(p.minDesign));
+
+          if (p.freeDistance) setFreeDistance(String(p.freeDistance));
+          if (p.ratePerKm) setRatePerKm(String(p.ratePerKm));
         }
       })
       .catch(() => {});
   }, []);
 
-  const handleSavePricing = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSavePricing = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setSaving(true);
     setSavedSuccess(false);
 
     const payload = {
-      minRental,
-      maxRental,
-      minDesign,
-      maxDesign,
-      freeDistance,
-      ratePerKm,
+      price70: Number(price70) || 330,
+      price100: Number(price100) || 350,
+      price150: Number(price150) || 380,
+      rentalPrice: Number(price100) || 350,
+      designPrice: Number(designPrice) || 50,
+      freeDistance: Number(freeDistance) || 50,
+      ratePerKm: Number(ratePerKm) || 0.23,
     };
 
     try {
@@ -78,11 +89,11 @@ export const PricingManager = () => {
             Конфигурирайте ценовата рамка за калкулатора и офертите
           </p>
         </div>
-        
+
         <Button
           variant="primary"
           size="md"
-          onClick={handleSavePricing}
+          onClick={() => handleSavePricing()}
           disabled={saving}
           className="flex items-center space-x-2 shrink-0 cursor-pointer shadow-md hover:shadow-lg transition-all"
         >
@@ -102,40 +113,56 @@ export const PricingManager = () => {
 
       <form onSubmit={handleSavePricing} className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Base Machine Rental */}
+          {/* Base Machine Rental Exact Prices */}
           <Card className="p-6 space-y-4 bg-white border border-brand-primary/20 shadow-sm">
             <div className="flex items-center space-x-3 text-brand-accent pb-2 border-b border-brand-secondary">
-              <Sparkles className="w-5 h-5" />
+              <Sparkles className="w-5 h-5 text-[#00b4b6]" />
               <h3 className="font-serif text-lg font-bold text-brand-dark">
                 Наем на Машината
               </h3>
             </div>
 
             <p className="text-xs text-brand-dark/70 leading-relaxed">
-              Базова цена за наем на Пощичка за времетраенето на събитието.
+              Точна цена за наем на Пощичка според броя гости на събитието.
             </p>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-3">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-brand-dark">
-                  Мин. цена (€)
+                <label className="text-xs font-semibold text-brand-dark flex justify-between">
+                  <span>Цена за 70 гости</span>
+                  <span className="text-brand-dark/60">(€)</span>
                 </label>
                 <input
                   type="number"
-                  value={minRental}
-                  onChange={(e) => setMinRental(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-brand-accent font-bold"
+                  value={price70}
+                  onChange={(e) => setPrice70(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-[#00b4b6] font-bold"
                 />
               </div>
+
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-brand-dark">
-                  Макс. цена (€)
+                <label className="text-xs font-semibold text-brand-dark flex justify-between">
+                  <span>Цена за 100 гости (Стандарт)</span>
+                  <span className="text-brand-dark/60">(€)</span>
                 </label>
                 <input
                   type="number"
-                  value={maxRental}
-                  onChange={(e) => setMaxRental(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-brand-accent font-bold"
+                  value={price100}
+                  onChange={(e) => setPrice100(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-[#00b4b6] font-bold"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-brand-dark flex justify-between">
+                  <span>Цена за 150 гости</span>
+                  <span className="text-brand-dark/60">(€)</span>
+                </label>
+                <input
+                  type="number"
+                  value={price150}
+                  onChange={(e) => setPrice150(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-[#00b4b6] font-bold"
                 />
               </div>
             </div>
@@ -144,37 +171,27 @@ export const PricingManager = () => {
           {/* Graphic Design */}
           <Card className="p-6 space-y-4 bg-white border border-brand-primary/20 shadow-sm">
             <div className="flex items-center space-x-3 text-brand-accent pb-2 border-b border-brand-secondary">
-              <Palette className="w-5 h-5" />
+              <Palette className="w-5 h-5 text-[#00b4b6]" />
               <h3 className="font-serif text-lg font-bold text-brand-dark">
                 Графичен Дизайн
               </h3>
             </div>
 
             <p className="text-xs text-brand-dark/70 leading-relaxed">
-              Индивидуална изработка на авторски визии и илюстрации.
+              Индивидуална изработка на авторски визии, инициали и илюстрации.
             </p>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-3 pt-1">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-brand-dark">
-                  Мин. цена (€)
+                <label className="text-xs font-semibold text-brand-dark flex justify-between">
+                  <span>Цена за дизайн & инициали</span>
+                  <span className="text-brand-dark/60">(€)</span>
                 </label>
                 <input
                   type="number"
-                  value={minDesign}
-                  onChange={(e) => setMinDesign(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-brand-accent font-bold"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-brand-dark">
-                  Макс. цена (€)
-                </label>
-                <input
-                  type="number"
-                  value={maxDesign}
-                  onChange={(e) => setMaxDesign(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-brand-accent font-bold"
+                  value={designPrice}
+                  onChange={(e) => setDesignPrice(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-[#00b4b6] font-bold"
                 />
               </div>
             </div>
@@ -183,37 +200,41 @@ export const PricingManager = () => {
           {/* Transport Logistics */}
           <Card className="p-6 space-y-4 bg-white border border-brand-primary/20 shadow-sm">
             <div className="flex items-center space-x-3 text-brand-accent pb-2 border-b border-brand-secondary">
-              <Truck className="w-5 h-5" />
+              <Truck className="w-5 h-5 text-[#00b4b6]" />
               <h3 className="font-serif text-lg font-bold text-brand-dark">
                 Транспортни Разходи
               </h3>
             </div>
 
             <p className="text-xs text-brand-dark/70 leading-relaxed">
-              Първите {freeDistance} км от Бургас са безплатни.
+              Първите {freeDistance} км от Бургас са безплатни. След това се таксува на км.
             </p>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-3 pt-1">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-brand-dark">
-                  Безплатни км
+                <label className="text-xs font-semibold text-brand-dark flex justify-between">
+                  <span>Безплатни километри</span>
+                  <span className="text-brand-dark/60">(км)</span>
                 </label>
                 <input
                   type="number"
                   value={freeDistance}
                   onChange={(e) => setFreeDistance(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-brand-accent font-bold"
+                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-[#00b4b6] font-bold"
                 />
               </div>
+
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-brand-dark">
-                  Цена (€/км)
+                <label className="text-xs font-semibold text-brand-dark flex justify-between">
+                  <span>Цена на километър</span>
+                  <span className="text-brand-dark/60">(€/км)</span>
                 </label>
                 <input
-                  type="text"
+                  type="number"
+                  step="0.01"
                   value={ratePerKm}
                   onChange={(e) => setRatePerKm(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-brand-accent font-bold"
+                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-[#00b4b6] font-bold"
                 />
               </div>
             </div>

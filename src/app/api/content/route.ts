@@ -24,6 +24,9 @@ const defaultContentStore: Record<string, any> = {
   faq_items: defaultFaqs,
 };
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET() {
   const store = await readCloudOrFileData<Record<string, any>>(
     "content-store",
@@ -39,6 +42,15 @@ export async function GET() {
   let banners = store.banners || defaultBanners;
   let testimonials = store.testimonials || defaultTestimonials;
   let faq = store.faq_items || defaultFaqs;
+  let pricing_settings = store.pricing_settings || {
+    price70: "330",
+    price100: "350",
+    price150: "380",
+    rentalPrice: "350",
+    designPrice: "50",
+    freeDistance: "50",
+    ratePerKm: "0.23",
+  };
 
   try {
     const supabase = await createClient();
@@ -52,17 +64,28 @@ export async function GET() {
         if (item.key === "banners") banners = item.value;
         if (item.key === "testimonials") testimonials = item.value;
         if (item.key === "faq_items") faq = item.value;
+        if (item.key === "pricing_settings") pricing_settings = { ...pricing_settings, ...item.value };
       });
     }
   } catch {}
 
-  return NextResponse.json({
-    general,
-    seo,
-    homepage,
-    banners,
-    testimonials,
-    faq,
-    website_content: store.website_content,
-  });
+  return NextResponse.json(
+    {
+      general,
+      seo,
+      homepage,
+      banners,
+      testimonials,
+      faq,
+      pricing_settings,
+      pricing: pricing_settings,
+      website_content: store.website_content,
+    },
+    {
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        "CDN-Cache-Control": "no-store",
+      },
+    }
+  );
 }
