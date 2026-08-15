@@ -357,29 +357,6 @@ export const CalendarView = ({
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
-
-          {/* Quick Jump Buttons */}
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => handleGoToDate(2027, 5)}
-              className={`px-3.5 py-2 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
-                viewYear === 2027 && viewMonth === 5
-                  ? "bg-[#00b4b6] text-white shadow-sm"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              ✨ Юни 2027 (Нови събития)
-            </button>
-            <button
-              onClick={() => {
-                const now = new Date();
-                handleGoToDate(now.getFullYear(), now.getMonth());
-              }}
-              className="px-3 py-2 rounded-2xl text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer"
-            >
-              Днес
-            </button>
-          </div>
         </div>
 
         {/* Financial Summary & Add Event CTA */}

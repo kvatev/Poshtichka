@@ -184,16 +184,6 @@ export default function PublicCalendarPage() {
                     </option>
                   ))}
                 </select>
-
-                <button
-                  onClick={() => {
-                    setCurrentYear(today.getFullYear());
-                    setCurrentMonth(today.getMonth());
-                  }}
-                  className="text-xs font-semibold text-[#00b4b6] hover:underline px-3 py-2 bg-white rounded-xl border border-[#00b4b6]/30 cursor-pointer"
-                >
-                  Текущ месец
-                </button>
               </div>
 
               {/* Legend with clean indicators and NO duplicate emojis */}
