@@ -6,12 +6,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 export const PricingManager = () => {
-  // Machine Rental Exact Prices
-  const [price70, setPrice70] = useState("330");
-  const [price100, setPrice100] = useState("350");
-  const [price150, setPrice150] = useState("380");
+  // Machine Rental Single Exact Price
+  const [rentalPrice, setRentalPrice] = useState("350");
 
-  // Design Price
+  // Design Price - Single Exact Price
   const [designPrice, setDesignPrice] = useState("50");
 
   // Transport Settings
@@ -27,12 +25,10 @@ export const PricingManager = () => {
       .then((data) => {
         const p = data.pricing_settings || data.pricing;
         if (p) {
-          if (p.price70) setPrice70(String(p.price70));
-          if (p.price100) setPrice100(String(p.price100));
-          else if (p.rentalPrice) setPrice100(String(p.rentalPrice));
-          else if (p.minRental) setPrice100(String(p.minRental));
+          if (p.rentalPrice) setRentalPrice(String(p.rentalPrice));
+          else if (p.price100) setRentalPrice(String(p.price100));
+          else if (p.minRental) setRentalPrice(String(p.minRental));
 
-          if (p.price150) setPrice150(String(p.price150));
           if (p.designPrice) setDesignPrice(String(p.designPrice));
           else if (p.maxDesign) setDesignPrice(String(p.maxDesign));
           else if (p.minDesign) setDesignPrice(String(p.minDesign));
@@ -49,11 +45,12 @@ export const PricingManager = () => {
     setSaving(true);
     setSavedSuccess(false);
 
+    const priceNum = Number(rentalPrice) || 350;
     const payload = {
-      price70: Number(price70) || 330,
-      price100: Number(price100) || 350,
-      price150: Number(price150) || 380,
-      rentalPrice: Number(price100) || 350,
+      rentalPrice: priceNum,
+      price70: Math.round(priceNum * 0.94),
+      price100: priceNum,
+      price150: Math.round(priceNum * 1.08),
       designPrice: Number(designPrice) || 50,
       freeDistance: Number(freeDistance) || 50,
       ratePerKm: Number(ratePerKm) || 0.23,
@@ -113,7 +110,7 @@ export const PricingManager = () => {
 
       <form onSubmit={handleSavePricing} className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Base Machine Rental Exact Prices */}
+          {/* Base Machine Rental - Single Price Field */}
           <Card className="p-6 space-y-4 bg-white border border-brand-primary/20 shadow-sm">
             <div className="flex items-center space-x-3 text-brand-accent pb-2 border-b border-brand-secondary">
               <Sparkles className="w-5 h-5 text-[#00b4b6]" />
@@ -123,45 +120,19 @@ export const PricingManager = () => {
             </div>
 
             <p className="text-xs text-brand-dark/70 leading-relaxed">
-              Точна цена за наем на Пощичка според броя гости на събитието.
+              Базова цена за наем на Пощичка за времетраенето на събитието.
             </p>
 
-            <div className="space-y-3">
+            <div className="space-y-3 pt-1">
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-brand-dark flex justify-between">
-                  <span>Цена за 70 гости</span>
+                  <span>Цена за наем</span>
                   <span className="text-brand-dark/60">(€)</span>
                 </label>
                 <input
                   type="number"
-                  value={price70}
-                  onChange={(e) => setPrice70(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-[#00b4b6] font-bold"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-brand-dark flex justify-between">
-                  <span>Цена за 100 гости (Стандарт)</span>
-                  <span className="text-brand-dark/60">(€)</span>
-                </label>
-                <input
-                  type="number"
-                  value={price100}
-                  onChange={(e) => setPrice100(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-[#00b4b6] font-bold"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-brand-dark flex justify-between">
-                  <span>Цена за 150 гости</span>
-                  <span className="text-brand-dark/60">(€)</span>
-                </label>
-                <input
-                  type="number"
-                  value={price150}
-                  onChange={(e) => setPrice150(e.target.value)}
+                  value={rentalPrice}
+                  onChange={(e) => setRentalPrice(e.target.value)}
                   className="w-full px-3 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-[#00b4b6] font-bold"
                 />
               </div>
