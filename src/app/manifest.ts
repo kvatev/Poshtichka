@@ -14,22 +14,22 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: "portrait-primary",
     icons: [
       {
-        src: encodeURI("/media/icons/Asset 95@2x.png?v=poshtichka2"),
-        sizes: "192x192 512x512",
+        src: "/icons/icon-192x192.png?v=poshtichka2",
+        sizes: "192x192",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: encodeURI("/media/icons/Asset 95@2x.png?v=poshtichka2"),
+        src: "/icons/icon-512x512.png?v=poshtichka2",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: "/icons/maskable-icon-512x512.png?v=poshtichka2",
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable",
-      },
-      {
-        src: "/icon.png?v=poshtichka2",
-        sizes: "192x192 512x512",
-        type: "image/png",
-        purpose: "any",
       },
     ],
     categories: ["lifestyle", "events", "entertainment"],

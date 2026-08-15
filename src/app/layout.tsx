@@ -51,13 +51,13 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: encodeURI("/media/icons/Asset 95@2x.png?v=poshtichka2"), type: "image/png" },
-      { url: "/icon.png?v=poshtichka2", type: "image/png" },
-      { url: "/favicon.ico?v=poshtichka2", sizes: "any" },
+      { url: "/icons/icon-192x192.png?v=poshtichka2", type: "image/png" },
+      { url: "/icons/favicon.ico?v=poshtichka2", sizes: "any" },
     ],
     shortcut: encodeURI("/media/icons/Asset 95@2x.png?v=poshtichka2"),
     apple: [
       { url: encodeURI("/media/icons/Asset 95@2x.png?v=poshtichka2"), sizes: "180x180", type: "image/png" },
-      { url: "/apple-icon.png?v=poshtichka2", sizes: "180x180", type: "image/png" },
+      { url: "/icons/apple-touch-icon.png?v=poshtichka2", sizes: "180x180", type: "image/png" },
     ],
   },
   openGraph: {
