@@ -1,107 +1,22 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageWrapper } from "@/components/layout/page-wrapper";
+import { readCloudOrFileData } from "@/lib/server-storage";
 import { ServiceItem } from "@/components/admin/services-manager";
 
-const initialServices: ServiceItem[] = [
-  {
-    id: "SRV-01",
-    title: "ВЕНДИНГ МАШИНА",
-    subtitle: "подходящо за сватбено тържество, кръщение, юбилей, корпоративно събитие",
-    description:
-      "Подарете на гостите си момент на радост и изненада. Дизайните се изготвят по идея на клиента, съобразно цветовата гама на събитието.",
-    features: [
-      "НАЕМ НА ВЕНДНИГ МАШИНА ЗА КОНКРЕТНИ ЧАСОВЕ",
-      "БУРКАН СЪС ЖЕТОНИ, СПРЯМО ГОСТИТЕ НА СЪБИТИЕТО",
-      "ДИЗАЙН НА 4 ВИДА ИЛЮСТРАЦИИ, КАКТО И ЗА ПОСТЕРИТЕ",
-      "ПЕЧАТ + СТАНДАРТНИ/ПЕРСОНАЛИЗИРАНИ КАРТОНЧЕТА",
-      "2-МА СЛУЖИТЕЛИ ЗА СЪДЕЙСТВИЕ НА ГОСТИТЕ И МОНТАЖ",
-    ],
-    image: "/media/gallery/Tezza_2025_07_13_155326413.webp",
-    badgeAsset: "/media/Услуги/Asset 88@2x.png",
-    badgeAssets: ["/media/Услуги/Asset 86@2x.png", "/media/Услуги/Asset 90@2x.png"],
-  },
-  {
-    id: "SRV-02",
-    title: "ТАБЛО С МАРКИ И КАРТИЧКИ",
-    subtitle: "подходящо за сватбено тържество, юбилей, частни партита",
-    description:
-      "Елегантен кът с авторски марки, пликове за спомени и възможност за пожелания от вашите близки.",
-    features: [
-      "АВТОРСКО ТАБЛО С МАРКИ И ДИЗАЙН ПО ИЗБОР",
-      "ПЕРСОНАЛИЗИРАНИ ПЛИКОВЕ ЗА СПОМЕНИ ЗА ВСЕКИ ГОСТ",
-      "ДАРСТВЕНИ КАРТИЧКИ С БЛАГОДАРСТВЕНИ ПОСЛАНИЯ",
-      "ДЕКОРАТИВЕН СТАНОК И МОНТАЖ НА МЯСТО НА СЪБИТИЕТО",
-    ],
-    image: "/media/gallery/Tezza_2025_07_13_155324686.webp",
-    badgeAsset: "/media/Услуги/Asset 86@2x.png",
-    badgeAssets: ["/media/Услуги/Asset 86@2x.png", "/media/Услуги/Asset 90@2x.png"],
-  },
-  {
-    id: "SRV-03",
-    title: "ВРЕМЕННИ ТАТУИРОВКИ",
-    subtitle: "подходящо за рождени дни, сватби, фестивали и партита",
-    description:
-      "Забавна интерактивна станция с уникални временни татуировки по ваш собствен мотив или илюстрация.",
-    features: [
-      "ПЕРСОНАЛИЗИРАНИ ВРЕМЕННИ ТАТУИРОВКИ ПО ВАШ ДИЗАЙН",
-      "БЕЗВРЕДНИ, ВОДОУСТОЙЧИВИ И ДЕРМАТОЛОГИЧНО ТЕСТВАНИ",
-      "СТАНЦИЯ ЗА БЪРЗО И ЛЕСНО ПОСТАВЯНЕ НА СЪБИТИЕТО",
-      "СТРАХОТНО ЗАБАВЛЕНИЕ КАКТО ЗА ДЕЦА, ТАКА И ЗА ВЪЗРАСТНИ",
-    ],
-    image: "/media/gallery/Tezza_2025_07_13_155331795.webp",
-    badgeAsset: "/media/Услуги/Asset 90@2x.png",
-    badgeAssets: ["/media/Услуги/Asset 86@2x.png", "/media/Услуги/Asset 90@2x.png"],
-  },
-  {
-    id: "SRV-04",
-    title: "ПЕРСОНАЛИЗИРАНИ КАРТИЧКИ И ПЛИКОВЕ",
-    subtitle: "подходящо за сватби, фирмени събития, лични празници",
-    description:
-      "Уникални авторски илюстрации и дизайн, превърнати в картички, които гостите отнасят със себе си като вечен спомен.",
-    features: [
-      "ИНДИВИДУАЛНА КОНЦЕПЦИЯ И АВТОРСКИ ИЛЮСТРАЦИИ",
-      "ПРЕМИУМ ПЕЧАТ И КАЧЕСТВЕНИ КАРТОНИ",
-      "РАЗНООБРАЗИЕ ОТ ФОРМАТИ И ДОВЪРШИТЕЛНИ ЕФЕКТИ",
-      "ИДЕАЛЕН ПОДАРЪК-СПОМЕН ЗА ВСЕКИ ПРИСЪСТВАЩ",
-    ],
-    image: "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
-    badgeAsset: "/media/Услуги/Asset 86@2x.png",
-    badgeAssets: ["/media/Услуги/Asset 86@2x.png", "/media/Услуги/Asset 90@2x.png"],
-  },
-];
+export const metadata = {
+  title: "Услуги | Пощичка",
+  description:
+    "Разгледайте нашите първокласни услуги за събития - персонализирани спомени, ретро вендинг машина, автентични печати и интерактивни изживявания.",
+};
 
-export default function ServicesPage() {
-  const [services, setServices] = useState<ServiceItem[]>(initialServices);
+export const dynamic = "force-dynamic";
 
-  useEffect(() => {
-    try {
-      const cached = localStorage.getItem("poshtichka_cached_services");
-      if (cached) {
-        const parsed = JSON.parse(cached);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setServices(parsed);
-        }
-      }
-    } catch {}
-
-    fetch("/api/services")
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data && Array.isArray(data.services)) {
-          setServices(data.services);
-          try {
-            localStorage.setItem("poshtichka_cached_services", JSON.stringify(data.services));
-          } catch {}
-        }
-      })
-      .catch(() => {});
-  }, []);
+export default async function ServicesPage() {
+  const services = await readCloudOrFileData<ServiceItem[]>("services", []);
 
   return (
     <PageWrapper>
@@ -139,7 +54,7 @@ export default function ServicesPage() {
                 {/* Left Side: Edge-to-Edge Image with No Inner Frame/Padding */}
                 <div className="relative w-full lg:w-1/2 min-h-[380px] sm:min-h-[460px] lg:min-h-[540px] flex-shrink-0 bg-gray-100 overflow-hidden">
                   <Image
-                    src={service.image || "/media/gallery/Tezza_2025_07_13_155326413.webp"}
+                    src={service.image || "/media/services/service_SRV-01.webp"}
                     alt={service.title}
                     fill
                     className="object-cover"
