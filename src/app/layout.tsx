@@ -50,14 +50,14 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: encodeURI("/media/icons/Asset 95@2x.png?v=poshtichka2"), type: "image/png" },
-      { url: "/icons/icon-192x192.png?v=poshtichka2", type: "image/png" },
-      { url: "/icons/favicon.ico?v=poshtichka2", sizes: "any" },
+      { url: encodeURI("/icons/Asset 101@2x.png?v=poshtichka_101"), type: "image/png" },
+      { url: "/icons/icon-192x192.png?v=poshtichka_101", type: "image/png" },
+      { url: "/icons/favicon.ico?v=poshtichka_101", sizes: "any" },
     ],
-    shortcut: encodeURI("/media/icons/Asset 95@2x.png?v=poshtichka2"),
+    shortcut: encodeURI("/icons/Asset 101@2x.png?v=poshtichka_101"),
     apple: [
-      { url: encodeURI("/media/icons/Asset 95@2x.png?v=poshtichka2"), sizes: "180x180", type: "image/png" },
-      { url: "/icons/apple-touch-icon.png?v=poshtichka2", sizes: "180x180", type: "image/png" },
+      { url: encodeURI("/icons/Asset 101@2x.png?v=poshtichka_101"), sizes: "180x180", type: "image/png" },
+      { url: "/icons/apple-touch-icon.png?v=poshtichka_101", sizes: "180x180", type: "image/png" },
     ],
   },
   openGraph: {
@@ -107,9 +107,9 @@ export default function RootLayout({
   return (
     <html lang="bg" className={`${displayFont.variable} ${inter.variable}`}>
       <head>
-        <link rel="icon" href={encodeURI("/media/icons/Asset 95@2x.png?v=poshtichka2")} type="image/png" sizes="any" />
-        <link rel="shortcut icon" href={encodeURI("/media/icons/Asset 95@2x.png?v=poshtichka2")} type="image/png" />
-        <link rel="apple-touch-icon" href={encodeURI("/media/icons/Asset 95@2x.png?v=poshtichka2")} />
+        <link rel="icon" href={encodeURI("/icons/Asset 101@2x.png?v=poshtichka_101")} type="image/png" sizes="any" />
+        <link rel="shortcut icon" href={encodeURI("/icons/Asset 101@2x.png?v=poshtichka_101")} type="image/png" />
+        <link rel="apple-touch-icon" href={encodeURI("/icons/Asset 101@2x.png?v=poshtichka_101")} />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />

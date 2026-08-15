@@ -93,15 +93,26 @@ export default async function ServicesPage() {
 
                   {/* CTA Booking Button */}
                   <div className="pt-4">
-                    <Link href="/contact">
-                      <Button
-                        variant="primary"
-                        className="bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-lg font-bold uppercase tracking-wider px-9 py-4 rounded-full shadow-lg flex items-center space-x-2 cursor-pointer"
-                      >
-                        <span>Резервирай тази услуга</span>
-                        <ArrowRight className="w-5 h-5" />
-                      </Button>
-                    </Link>
+                    {(() => {
+                      const isVending =
+                        service.id === "SRV-01" ||
+                        (service.title && service.title.toLowerCase().includes("вендинг"));
+                      const targetHref = isVending
+                        ? "/booking"
+                        : `/contact?service=${encodeURIComponent(service.title)}`;
+
+                      return (
+                        <Link href={targetHref}>
+                          <Button
+                            variant="primary"
+                            className="bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-lg font-bold uppercase tracking-wider px-9 py-4 rounded-full shadow-lg flex items-center space-x-2 cursor-pointer"
+                          >
+                            <span>{isVending ? "Резервирай сега" : "Запитване за услугата"}</span>
+                            <ArrowRight className="w-5 h-5" />
+                          </Button>
+                        </Link>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>
