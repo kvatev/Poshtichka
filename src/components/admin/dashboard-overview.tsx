@@ -57,7 +57,7 @@ export const DashboardOverview = ({
       color: "text-emerald-600 bg-emerald-50 border-emerald-200",
     },
     {
-      title: "Очакван Приход 2026",
+      title: "Очакван Приход",
       value: `${totalEstRevenue.toFixed(0)} €`,
       change: "Обща стойност на офертите",
       icon: TrendingUp,
@@ -156,39 +156,45 @@ export const DashboardOverview = ({
           </div>
 
           <div className="space-y-4">
-            {leads.slice(0, 5).map((lead) => {
-              const price = calculateTotalPrice(lead.pricing);
-              return (
-                <div
-                  key={lead.id}
-                  onClick={() => onSelectLead(lead)}
-                  className="p-4 rounded-2xl bg-brand-bg/50 border border-brand-primary/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-brand-primary/40 transition-all cursor-pointer"
-                >
-                  <div className="space-y-1">
-                    <div className="flex items-center space-x-2">
-                      <span className="font-bold text-brand-dark text-sm">
-                        {lead.fullName}
-                      </span>
-                      <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-brand-secondary text-brand-dark font-semibold">
-                        {lead.eventType}
-                      </span>
+            {leads.length === 0 ? (
+              <div className="p-8 text-center text-gray-500 text-sm">
+                Няма активни запитвания. Използвайте бутона "Ново запитване", за да въведете събитие.
+              </div>
+            ) : (
+              leads.slice(0, 5).map((lead) => {
+                const price = calculateTotalPrice(lead.pricing);
+                return (
+                  <div
+                    key={lead.id}
+                    onClick={() => onSelectLead(lead)}
+                    className="p-4 rounded-2xl bg-brand-bg/50 border border-brand-primary/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-brand-primary/40 transition-all cursor-pointer"
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-bold text-brand-dark text-sm">
+                          {lead.fullName}
+                        </span>
+                        <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-brand-secondary text-brand-dark font-semibold">
+                          {lead.eventType}
+                        </span>
+                      </div>
+                      <p className="text-xs text-brand-dark/70">
+                        📍 {lead.city} • {lead.venueLocation} | 📅 {lead.eventDate} ({lead.startTime})
+                      </p>
                     </div>
-                    <p className="text-xs text-brand-dark/70">
-                      📍 {lead.city} • {lead.venueLocation} | 📅 {lead.eventDate} ({lead.startTime})
-                    </p>
-                  </div>
 
-                  <div className="flex items-center space-x-3">
-                    <span className="font-serif font-bold text-brand-accent text-sm">
-                      {price} €
-                    </span>
-                    <Button variant="outline" size="sm" className="text-xs">
-                      Детайли
-                    </Button>
+                    <div className="flex items-center space-x-3">
+                      <span className="font-serif font-bold text-brand-accent text-sm">
+                        {price} €
+                      </span>
+                      <Button variant="outline" size="sm" className="text-xs">
+                        Детайли
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
         </Card>
 
@@ -204,16 +210,16 @@ export const DashboardOverview = ({
 
             <div className="space-y-3 text-xs">
               <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 space-y-1">
-                <span className="font-bold">🟢 Потвърдена Сватба</span>
-                <p className="text-[11px]">Светлана Василева потвърди 14.08.2026 в Созопол.</p>
+                <span className="font-bold">🟢 Потвърдена Дата</span>
+                <p className="text-[11px]">Потвърдена резервация за 17.06.2027 г.</p>
               </div>
-              <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-950 space-y-1">
-                <span className="font-bold">🟠 Оферта изпратена</span>
-                <p className="text-[11px]">DevTech Corp очаква капаро за корпоративно събитие.</p>
+              <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 space-y-1">
+                <span className="font-bold">🟢 Потвърдена Дата</span>
+                <p className="text-[11px]">Потвърдена резервация за 26.06.2027 г.</p>
               </div>
               <div className="p-3 rounded-2xl bg-blue-50 border border-blue-200 text-blue-950 space-y-1">
-                <span className="font-bold">🔵 Транспортна Калкулация</span>
-                <p className="text-[11px]">Автоматично изчислени 85 км от Бургас.</p>
+                <span className="font-bold">✨ Календар & Финанси</span>
+                <p className="text-[11px]">Сумите и капарото се следят автоматично в реално време.</p>
               </div>
             </div>
           </div>

@@ -75,6 +75,46 @@ export default function AdminDashboardPage() {
       .catch(() => {
         router.push("/admin/login");
       });
+
+    // Fetch live bookings
+    fetch("/api/bookings")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && Array.isArray(data.bookings) && data.bookings.length > 0) {
+          const mapped: CrmLead[] = data.bookings.map((b: any) => ({
+            id: b.id,
+            fullName: b.fullName || "Резервация",
+            phone: b.phone || "",
+            email: b.email || "",
+            eventType: b.eventType || "Сватбено тържество",
+            eventDate: b.eventDate || "",
+            startTime: b.startTime || "16:00",
+            endTime: b.endTime || "23:00",
+            city: b.city || b.venueLocation?.split(",")[0] || "София",
+            venueLocation: b.venueLocation || "",
+            guestCount: Number(b.guestCount) || 100,
+            requestedProducts: b.requestedProducts || ["Персонализирани картички"],
+            message: b.message || "",
+            createdAt: b.createdAt || new Date().toISOString(),
+            status: b.status || "confirmed",
+            pricing: b.pricing || {
+              rentalPrice: Number(b.price) || 500,
+              designPrice: 0,
+              distanceKm: 0,
+              transportPrice: 0,
+              additionalServicesPrice: 0,
+              discountAmount: 0,
+              depositPaid: Number(b.depositPaid) || 150,
+              paymentStatus: "deposit_paid",
+            },
+            internalNotes: b.internalNotes || [],
+            attachedFiles: b.attachedFiles || [],
+            communicationHistory: b.communicationHistory || [],
+          }));
+          setLeads(mapped);
+        }
+      })
+      .catch(() => {});
   }, [router]);
 
   const handleUpdateLead = (updated: CrmLead) => {

@@ -14,6 +14,8 @@ export interface BookingRecord {
   preferredContact: string;
   message: string;
   status: string;
+  price?: number;
+  depositPaid?: number;
   createdAt: string;
 }
 
@@ -23,46 +25,36 @@ declare global {
 
 const mockBookingsList: BookingRecord[] = [
   {
-    id: "BK-1001",
-    fullName: "Светлана & Димитър Василеви",
-    phone: "+359 888 123 456",
-    email: "svetlana@example.com",
-    eventDate: "2026-08-14",
+    id: "BK-2027-06-17",
+    fullName: "Резервация 17.06.2027",
+    phone: "+359 888 000 000",
+    email: "info@poshtichka.bg",
+    eventDate: "2027-06-17",
     eventType: "Сватбено тържество",
-    venueLocation: "Созопол, Ресторант Вятърна Мелница",
-    guestCount: 120,
+    venueLocation: "София, Локация на събитието",
+    guestCount: 100,
     preferredContact: "телефон",
-    message: "Искаме акварелен дизайн с цветя и златни акценти.",
+    message: "Потвърдена резервация за 17 юни 2027 г.",
     status: "confirmed",
-    createdAt: "2026-08-01",
+    price: 500,
+    depositPaid: 150,
+    createdAt: "2026-08-15",
   },
   {
-    id: "BK-1002",
-    fullName: "Мартин Тодоров (DevTech Ltd)",
-    phone: "+359 889 987 654",
-    email: "martin@devtech.bg",
-    eventDate: "2026-08-22",
-    eventType: "Корпоративно събитие",
-    venueLocation: "Бургас, Гранд Хотел Приморец",
-    guestCount: 200,
-    preferredContact: "имейл",
-    message: "Нуждаем се от лого на фирмата върху всички картички.",
-    status: "pending",
-    createdAt: "2026-08-03",
-  },
-  {
-    id: "BK-1003",
-    fullName: "Елена Стоянова",
-    phone: "+359 887 555 444",
-    email: "elena@example.com",
-    eventDate: "2026-08-28",
-    eventType: "Юбилей 50г",
-    venueLocation: "Поморие, Wave Resort",
-    guestCount: 80,
-    preferredContact: "viber",
-    message: "Желаем и временни татуировки с надпис 50 & Fabulous.",
+    id: "BK-2027-06-26",
+    fullName: "Резервация 26.06.2027",
+    phone: "+359 888 000 000",
+    email: "info@poshtichka.bg",
+    eventDate: "2027-06-26",
+    eventType: "Сватбено тържество",
+    venueLocation: "Варна, Локация на събитието",
+    guestCount: 100,
+    preferredContact: "телефон",
+    message: "Потвърдена резервация за 26 юни 2027 г.",
     status: "confirmed",
-    createdAt: "2026-08-04",
+    price: 500,
+    depositPaid: 150,
+    createdAt: "2026-08-15",
   },
 ];
 
