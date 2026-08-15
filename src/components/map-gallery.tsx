@@ -381,7 +381,7 @@ export const MapGallery = () => {
             alt="Стрелка"
             width={44}
             height={44}
-            className="w-8 sm:w-10 h-auto object-contain opacity-85 rotate-90"
+            className="w-8 sm:w-10 h-auto object-contain opacity-85 -rotate-90"
           />
         </div>
       </div>

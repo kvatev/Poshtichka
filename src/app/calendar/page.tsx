@@ -159,7 +159,7 @@ export default function PublicCalendarPage() {
                 alt="Стрелка"
                 width={50}
                 height={50}
-                className="w-8 sm:w-10 h-auto object-contain opacity-90 rotate-90"
+                className="w-8 sm:w-10 h-auto object-contain opacity-90 -rotate-90"
               />
             </div>
           </div>
