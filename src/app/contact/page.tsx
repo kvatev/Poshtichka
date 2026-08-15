@@ -74,10 +74,10 @@ export default function ContactPage() {
     <PageWrapper>
       <div className="space-y-12 pb-24 font-sans select-none">
         {/* Top Banner */}
-        <section className="bg-[#00b4b6] text-white py-12 sm:py-16 px-4 relative overflow-hidden border-b border-white/20">
-          <div className="max-w-4xl mx-auto text-center space-y-4">
-            <h1 className="font-salongbeach text-3xl sm:text-5xl font-bold uppercase tracking-wider text-white leading-tight">
-              СВЪРЖЕТЕ С Е КИПА НА ПОЩИЧКА
+        <section className="bg-[#00b4b6] text-white py-10 sm:py-16 px-4 relative overflow-hidden border-b border-white/20">
+          <div className="max-w-4xl mx-auto text-center space-y-3 sm:space-y-4">
+            <h1 className="font-salongbeach text-2xl sm:text-4xl md:text-5xl font-bold uppercase tracking-wider text-white leading-snug sm:leading-tight px-2">
+              СВЪРЖЕТЕ СЕ С ЕКИПА НА ПОЩИЧКА
             </h1>
             <p className="font-sans text-sm sm:text-base lg:text-lg font-light text-white/95 max-w-2xl mx-auto italic">
               Имате въпрос или друг тип запитване? Свържете се с нас, за да Ви помогнем!
@@ -90,7 +90,7 @@ export default function ContactPage() {
                 alt="Стрелка"
                 width={50}
                 height={50}
-                className="w-8 sm:w-10 h-auto object-contain opacity-90 -rotate-90"
+                className="w-7 sm:w-10 h-auto object-contain opacity-90 -rotate-90"
               />
             </div>
           </div>
@@ -108,8 +108,15 @@ export default function ContactPage() {
               transition={{ duration: 0.5 }}
               className="bg-[#f9f6f0] border-2 border-[#2d3a37]/80 rounded-[32px] p-6 sm:p-8 text-center flex flex-col items-center justify-center space-y-3 shadow-md hover:scale-[1.02] transition-transform duration-300"
             >
-              <div className="w-14 h-14 rounded-full bg-[#00b4b6]/10 flex items-center justify-center text-[#00b4b6]">
-                <MapPin className="w-8 h-8 stroke-[2.5]" />
+              <div className="relative w-16 h-16 flex items-center justify-center">
+                <Image
+                  src={encodeURI("/media/Контакти/Asset 50@2x.png")}
+                  alt="Локация"
+                  width={56}
+                  height={56}
+                  className="w-14 h-14 object-contain"
+                  unoptimized
+                />
               </div>
               <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#182b2c]">
                 ЛОКАЦИЯ
@@ -127,8 +134,15 @@ export default function ContactPage() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="bg-[#f9f6f0] border-2 border-[#2d3a37]/80 rounded-[32px] p-6 sm:p-8 text-center flex flex-col items-center justify-center space-y-3 shadow-md hover:scale-[1.02] transition-transform duration-300"
             >
-              <div className="w-14 h-14 rounded-full bg-[#00b4b6]/10 flex items-center justify-center text-[#00b4b6]">
-                <Mail className="w-8 h-8 stroke-[2.5]" />
+              <div className="relative w-16 h-16 flex items-center justify-center">
+                <Image
+                  src={encodeURI("/media/Контакти/Asset 49@2x.png")}
+                  alt="Имейл"
+                  width={56}
+                  height={56}
+                  className="w-14 h-14 object-contain"
+                  unoptimized
+                />
               </div>
               <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#182b2c]">
                 ИМЕЙЛ
@@ -149,8 +163,15 @@ export default function ContactPage() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="bg-[#f9f6f0] border-2 border-[#2d3a37]/80 rounded-[32px] p-6 sm:p-8 text-center flex flex-col items-center justify-center space-y-3 shadow-md hover:scale-[1.02] transition-transform duration-300"
             >
-              <div className="w-14 h-14 rounded-full bg-[#00b4b6]/10 flex items-center justify-center text-[#00b4b6]">
-                <Instagram className="w-8 h-8 stroke-[2.5]" />
+              <div className="relative w-16 h-16 flex items-center justify-center">
+                <Image
+                  src={encodeURI("/media/Контакти/Asset 48@2x.png")}
+                  alt="Instagram"
+                  width={56}
+                  height={56}
+                  className="w-14 h-14 object-contain"
+                  unoptimized
+                />
               </div>
               <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#182b2c]">
                 INSTAGRAM
