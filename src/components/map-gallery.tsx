@@ -355,17 +355,6 @@ export const MapGallery = () => {
 
       {/* 2. City Filter Oval Tabs */}
       <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 px-4 max-w-5xl mx-auto">
-        <button
-          onClick={resetCityFilter}
-          className={`px-5 sm:px-7 py-2 text-xs sm:text-sm font-salongbeach font-bold uppercase tracking-wider rounded-full transition-all duration-300 cursor-pointer shadow-xs ${
-            !selectedCity
-              ? "bg-[#00b4b6] text-white shadow-md scale-105"
-              : "bg-[#f9f6f0] border border-[#00b4b6] text-[#182b2c] hover:bg-[#00b4b6]/10"
-          }`}
-        >
-          ВСИЧКИ
-        </button>
-
         {cityNamesList.map((cityName) => {
           const isSelected = selectedCity.toLowerCase() === cityName.toLowerCase();
           return (
@@ -391,28 +380,30 @@ export const MapGallery = () => {
         </div>
       </div>
 
-      {/* 4. Active City Title Section with Asset 83@2x.png icon (Centered) */}
-      <div className="text-center space-y-2 px-4 pt-4 max-w-3xl mx-auto flex flex-col items-center justify-center">
-        <div className="flex justify-center">
-          <div className="relative w-12 sm:w-14 h-12 sm:h-14">
-            <Image
-              src={encodeURI("/media/Галерия/Asset 83@2x.png")}
-              alt="Иконка локация"
-              fill
-              className="object-contain"
-              unoptimized
-            />
+      {/* 4. Active City Title Section with Asset 83@2x.png icon (Only shown when a city is selected) */}
+      {selectedCity && (
+        <div className="text-center space-y-2 px-4 pt-4 max-w-3xl mx-auto flex flex-col items-center justify-center">
+          <div className="flex justify-center">
+            <div className="relative w-12 sm:w-14 h-12 sm:h-14">
+              <Image
+                src={encodeURI("/media/Галерия/Asset 83@2x.png")}
+                alt="Иконка локация"
+                fill
+                className="object-contain"
+                unoptimized
+              />
+            </div>
           </div>
+          <h2 className="font-salongbeach text-3xl sm:text-5xl font-bold uppercase tracking-wider text-[#182b2c]">
+            {selectedCity}
+          </h2>
+          <p className="font-stampatello text-base sm:text-lg text-[#182b2c]/85 italic">
+            {selectedCityEvents.length > 0
+              ? `${selectedCityEvents.length} ${selectedCityEvents.length === 1 ? "гостуване" : "гостувания"} на тази локация`
+              : "Няма намерени събития"}
+          </p>
         </div>
-        <h2 className="font-salongbeach text-3xl sm:text-5xl font-bold uppercase tracking-wider text-[#182b2c]">
-          {selectedCity || "Всички локации"}
-        </h2>
-        <p className="font-stampatello text-base sm:text-lg text-[#182b2c]/85 italic">
-          {selectedCityEvents.length > 0
-            ? `${selectedCityEvents.length} ${selectedCityEvents.length === 1 ? "гостуване" : "гостувания"} на ${selectedCity ? "тази локация" : "различни локации"}`
-            : "Няма намерени събития"}
-        </p>
-      </div>
+      )}
 
       {/* 5. Active City Event Banner Section (Teal Background #00b4b6) */}
       <section className="w-full bg-[#00b4b6] py-12 sm:py-16 px-4 sm:px-8 flex justify-center">
