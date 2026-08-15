@@ -19,6 +19,7 @@ import {
   Check,
   Search,
   Loader2,
+  Crosshair,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -143,6 +144,13 @@ export const GalleryManager = () => {
   const [customPathInput, setCustomPathInput] = useState("");
   const [description, setDescription] = useState("");
   const [eventDate, setEventDate] = useState("");
+
+  // Image Focal Point Positioning State
+  const [imagePositions, setImagePositions] = useState<Record<string, string>>({});
+  const [positioningIndex, setPositioningIndex] = useState<number | null>(null);
+  const [posX, setPosX] = useState<number>(50);
+  const [posY, setPosY] = useState<number>(50);
+  const [isDraggingFocus, setIsDraggingFocus] = useState<boolean>(false);
 
   // Combined list of event types for dropdown
   const allEventTypes = React.useMemo(() => {
@@ -411,6 +419,10 @@ export const GalleryManager = () => {
     setLatitude(42.6977);
     setLongitude(23.3219);
     setGalleryImages([]);
+    setImagePositions({});
+    setPositioningIndex(null);
+    setPosX(50);
+    setPosY(50);
     setCustomPathInput("");
     setDescription("");
     setEventDate(new Date().toISOString().split("T")[0]);
@@ -431,6 +443,15 @@ export const GalleryManager = () => {
     setLongitude(item.longitude);
     const existing = item.galleryImages && item.galleryImages.length > 0 ? item.galleryImages : [item.coverImage || ""];
     setGalleryImages(existing.filter((img) => Boolean(img)));
+    const pos = { ...(item.imagePositions || {}) };
+    if (item.coverImagePosition && !pos["0"]) {
+      pos["0"] = item.coverImagePosition;
+      if (item.coverImage) pos[item.coverImage] = item.coverImagePosition;
+    }
+    setImagePositions(pos);
+    setPositioningIndex(null);
+    setPosX(50);
+    setPosY(50);
     setCustomPathInput("");
     setDescription(item.description || "");
     setEventDate(item.eventDate || new Date().toISOString().split("T")[0]);
@@ -607,6 +628,38 @@ export const GalleryManager = () => {
     setGalleryImages((prev) => prev.filter((_, idx) => idx !== indexToRemove));
   };
 
+  const handleOpenPositionEditor = (index: number) => {
+    const imgUrl = galleryImages[index];
+    const currentPos = (imgUrl && imagePositions[imgUrl]) || imagePositions[String(index)] || (index === 0 ? editingItem?.coverImagePosition : null) || "50% 50%";
+    const parts = currentPos.replace(/%/g, "").split(" ");
+    const x = Math.min(100, Math.max(0, parseInt(parts[0], 10) || 50));
+    const y = Math.min(100, Math.max(0, parseInt(parts[1], 10) || 50));
+    setPosX(x);
+    setPosY(y);
+    setPositioningIndex(index);
+  };
+
+  const handleSavePosition = () => {
+    if (positioningIndex === null) return;
+    const imgUrl = galleryImages[positioningIndex];
+    const newPos = `${posX}% ${posY}%`;
+    setImagePositions((prev) => ({
+      ...prev,
+      [String(positioningIndex)]: newPos,
+      ...(imgUrl ? { [imgUrl]: newPos } : {}),
+    }));
+    setPositioningIndex(null);
+  };
+
+  const handleFocalPointClickOrDrag = (e: React.PointerEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const clickX = Math.round(Math.min(100, Math.max(0, ((e.clientX - rect.left) / rect.width) * 100)));
+    const clickY = Math.round(Math.min(100, Math.max(0, ((e.clientY - rect.top) / rect.height) * 100)));
+    setPosX(clickX);
+    setPosY(clickY);
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!eventName.trim()) {
@@ -663,7 +716,9 @@ export const GalleryManager = () => {
       latitude,
       longitude,
       coverImage: galleryImages[0] || "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
+      coverImagePosition: (galleryImages[0] && imagePositions[galleryImages[0]]) || imagePositions["0"] || "50% 50%",
       galleryImages: galleryImages.slice(0, 4),
+      imagePositions,
       description: description.trim(),
       eventDate,
     };
@@ -1211,30 +1266,67 @@ export const GalleryManager = () => {
                   </Button>
                 </div>
 
-                {/* WebP Thumbnails Grid (Up to 4) */}
+                {/* WebP Thumbnails Grid (Up to 4) with Focal Point Control */}
                 {galleryImages.length > 0 && (
-                  <div className="grid grid-cols-4 gap-2 pt-1">
-                    {galleryImages.map((imgUrl, idx) => (
-                      <div
-                        key={idx}
-                        className="relative group h-20 rounded-xl overflow-hidden border border-[#00b4b6]/40 bg-gray-100"
-                      >
-                        <Image src={imgUrl} alt={`Снимка ${idx + 1}`} fill className="object-cover" unoptimized />
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveImage(idx)}
-                          className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full opacity-90 hover:opacity-100 transition-opacity shadow-xs cursor-pointer"
-                          title="Премахни снимка"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                        {idx === 0 && (
-                          <span className="absolute bottom-0 left-0 right-0 bg-[#00b4b6] text-white text-[9px] text-center font-bold py-0.5">
-                            Корица
-                          </span>
-                        )}
-                      </div>
-                    ))}
+                  <div className="space-y-2 pt-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-[#182b2c]/80">
+                        Качени снимки (Кликнете на бутона „🎯 Фокус“, за да нагласите коя част да се вижда):
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      {galleryImages.map((imgUrl, idx) => {
+                        const pos = imagePositions[imgUrl] || imagePositions[String(idx)] || (idx === 0 ? editingItem?.coverImagePosition : null) || "50% 50%";
+                        return (
+                          <div
+                            key={idx}
+                            className="relative group h-32 rounded-2xl overflow-hidden border-2 border-[#00b4b6]/40 bg-gray-100 shadow-sm flex flex-col justify-between"
+                          >
+                            <div className="relative w-full h-full">
+                              <Image
+                                src={imgUrl}
+                                alt={`Снимка ${idx + 1}`}
+                                fill
+                                className="object-cover transition-all duration-300"
+                                style={{ objectPosition: pos }}
+                                unoptimized
+                              />
+                            </div>
+
+                            {/* Remove Button */}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRemoveImage(idx);
+                              }}
+                              className="absolute top-1.5 right-1.5 z-20 p-1 bg-red-600/90 hover:bg-red-700 text-white rounded-full transition-colors shadow-sm cursor-pointer"
+                              title="Премахни снимка"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+
+                            {/* Cover Badge */}
+                            {idx === 0 && (
+                              <span className="absolute top-1.5 left-1.5 z-20 bg-[#00b4b6] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-xs">
+                                Корица
+                              </span>
+                            )}
+
+                            {/* Focal Point Adjuster Trigger Button */}
+                            <button
+                              type="button"
+                              onClick={() => handleOpenPositionEditor(idx)}
+                              className="absolute bottom-0 left-0 right-0 z-20 bg-[#182b2c]/90 hover:bg-[#00b4b6] text-white text-[11px] font-bold py-1.5 px-2 flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
+                              title="Нагласи позиция и фокус"
+                            >
+                              <Crosshair className="w-3.5 h-3.5 text-[#00b4b6] group-hover:text-white" />
+                              <span>Фокус: {pos}</span>
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
               </div>
@@ -1273,6 +1365,252 @@ export const GalleryManager = () => {
             >
               <Save className="w-4 h-4" />
               <span>{saving ? "Запазване..." : "Запази събитието"}</span>
+            </Button>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* 🎯 Interactive Focal Point / Image Position Editor Modal */}
+    {positioningIndex !== null && galleryImages[positioningIndex] && (
+      <div className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+        <div className="relative max-w-4xl w-full bg-[#f9f6f0] rounded-[32px] overflow-hidden shadow-2xl border border-[#00b4b6]/30 flex flex-col font-sans max-h-[95vh] my-auto">
+          {/* Header */}
+          <div className="px-6 py-4 bg-white border-b border-[#00b4b6]/20 flex items-center justify-between">
+            <div className="flex items-center space-x-2.5">
+              <div className="w-9 h-9 rounded-full bg-[#00b4b6]/15 flex items-center justify-center text-[#00b4b6]">
+                <Crosshair className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-salongbeach text-xl font-bold uppercase tracking-wider text-[#182b2c]">
+                  Нагласяне на видима част & фокус ({positioningIndex === 0 ? "Корица" : `Снимка ${positioningIndex + 1}`})
+                </h3>
+                <p className="text-xs text-[#182b2c]/70">
+                  Кликнете или плъзнете върху снимката отляво. Вдясно виждате преглед на живо как ще изглежда!
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setPositioningIndex(null)}
+              className="p-2 rounded-full hover:bg-gray-100 text-gray-500 hover:text-[#182b2c] transition-colors cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Body */}
+          <div className="p-6 overflow-y-auto space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+              {/* Left Column: Interactive Full Canvas (7 cols) */}
+              <div className="md:col-span-7 space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-[#182b2c] uppercase tracking-wider flex items-center space-x-1.5">
+                    <span>1. Изберете точка на фокус</span>
+                  </label>
+                  <span className="text-xs font-mono font-bold text-[#00b4b6] bg-[#00b4b6]/10 px-2.5 py-0.5 rounded-full border border-[#00b4b6]/30">
+                    X: {posX}% | Y: {posY}%
+                  </span>
+                </div>
+
+                {/* Interactive Image Container */}
+                <div
+                  className="relative w-full h-[300px] sm:h-[360px] rounded-2xl overflow-hidden border-2 border-[#00b4b6] bg-[#182b2c] shadow-inner select-none cursor-crosshair group"
+                  onPointerDown={(e) => {
+                    setIsDraggingFocus(true);
+                    handleFocalPointClickOrDrag(e);
+                  }}
+                  onPointerMove={(e) => {
+                    if (isDraggingFocus) handleFocalPointClickOrDrag(e);
+                  }}
+                  onPointerUp={() => setIsDraggingFocus(false)}
+                  onPointerLeave={() => setIsDraggingFocus(false)}
+                >
+                  {/* Full Image */}
+                  <Image
+                    src={galleryImages[positioningIndex]}
+                    alt="Full preview"
+                    fill
+                    className="object-contain pointer-events-none"
+                    unoptimized
+                  />
+
+                  {/* Crosshair Target Pin with Glowing Rings */}
+                  <div
+                    className="absolute w-8 h-8 -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-all duration-75 flex items-center justify-center z-10"
+                    style={{ left: `${posX}%`, top: `${posY}%` }}
+                  >
+                    <div className="w-8 h-8 rounded-full border-2 border-white bg-[#00b4b6]/40 shadow-lg animate-pulse" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-white shadow-md absolute" />
+                    {/* Crosshair Lines */}
+                    <div className="absolute w-12 h-0.5 bg-white/70" />
+                    <div className="absolute h-12 w-0.5 bg-white/70" />
+                  </div>
+
+                  {/* Interactive Help Hint */}
+                  <div className="absolute bottom-2 left-2 right-2 bg-black/60 backdrop-blur-xs text-white text-[10px] py-1 px-3 rounded-xl text-center pointer-events-none">
+                    💡 Кликнете навсякъде върху снимката, за да преместите фокуса към лицата, татуировката или подаръка!
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Real-Time Live Previews (5 cols) */}
+              <div className="md:col-span-5 space-y-4">
+                <label className="text-xs font-bold text-[#182b2c] uppercase tracking-wider block">
+                  2. Преглед на живо на сайта
+                </label>
+
+                {/* Live Preview Card */}
+                <div className="p-3 bg-white rounded-2xl border border-[#00b4b6]/30 shadow-xs space-y-2">
+                  <span className="text-[11px] font-bold text-[#00b4b6] uppercase tracking-wider block">
+                    🖼️ В Картичката (Галерия)
+                  </span>
+                  <div className="relative w-full h-[200px] rounded-xl overflow-hidden border border-[#182b2c]/20 bg-gray-100 shadow-inner">
+                    <Image
+                      src={galleryImages[positioningIndex]}
+                      alt="Live card preview"
+                      fill
+                      className="object-cover transition-all duration-100"
+                      style={{ objectPosition: `${posX}% ${posY}%` }}
+                      unoptimized
+                    />
+                  </div>
+                </div>
+
+                {/* Live Preview Lightbox Modal Left Side */}
+                <div className="p-3 bg-white rounded-2xl border border-[#00b4b6]/30 shadow-xs space-y-2">
+                  <span className="text-[11px] font-bold text-[#00b4b6] uppercase tracking-wider block">
+                    🔍 В Големия Прозорец (Поп-ъп)
+                  </span>
+                  <div className="relative w-full h-[130px] rounded-xl overflow-hidden border border-[#182b2c]/20 bg-gray-100 shadow-inner">
+                    <Image
+                      src={galleryImages[positioningIndex]}
+                      alt="Live modal preview"
+                      fill
+                      className="object-cover transition-all duration-100"
+                      style={{ objectPosition: `${posX}% ${posY}%` }}
+                      unoptimized
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Presets & Sliders */}
+            <div className="bg-white p-5 rounded-2xl border border-[#00b4b6]/20 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <span className="text-xs font-bold text-[#182b2c] uppercase tracking-wider">
+                  Бързи предварителни позиции:
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => { setPosX(50); setPosY(15); }}
+                    className="px-3 py-1 text-xs rounded-xl bg-gray-100 hover:bg-[#00b4b6] hover:text-white font-medium transition-colors cursor-pointer"
+                  >
+                    ⬆️ Горе (Лица)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setPosX(50); setPosY(50); }}
+                    className="px-3 py-1 text-xs rounded-xl bg-gray-100 hover:bg-[#00b4b6] hover:text-white font-medium transition-colors cursor-pointer"
+                  >
+                    🎯 Център
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setPosX(50); setPosY(85); }}
+                    className="px-3 py-1 text-xs rounded-xl bg-[#00b4b6]/15 text-[#00b4b6] hover:bg-[#00b4b6] hover:text-white font-bold transition-colors cursor-pointer"
+                  >
+                    ⬇️ Долу (Татуировки/Ръце)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setPosX(50); setPosY(95); }}
+                    className="px-3 py-1 text-xs rounded-xl bg-[#00b4b6]/15 text-[#00b4b6] hover:bg-[#00b4b6] hover:text-white font-bold transition-colors cursor-pointer"
+                  >
+                    📐 Най-долу
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setPosX(15); setPosY(50); }}
+                    className="px-3 py-1 text-xs rounded-xl bg-gray-100 hover:bg-[#00b4b6] hover:text-white font-medium transition-colors cursor-pointer"
+                  >
+                    ⬅️ Ляво
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setPosX(85); setPosY(50); }}
+                    className="px-3 py-1 text-xs rounded-xl bg-gray-100 hover:bg-[#00b4b6] hover:text-white font-medium transition-colors cursor-pointer"
+                  >
+                    ➡️ Дясно
+                  </button>
+                </div>
+              </div>
+
+              {/* Sliders for precise pixel control */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-gray-100">
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs text-[#182b2c]/80">
+                    <span>Хоризонтално (X-ос)</span>
+                    <span className="font-bold">{posX}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={posX}
+                    onChange={(e) => setPosX(Number(e.target.value))}
+                    className="w-full accent-[#00b4b6] cursor-pointer"
+                  />
+                  <div className="flex justify-between text-[10px] text-gray-400">
+                    <span>0% (Ляво)</span>
+                    <span>50% (Център)</span>
+                    <span>100% (Дясно)</span>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs text-[#182b2c]/80">
+                    <span>Вертикално (Y-ос)</span>
+                    <span className="font-bold">{posY}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={posY}
+                    onChange={(e) => setPosY(Number(e.target.value))}
+                    className="w-full accent-[#00b4b6] cursor-pointer"
+                  />
+                  <div className="flex justify-between text-[10px] text-gray-400">
+                    <span>0% (Горе)</span>
+                    <span>50% (Център)</span>
+                    <span>100% (Долу)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="px-6 py-4 bg-white border-t border-[#00b4b6]/20 flex justify-end space-x-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setPositioningIndex(null)}
+              className="rounded-full cursor-pointer px-5"
+            >
+              Отказ
+            </Button>
+            <Button
+              type="button"
+              onClick={handleSavePosition}
+              className="bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-base font-bold uppercase tracking-wider px-6 py-2 rounded-full shadow-md cursor-pointer flex items-center space-x-2"
+            >
+              <Check className="w-4 h-4" />
+              <span>Приложи позицията</span>
             </Button>
           </div>
         </div>

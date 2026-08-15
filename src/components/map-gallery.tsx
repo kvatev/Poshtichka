@@ -7,141 +7,9 @@ import { X } from "lucide-react";
 import { EventLocation } from "@/types/map-event";
 import { BG_LOCATIONS_DATABASE } from "@/lib/bg-locations";
 
-// Default locations pre-populated matching exact user data
-const DEFAULT_LOCATIONS: EventLocation[] = [
-  {
-    id: "MAP-02",
-    eventName: "МИЛКА И АНДРЕЙ",
-    cityName: "София",
-    venueName: "Голф клуб Св. София",
-    eventType: "сватбено тържество",
-    latitude: 42.6977,
-    longitude: 23.3219,
-    coverImage: "/media/gallery/Tezza_2025_07_13_155331795.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_13_155331795.webp",
-      "/media/gallery/Tezza_2025_07_13_155333570.webp",
-      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
-    ],
-    description: "Незабравима сватба в Голф клуб Св. София с персонализирани спомени и картички от драсканици за всички гости.",
-    eventDate: "2026-06-20",
-  },
-  {
-    id: "MAP-03",
-    eventName: "СВЕТЛИН",
-    cityName: "Велико Търново",
-    venueName: "Park Hotel RAYA Garden",
-    eventType: "кръщение",
-    latitude: 43.0757,
-    longitude: 25.6172,
-    coverImage: "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
-      "/media/gallery/Tezza_2025_07_13_155324686.webp",
-    ],
-    description: "Празнично кръщение с авторски картички и специални монети-жетони в Park Hotel RAYA Garden.",
-    eventDate: "2026-05-18",
-  },
-  {
-    id: "MAP-04",
-    eventName: "НИКОЛ И ДАНИЕЛ",
-    cityName: "Перущица",
-    venueName: "Вила Юстина",
-    eventType: "сватбено тържество",
-    latitude: 42.0567,
-    longitude: 24.5458,
-    coverImage: "/media/gallery/Tezza_2025_07_13_155324686.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_13_155324686.webp",
-      "/media/gallery/Tezza_2025_07_13_155326413.webp",
-    ],
-    description: "Вълшебен сватбен ден във Вила Юстина, Перущица с мобилния кът на Пощичка.",
-    eventDate: "2026-08-02",
-  },
-  {
-    id: "MAP-05",
-    eventName: "КРИСИ И ВИКТОР",
-    cityName: "София",
-    venueName: "Голф клуб Св. София",
-    eventType: "сватбено тържество",
-    latitude: 42.6977,
-    longitude: 23.3219,
-    coverImage: "/media/gallery/Tezza_2025_07_13_155326413.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_13_155326413.webp",
-      "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
-    ],
-    description: "Елегантен сватбен кът Пощичка с персонализиран дизайн на картички за тържеството.",
-    eventDate: "2026-07-28",
-  },
-  {
-    id: "MAP-06",
-    eventName: "РАЛИ И ЖЕЛЮ",
-    cityName: "Червен",
-    venueName: "Midalidare Estate",
-    eventType: "сватбено тържество",
-    latitude: 43.6212,
-    longitude: 25.9961,
-    coverImage: "/media/gallery/Tezza_2025_07_13_155333570.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_13_155333570.webp",
-      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
-    ],
-    description: "Сватбено гостуване в Midalidare Estate, Червен с временни татуировки и картички.",
-    eventDate: "2026-06-10",
-  },
-  {
-    id: "MAP-07",
-    eventName: "МАРИНА И ИВАН",
-    cityName: "Каварна",
-    venueName: "Вила Калиакра и Градина",
-    eventType: "сватбено тържество",
-    latitude: 43.4342,
-    longitude: 28.3392,
-    coverImage: "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
-      "/media/gallery/Tezza_2025_07_13_155331795.webp",
-    ],
-    description: "Красиви спомени във Вила Калиакра и Градина, Каварна.",
-    eventDate: "2026-08-12",
-  },
-  {
-    id: "MAP-08",
-    eventName: "МАЯ И НИКО",
-    cityName: "София",
-    venueName: "Голф клуб Св. София",
-    eventType: "сватбено тържество",
-    latitude: 42.6977,
-    longitude: 23.3219,
-    coverImage: "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
-      "/media/gallery/Tezza_2025_07_13_155324686.webp",
-    ],
-    description: "Забавни моменти и картички за гостите в Голф клуб Св. София.",
-    eventDate: "2026-09-01",
-  },
-  {
-    id: "MAP-09",
-    eventName: "ВИКТОРИЯ И ВАСИЛ",
-    cityName: "София",
-    venueName: "Pasarel Lake Club",
-    eventType: "сватбено тържество",
-    latitude: 42.5412,
-    longitude: 23.5012,
-    coverImage: "/media/gallery/Tezza_2025_07_13_155324686.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_13_155324686.webp",
-      "/media/gallery/Tezza_2025_07_13_155326413.webp",
-    ],
-    description: "Романтично празненство в Pasarel Lake Club.",
-    eventDate: "2026-09-15",
-  },
-];
-
 export const MapGallery = () => {
-  const [events, setEvents] = useState<EventLocation[]>(DEFAULT_LOCATIONS);
+  const [events, setEvents] = useState<EventLocation[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedCity, setSelectedCity] = useState<string>("");
   const [cityPresets, setCityPresets] = useState<string[]>([
     "Каварна", "София", "Перущица", "Велико Търново", "Пловдив", "Варна", "с. Равно поле, Елин Пелин", "В.С. Свети Тома", "Червен", "Бургас", "Поморие"
@@ -163,6 +31,7 @@ export const MapGallery = () => {
         const parsed = JSON.parse(cached);
         if (Array.isArray(parsed) && parsed.length > 0) {
           setEvents(parsed);
+          setLoading(false);
         }
       }
     } catch {}
@@ -173,14 +42,16 @@ export const MapGallery = () => {
     fetch("/api/map-events")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (data && data.events && Array.isArray(data.events) && data.events.length > 0) {
+        if (data && data.events && Array.isArray(data.events)) {
           setEvents(data.events);
+          setLoading(false);
           try {
             localStorage.setItem("poshtichka_cached_events", JSON.stringify(data.events));
           } catch {}
         }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLoading(false));
 
     fetch("/api/cities")
       .then((res) => (res.ok ? res.json() : null))
@@ -191,6 +62,17 @@ export const MapGallery = () => {
       })
       .catch(() => {});
   }, []);
+
+  // Lock background body scroll whenever the modal is open
+  useEffect(() => {
+    if (activeModalEvent) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = originalStyle;
+      };
+    }
+  }, [activeModalEvent]);
 
   // Deduplicate events to ensure no cards ever render twice
   const uniqueEvents = useMemo(() => {
@@ -448,6 +330,12 @@ export const MapGallery = () => {
                           alt={ev.eventName || ev.cityName}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          style={{
+                            objectPosition:
+                              (ev.imagePositions && (ev.imagePositions[ev.coverImage || ""] || ev.imagePositions["0"])) ||
+                              ev.coverImagePosition ||
+                              "center",
+                          }}
                           unoptimized
                         />
                       </div>
@@ -520,6 +408,12 @@ export const MapGallery = () => {
                   alt={ev.eventName || ev.cityName}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  style={{
+                    objectPosition:
+                      (ev.imagePositions && (ev.imagePositions[ev.coverImage || ""] || ev.imagePositions["0"])) ||
+                      ev.coverImagePosition ||
+                      "center",
+                  }}
                   unoptimized
                 />
               </div>
@@ -553,7 +447,7 @@ export const MapGallery = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
+            className="fixed inset-0 z-[99999] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-hidden overscroll-contain"
             onClick={() => setActiveModalEvent(null)}
           >
             <div
@@ -562,17 +456,26 @@ export const MapGallery = () => {
             >
               {/* Left Side: Main Large Image */}
               <div className="w-full md:w-1/2 relative min-h-[300px] sm:min-h-[380px] md:min-h-[480px]">
-                <Image
-                  src={
+                {(() => {
+                  const currentImg =
                     (activeModalEvent.galleryImages && activeModalEvent.galleryImages[activeLightboxIndex]) ||
                     activeModalEvent.coverImage ||
-                    "/media/gallery/Tezza_2025_07_07_170901960_1.webp"
-                  }
-                  alt={activeModalEvent.eventName || activeModalEvent.cityName}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
+                    "/media/gallery/Tezza_2025_07_07_170901960_1.webp";
+                  const pos =
+                    (activeModalEvent.imagePositions && (activeModalEvent.imagePositions[currentImg] || activeModalEvent.imagePositions[String(activeLightboxIndex)])) ||
+                    (activeLightboxIndex === 0 ? activeModalEvent.coverImagePosition : undefined) ||
+                    "center";
+                  return (
+                    <Image
+                      src={currentImg}
+                      alt={activeModalEvent.eventName || activeModalEvent.cityName}
+                      fill
+                      className="object-cover transition-all duration-300"
+                      style={{ objectPosition: pos }}
+                      unoptimized
+                    />
+                  );
+                })()}
               </div>
 
               {/* Right Side: Info Content matching Screenshot 2 */}
@@ -612,19 +515,32 @@ export const MapGallery = () => {
                   {activeModalEvent.galleryImages && activeModalEvent.galleryImages.length > 0 && (
                     <div className="pt-2">
                       <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                        {activeModalEvent.galleryImages.slice(0, 3).map((img, idx) => (
-                          <button
-                            key={idx}
-                            onClick={() => setActiveLightboxIndex(idx)}
-                            className={`relative h-20 sm:h-24 rounded-2xl overflow-hidden border-2 transition-all cursor-pointer ${
-                              activeLightboxIndex === idx
-                                ? "border-[#00b4b6] scale-105 shadow-md"
-                                : "border-transparent opacity-80 hover:opacity-100"
-                            }`}
-                          >
-                            <Image src={img} alt={`Снимка ${idx + 1}`} fill className="object-cover" unoptimized />
-                          </button>
-                        ))}
+                        {activeModalEvent.galleryImages.slice(0, 3).map((img, idx) => {
+                          const thumbPos =
+                            (activeModalEvent.imagePositions && (activeModalEvent.imagePositions[img] || activeModalEvent.imagePositions[String(idx)])) ||
+                            (idx === 0 ? activeModalEvent.coverImagePosition : undefined) ||
+                            "center";
+                          return (
+                            <button
+                              key={idx}
+                              onClick={() => setActiveLightboxIndex(idx)}
+                              className={`relative h-20 sm:h-24 rounded-2xl overflow-hidden border-2 transition-all cursor-pointer ${
+                                activeLightboxIndex === idx
+                                  ? "border-[#00b4b6] scale-105 shadow-md"
+                                  : "border-transparent opacity-80 hover:opacity-100"
+                              }`}
+                            >
+                              <Image
+                                src={img}
+                                alt={`Снимка ${idx + 1}`}
+                                fill
+                                className="object-cover"
+                                style={{ objectPosition: thumbPos }}
+                                unoptimized
+                              />
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   )}

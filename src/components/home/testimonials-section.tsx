@@ -131,61 +131,42 @@ export const TestimonialsSection = () => {
         {marqueeItems.map((item, idx) => (
           <div
             key={`${item.id}-${idx}`}
-            className="w-[280px] sm:w-[340px] md:w-[380px] shrink-0 relative flex items-center justify-center transition-transform duration-300 hover:scale-[1.02]"
+            className="w-[290px] sm:w-[360px] md:w-[410px] shrink-0 relative flex flex-col items-center justify-between p-7 sm:p-9 transition-transform duration-300 hover:scale-[1.02] select-none min-h-[460px] sm:min-h-[520px]"
           >
-            {item.image && item.image.includes("testimonial-") ? (
+            {/* Hand-drawn Frame Asset 92@2x.png */}
+            <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
               <Image
-                src={item.image}
-                alt={item.name}
-                width={400}
-                height={500}
-                className="w-full h-auto object-contain pointer-events-none drop-shadow-sm"
+                src={encodeURI("/media/Отзиви/Asset 92@2x.png")}
+                alt="Рамка"
+                fill
+                className="object-fill drop-shadow-xs"
                 unoptimized
               />
-            ) : (
-              <div className="bg-[#f9f6f0] border-2 border-[#182b2c]/20 rounded-[32px] p-6 sm:p-8 shadow-lg w-full flex flex-col justify-between space-y-4 text-left min-h-[360px]">
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-3 border-b border-[#182b2c]/10 pb-3">
-                    <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-[#00b4b6] flex-shrink-0 bg-gray-100">
-                      <Image
-                        src={item.image || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
-                        alt={item.name}
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
-                    </div>
-                    <div>
-                      <h3 className="font-salongbeach text-xl font-bold uppercase tracking-wider text-[#00b4b6]">
-                        {item.name}
-                      </h3>
-                      {item.role && (
-                        <p className="text-[11px] font-sans text-[#182b2c]/75 font-medium">
-                          {item.role}
-                        </p>
-                      )}
-                    </div>
-                  </div>
+            </div>
 
-                  <div className="flex items-center space-x-1 text-amber-400">
-                    {Array.from({ length: item.rating || 5 }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-amber-400" />
-                    ))}
-                  </div>
+            {/* Inner Content matching exact design */}
+            <div className="relative z-10 w-full h-full flex flex-col items-center justify-between space-y-4 text-center my-auto">
+              {/* Client / Couple Name */}
+              <h3 className="font-salongbeach text-2xl sm:text-3xl md:text-4xl font-bold uppercase tracking-wider text-[#182b2c] pt-2">
+                {item.name}
+              </h3>
 
-                  {item.quote && (
-                    <p className="font-sans text-xs sm:text-sm text-[#182b2c]/90 italic leading-relaxed">
-                      &ldquo;{item.quote}&rdquo;
-                    </p>
-                  )}
-                </div>
+              {/* Review Quote Text in Stampatello */}
+              <p className="font-stampatello text-base sm:text-lg md:text-xl text-[#182b2c]/90 leading-relaxed font-normal px-2 sm:px-4 my-auto">
+                {item.quote || "Благодарим от сърце за прекрасното изживяване!"}
+              </p>
 
-                <div className="pt-2 border-t border-[#182b2c]/10 flex items-center justify-between text-[11px] text-[#00b4b6] font-bold uppercase">
-                  <span>Автентичен спомен</span>
-                  <MessageSquareQuote className="w-4 h-4" />
-                </div>
+              {/* Hand-drawn Teal Heart Hands Asset 93@2x.png */}
+              <div className="relative w-28 sm:w-36 md:w-40 h-20 sm:h-24 shrink-0 flex items-center justify-center pb-2">
+                <Image
+                  src={encodeURI("/media/Отзиви/Asset 93@2x.png")}
+                  alt="Спомен с любов"
+                  fill
+                  className="object-contain pointer-events-none"
+                  unoptimized
+                />
               </div>
-            )}
+            </div>
           </div>
         ))}
       </div>

@@ -35,17 +35,6 @@ export const Footer = () => {
                   </Link>
                 </li>
               ))}
-              <li>
-                <button
-                  type="button"
-                  onClick={() => {
-                    window.dispatchEvent(new CustomEvent("open-pwa-install-modal"));
-                  }}
-                  className="font-stampatello text-base sm:text-lg text-white/90 hover:text-white transition-colors duration-200 hover:underline inline-flex items-center gap-1.5 cursor-pointer text-left"
-                >
-                  <span>📱 Изтегли приложението</span>
-                </button>
-              </li>
             </ul>
           </div>
 

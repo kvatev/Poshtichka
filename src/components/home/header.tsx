@@ -38,10 +38,23 @@ export const Header = () => {
           {/* Mobile Menu Toggle Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden absolute right-0 top-1/2 -translate-y-1/2 p-2.5 rounded-xl bg-white border border-[#00b4b6]/30 text-[#182b2c] hover:bg-[#00b4b6]/10 active:scale-95 transition-all shadow-sm"
+            className="lg:hidden absolute right-0 top-1/2 -translate-y-1/2 p-2 rounded-2xl hover:bg-[#00b4b6]/10 active:scale-95 transition-all flex items-center justify-center cursor-pointer"
             aria-label="Превключи меню"
           >
-            {mobileMenuOpen ? <X className="w-6 h-6 text-[#00b4b6]" /> : <Menu className="w-6 h-6 text-[#182b2c]" />}
+            {mobileMenuOpen ? (
+              <X className="w-8 h-8 text-[#00b4b6]" />
+            ) : (
+              <div className="relative w-8 sm:w-9 h-8 sm:h-9">
+                <Image
+                  src={encodeURI("/media/Main Page/Asset 96@2x.png")}
+                  alt="Меню"
+                  fill
+                  className="object-contain"
+                  unoptimized
+                  priority
+                />
+              </div>
+            )}
           </button>
         </div>
 
@@ -85,18 +98,6 @@ export const Header = () => {
                   {link.label}
                 </Link>
               ))}
-
-              {/* Install App Link */}
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  window.dispatchEvent(new CustomEvent("open-pwa-install-modal"));
-                }}
-                className="py-2.5 mt-2 bg-[#00b4b6]/10 text-[#00b4b6] hover:bg-[#00b4b6] hover:text-white rounded-2xl transition-all font-salongbeach text-sm uppercase tracking-wider font-bold cursor-pointer"
-              >
-                📱 Изтегли като приложение
-              </button>
             </div>
           </motion.div>
         )}

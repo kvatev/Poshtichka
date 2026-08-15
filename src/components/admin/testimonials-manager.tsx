@@ -10,9 +10,8 @@ import {
   Check,
   Edit2,
   X,
-  Star,
-  Upload,
-  CheckCircle2,
+  ArrowUp,
+  ArrowDown,
   AlertTriangle,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -32,10 +31,7 @@ export const TestimonialsManager = () => {
 
   // Form State
   const [name, setName] = useState("");
-  const [role, setRole] = useState("Сватбено тържество");
   const [quote, setQuote] = useState("");
-  const [rating, setRating] = useState<number>(5);
-  const [avatarUrl, setAvatarUrl] = useState("");
 
   const fetchTestimonials = () => {
     setLoading(true);
@@ -57,10 +53,7 @@ export const TestimonialsManager = () => {
   const openAddModal = () => {
     setEditingItem(null);
     setName("");
-    setRole("Сватбено тържество");
     setQuote("");
-    setRating(5);
-    setAvatarUrl("/media/gallery/Tezza_2025_07_07_170901960_1.webp");
     setErrorMsg("");
     setShowModal(true);
   };
@@ -68,51 +61,21 @@ export const TestimonialsManager = () => {
   const openEditModal = (item: TestimonialItem) => {
     setEditingItem(item);
     setName(item.name || "");
-    setRole(item.role || "Сватбено тържество");
     setQuote(item.quote || "");
-    setRating(item.rating || 5);
-    setAvatarUrl(item.image || "/media/gallery/Tezza_2025_07_07_170901960_1.webp");
     setErrorMsg("");
     setShowModal(true);
   };
 
-  // Auto-convert any image to WebP via HTML5 Canvas
-  const processFileToWebp = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const img = new window.Image();
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          canvas.width = img.width;
-          canvas.height = img.height;
-          const ctx = canvas.getContext("2d");
-          if (!ctx) { reject("Canvas not supported"); return; }
-          ctx.drawImage(img, 0, 0);
-          const webpDataUrl = canvas.toDataURL("image/webp", 0.85);
-          resolve(webpDataUrl);
-        };
-        img.onerror = () => reject("Image load error");
-        img.src = event.target?.result as string;
-      };
-      reader.onerror = () => reject("File read error");
-      reader.readAsDataURL(file);
-    });
-  };
+  const handleMove = (index: number, direction: "up" | "down") => {
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= items.length) return;
 
-  const handleWebpUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+    const newItems = [...items];
+    const [moved] = newItems.splice(index, 1);
+    newItems.splice(targetIndex, 0, moved);
 
-    setErrorMsg("");
-    try {
-      const webpDataUrl = await processFileToWebp(files[0]);
-      setAvatarUrl(webpDataUrl);
-    } catch {
-      setErrorMsg("Възникна грешка при обработка на снимката.");
-    } finally {
-      e.target.value = "";
-    }
+    setItems(newItems);
+    persistTestimonials(newItems);
   };
 
   const handleSaveModal = (e: React.FormEvent) => {
@@ -135,10 +98,7 @@ export const TestimonialsManager = () => {
         updatedList[idx] = {
           ...editingItem,
           name: name.trim().toUpperCase(),
-          role: role.trim(),
           quote: quote.trim(),
-          rating,
-          image: avatarUrl,
         };
       }
     } else {
@@ -146,10 +106,8 @@ export const TestimonialsManager = () => {
       const newItem: TestimonialItem = {
         id: `TST-${Date.now()}`,
         name: name.trim().toUpperCase(),
-        role: role.trim(),
         quote: quote.trim(),
-        rating,
-        image: avatarUrl || "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
+        rating: 5,
       };
       updatedList.unshift(newItem);
     }
@@ -177,6 +135,9 @@ export const TestimonialsManager = () => {
       });
       if (res.ok) {
         setSaved(true);
+        try {
+          localStorage.setItem("poshtichka_cached_testimonials", JSON.stringify(updatedList));
+        } catch {}
         setTimeout(() => setSaved(false), 3000);
       }
     } catch (err) {
@@ -196,7 +157,7 @@ export const TestimonialsManager = () => {
             <span>Управление на Отзивите & Впечатленията ({items.length})</span>
           </h2>
           <p className="text-xs text-[#182b2c]/70 mt-1">
-            Добавяйте и редактирайте отзивите с автентичния шрифт и дизайн на Пощичка!
+            Отзивите се изписват автоматично в авторската рамка с рисуваното сърце от ръце!
           </p>
         </div>
 
@@ -218,7 +179,7 @@ export const TestimonialsManager = () => {
         </div>
       </div>
 
-      {/* Grid of Testimonials with Boutique Website Font & Design */}
+      {/* Grid of Testimonial Cards matching exact boutique design */}
       {loading ? (
         <div className="p-12 text-center text-[#182b2c]/60">Зареждане на отзивите...</div>
       ) : items.length === 0 ? (
@@ -226,86 +187,98 @@ export const TestimonialsManager = () => {
           Няма намерени отзиви. Натиснете бутона горе, за да добавите първия!
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {items.map((item) => (
-            <Card
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {items.map((item, idx) => (
+            <div
               key={item.id}
-              className="bg-[#f9f6f0] border-2 border-[#182b2c]/20 rounded-[28px] p-6 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-4 relative group"
+              className="bg-white rounded-[32px] p-4 border border-[#00b4b6]/20 shadow-sm flex flex-col justify-between space-y-4 relative group"
             >
-              <div className="space-y-3">
-                {/* Header info */}
-                <div className="flex items-start justify-between gap-2 border-b border-[#182b2c]/10 pb-3">
-                  <div className="flex items-center space-x-3">
-                    {/* User Avatar / Photo */}
-                    <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-[#00b4b6] flex-shrink-0 bg-gray-100">
-                      <Image
-                        src={item.image || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
-                        alt={item.name}
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
-                    </div>
-
-                    <div>
-                      <h3 className="font-salongbeach text-xl font-bold uppercase tracking-wider text-[#00b4b6]">
-                        {item.name}
-                      </h3>
-                      {item.role && (
-                        <p className="text-[11px] font-sans font-medium text-[#182b2c]/75">
-                          {item.role}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex items-center space-x-1">
-                    <button
-                      onClick={() => openEditModal(item)}
-                      className="p-2 rounded-xl bg-white text-[#00b4b6] border border-[#00b4b6]/30 hover:bg-[#00b4b6]/10 transition-colors cursor-pointer shadow-xs"
-                      title="Редактирай"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      className="p-2 rounded-xl bg-white text-red-500 border border-red-200 hover:bg-red-50 transition-colors cursor-pointer shadow-xs"
-                      title="Изтрий"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
+              {/* Card visual preview */}
+              <div className="relative w-full aspect-[4/5] min-h-[380px] flex flex-col items-center justify-between p-6 sm:p-7 select-none">
+                {/* Hand-drawn Frame Asset 92@2x.png */}
+                <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
+                  <Image
+                    src={encodeURI("/media/Отзиви/Asset 92@2x.png")}
+                    alt="Рамка"
+                    fill
+                    className="object-fill"
+                    unoptimized
+                  />
                 </div>
 
-                {/* 5-Star Rating */}
-                <div className="flex items-center space-x-1 text-amber-400">
-                  {Array.from({ length: item.rating || 5 }).map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-amber-400" />
-                  ))}
+                {/* Content */}
+                <div className="relative z-10 w-full h-full flex flex-col items-center justify-between space-y-3 text-center my-auto">
+                  {/* Name in Salongbeach */}
+                  <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#182b2c] pt-2">
+                    {item.name}
+                  </h3>
+
+                  {/* Quote in Stampatello */}
+                  <p className="font-stampatello text-sm sm:text-base text-[#182b2c]/90 leading-relaxed font-normal px-2 my-auto">
+                    {item.quote}
+                  </p>
+
+                  {/* Heart Hands Asset 93@2x.png */}
+                  <div className="relative w-24 sm:w-28 h-16 sm:h-18 shrink-0 flex items-center justify-center pb-2">
+                    <Image
+                      src={encodeURI("/media/Отзиви/Asset 93@2x.png")}
+                      alt="Сърце"
+                      fill
+                      className="object-contain"
+                      unoptimized
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Controls */}
+              <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                <div className="flex items-center space-x-1">
+                  <button
+                    onClick={() => handleMove(idx, "up")}
+                    disabled={idx === 0}
+                    className="p-2 rounded-xl bg-gray-50 text-gray-600 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                    title="Премести нагоре"
+                  >
+                    <ArrowUp className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleMove(idx, "down")}
+                    disabled={idx === items.length - 1}
+                    className="p-2 rounded-xl bg-gray-50 text-gray-600 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                    title="Премести надолу"
+                  >
+                    <ArrowDown className="w-4 h-4" />
+                  </button>
+                  <span className="text-[11px] font-bold text-gray-400 pl-1">#{idx + 1}</span>
                 </div>
 
-                {/* Quote / Review Text */}
-                <p className="font-sans text-xs sm:text-sm text-[#182b2c]/90 italic leading-relaxed pt-1">
-                  &ldquo;{item.quote}&rdquo;
-                </p>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => openEditModal(item)}
+                    className="px-3 py-1.5 rounded-xl bg-[#00b4b6]/10 text-[#00b4b6] hover:bg-[#00b4b6] hover:text-white transition-all font-bold text-xs flex items-center space-x-1 cursor-pointer"
+                  >
+                    <Edit2 className="w-3.5 h-3.5" />
+                    <span>Редактирай</span>
+                  </button>
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="p-2 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all cursor-pointer"
+                    title="Изтрий"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
-
-              <div className="pt-3 border-t border-[#182b2c]/10 flex items-center justify-between text-[11px] text-[#182b2c]/60">
-                <span>Показва се на началната страница</span>
-                <span className="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full text-[10px]">
-                  Активен
-                </span>
-              </div>
-            </Card>
+            </div>
           ))}
         </div>
       )}
 
-      {/* Add / Edit Testimonial Modal */}
+      {/* Add / Edit Testimonial Modal with Real-time Live Preview */}
       {showModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 font-sans">
-          <div className="bg-white rounded-3xl border-2 border-[#00b4b6] max-w-xl w-full flex flex-col max-h-[90vh] shadow-2xl relative overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-white rounded-3xl border-2 border-[#00b4b6] max-w-4xl w-full flex flex-col max-h-[92vh] shadow-2xl relative overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             {/* Modal Fixed Header */}
             <div className="px-6 py-4 border-b border-[#00b4b6]/20 flex items-center justify-between flex-shrink-0 bg-white z-10">
               <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
@@ -321,106 +294,93 @@ export const TestimonialsManager = () => {
               </button>
             </div>
 
-            {/* Modal Scrollable Body */}
-            <div className="px-6 py-5 overflow-y-auto custom-modal-scroll flex-1 space-y-4">
-              {errorMsg && (
-                <div className="p-4 rounded-2xl bg-red-50 text-red-800 border border-red-200 flex items-center space-x-2 text-sm font-semibold">
-                  <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0" />
-                  <span>{errorMsg}</span>
-                </div>
-              )}
-
-              <form id="testimonial-form" onSubmit={handleSaveModal} className="space-y-4 font-sans text-left">
-                {/* Client / Couple Name */}
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-[#182b2c]">
-                    Име на клиента / Младоженците (главни букви) *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="напр. НИКОЛ и ДАНИЕЛ, МАЯ и НИКО"
-                    className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6] font-salongbeach uppercase tracking-wider font-bold"
-                  />
-                </div>
-
-                {/* Event Type / Subtitle */}
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-[#182b2c]">
-                    Повод / Град / Описание на събитието
-                  </label>
-                  <input
-                    type="text"
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                    placeholder="напр. Сватбено тържество в Созопол"
-                    className="w-full px-4 py-2.5 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
-                  />
-                </div>
-
-                {/* Rating (1-5 Stars) */}
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-[#182b2c]">Оценка</label>
-                  <div className="flex items-center space-x-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        key={star}
-                        type="button"
-                        onClick={() => setRating(star)}
-                        className="p-1 text-amber-400 hover:scale-125 transition-transform cursor-pointer"
-                      >
-                        <Star
-                          className={`w-6 h-6 ${
-                            star <= rating ? "fill-amber-400 text-amber-400" : "text-gray-300"
-                          }`}
-                        />
-                      </button>
-                    ))}
-                    <span className="text-xs text-[#182b2c]/70 ml-2 font-bold">{rating} от 5 звезди</span>
+            {/* Modal Body: Form (Left) + Live Preview (Right) */}
+            <div className="px-6 py-6 overflow-y-auto custom-modal-scroll flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+              {/* Form Controls */}
+              <div className="space-y-4">
+                {errorMsg && (
+                  <div className="p-3 rounded-2xl bg-red-50 text-red-800 border border-red-200 flex items-center space-x-2 text-xs font-semibold">
+                    <AlertTriangle className="w-4 h-4 text-red-600 flex-shrink-0" />
+                    <span>{errorMsg}</span>
                   </div>
-                </div>
+                )}
 
-                {/* Review Text */}
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-[#182b2c]">Текст на отзива *</label>
-                  <textarea
-                    rows={4}
-                    required
-                    value={quote}
-                    onChange={(e) => setQuote(e.target.value)}
-                    placeholder="Напишете отзива от клиента..."
-                    className="w-full px-4 py-2.5 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6] resize-none"
-                  />
-                </div>
-
-                {/* Photo Upload */}
-                <div className="space-y-2 pt-2 border-t border-gray-200">
-                  <label className="text-xs font-semibold text-[#182b2c]">
-                    Снимка / Аватар от събитието (JPG, PNG или WEBP)
-                  </label>
-
-                  <div className="flex items-center space-x-4">
-                    {avatarUrl && (
-                      <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-[#00b4b6] flex-shrink-0 bg-gray-100 shadow-inner">
-                        <Image src={avatarUrl} alt="Preview" fill className="object-cover" unoptimized />
-                      </div>
-                    )}
-
-                    <label className="cursor-pointer border-2 border-dashed border-[#00b4b6]/50 bg-[#00b4b6]/5 hover:bg-[#00b4b6]/10 p-3 rounded-2xl flex flex-col items-center justify-center space-y-1 transition-colors text-center w-full">
-                      <Upload className="w-5 h-5 text-[#00b4b6]" />
-                      <span className="text-xs font-bold text-[#182b2c]">Прикачи снимка</span>
-                      <input
-                        type="file"
-                        accept="image/webp,image/jpeg,image/png,image/jpg,.webp,.jpg,.jpeg,.png"
-                        onChange={handleWebpUpload}
-                        className="hidden"
-                      />
+                <form id="testimonial-form" onSubmit={handleSaveModal} className="space-y-4 font-sans text-left">
+                  {/* Client / Couple Name */}
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-[#182b2c] uppercase tracking-wider">
+                      Име на клиента / Младоженците (главни букви) *
                     </label>
+                    <input
+                      type="text"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="напр. МАРИНА И ИВАН"
+                      className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6] font-salongbeach uppercase tracking-wider font-bold"
+                    />
+                  </div>
+
+                  {/* Review Text */}
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-[#182b2c] uppercase tracking-wider">
+                      Текст на отзива *
+                    </label>
+                    <textarea
+                      rows={6}
+                      required
+                      value={quote}
+                      onChange={(e) => setQuote(e.target.value)}
+                      placeholder="Въведете думите и впечатленията на клиента..."
+                      className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-base focus:outline-none focus:ring-2 focus:ring-[#00b4b6] font-stampatello leading-relaxed resize-none"
+                    />
+                  </div>
+                </form>
+              </div>
+
+              {/* Real-time Live Card Preview */}
+              <div className="flex flex-col items-center">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#00b4b6] mb-2">
+                  Визуализация в реално време:
+                </span>
+
+                <div className="relative w-full max-w-[340px] aspect-[4/5] min-h-[420px] flex flex-col items-center justify-between p-7 select-none bg-[#f9f6f0] rounded-[32px]">
+                  {/* Hand-drawn Frame Asset 92@2x.png */}
+                  <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
+                    <Image
+                      src={encodeURI("/media/Отзиви/Asset 92@2x.png")}
+                      alt="Рамка"
+                      fill
+                      className="object-fill"
+                      unoptimized
+                    />
+                  </div>
+
+                  {/* Content */}
+                  <div className="relative z-10 w-full h-full flex flex-col items-center justify-between space-y-3 text-center my-auto">
+                    {/* Name in Salongbeach */}
+                    <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#182b2c] pt-2">
+                      {name.trim() || "ИМЕ НА КЛИЕНТА"}
+                    </h3>
+
+                    {/* Quote in Stampatello */}
+                    <p className="font-stampatello text-sm sm:text-base text-[#182b2c]/90 leading-relaxed font-normal px-2 my-auto">
+                      {quote.trim() || "Тук ще се появи текстът на отзива в автентичен ръкописен шрифт..."}
+                    </p>
+
+                    {/* Heart Hands Asset 93@2x.png */}
+                    <div className="relative w-24 sm:w-28 h-16 sm:h-18 shrink-0 flex items-center justify-center pb-2">
+                      <Image
+                        src={encodeURI("/media/Отзиви/Asset 93@2x.png")}
+                        alt="Сърце"
+                        fill
+                        className="object-contain"
+                        unoptimized
+                      />
+                    </div>
                   </div>
                 </div>
-              </form>
+              </div>
             </div>
 
             {/* Modal Fixed Footer */}

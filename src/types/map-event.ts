@@ -7,7 +7,9 @@ export interface EventLocation {
   latitude: number;
   longitude: number;
   coverImage?: string;
+  coverImagePosition?: string;
   galleryImages?: string[];
+  imagePositions?: Record<string, string>;
   description?: string;
   eventDate?: string;
   createdAt?: string;
@@ -22,7 +24,9 @@ export interface CreateEventLocationInput {
   latitude: number;
   longitude: number;
   coverImage?: string;
+  coverImagePosition?: string;
   galleryImages?: string[];
+  imagePositions?: Record<string, string>;
   description?: string;
   eventDate?: string;
 }

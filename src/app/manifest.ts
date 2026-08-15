@@ -14,26 +14,20 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: "portrait-primary",
     icons: [
       {
-        src: "/icons/icon-192x192.png",
-        sizes: "192x192",
+        src: encodeURI("/media/icons/Asset 95@2x.png"),
+        sizes: "192x192 512x512",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/icons/icon-512x512.png",
-        sizes: "512x512",
-        type: "image/png",
-        purpose: "any",
-      },
-      {
-        src: "/icons/maskable-icon-512x512.png",
+        src: encodeURI("/media/icons/Asset 95@2x.png"),
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable",
       },
       {
-        src: "/apple-icon.png",
-        sizes: "180x180",
+        src: "/icon.png",
+        sizes: "192x192 512x512",
         type: "image/png",
         purpose: "any",
       },

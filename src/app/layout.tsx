@@ -50,13 +50,13 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: encodeURI("/media/Галерия/Asset 82@2x.png"), type: "image/png" },
+      { url: encodeURI("/media/icons/Asset 95@2x.png"), type: "image/png" },
       { url: "/icon.png", type: "image/png" },
       { url: "/favicon.ico", sizes: "any" },
     ],
-    shortcut: encodeURI("/media/Галерия/Asset 82@2x.png"),
+    shortcut: encodeURI("/media/icons/Asset 95@2x.png"),
     apple: [
-      { url: encodeURI("/media/Галерия/Asset 82@2x.png"), sizes: "180x180", type: "image/png" },
+      { url: encodeURI("/media/icons/Asset 95@2x.png"), sizes: "180x180", type: "image/png" },
       { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
     ],
   },
@@ -107,9 +107,9 @@ export default function RootLayout({
   return (
     <html lang="bg" className={`${displayFont.variable} ${inter.variable}`}>
       <head>
-        <link rel="icon" href="/media/logos/Logo.png" type="image/png" sizes="any" />
-        <link rel="shortcut icon" href="/media/logos/Logo.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="icon" href={encodeURI("/media/icons/Asset 95@2x.png")} type="image/png" sizes="any" />
+        <link rel="shortcut icon" href={encodeURI("/media/icons/Asset 95@2x.png")} type="image/png" />
+        <link rel="apple-touch-icon" href={encodeURI("/media/icons/Asset 95@2x.png")} />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />

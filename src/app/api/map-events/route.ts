@@ -12,7 +12,9 @@ export interface EventLocation {
   latitude: number;
   longitude: number;
   coverImage: string;
+  coverImagePosition?: string;
   galleryImages: string[];
+  imagePositions?: Record<string, string>;
   description?: string;
   eventDate?: string;
   createdAt?: string;
@@ -24,146 +26,7 @@ declare global {
   var __POSHTICHKA_MAP_EVENTS__: EventLocation[] | undefined;
 }
 
-const initialMapEvents: EventLocation[] = [
-  {
-    id: "MAP-02",
-    eventName: "МАРТИНА И АЛЕКСАНДЪР",
-    cityName: "Каварна",
-    venueName: "Thracian Cliffs Resort",
-    eventType: "сватбено тържество",
-    latitude: 43.4358,
-    longitude: 28.3392,
-    coverImage: "/media/gallery/Tezza_2025_07_13_155324686.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_13_155324686.webp",
-      "/media/gallery/Tezza_2025_07_13_155326413.webp",
-      "/media/gallery/Tezza_2025_07_13_155331795.webp",
-    ],
-    description: "Сватбено тържество с гледка към скалите на Каварна.",
-    eventDate: "2026-08-20",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "MAP-03",
-    eventName: "ЕЛЕНА И ВИКТОР",
-    cityName: "София",
-    venueName: "Резиденция Бояна",
-    eventType: "сватбено тържество",
-    latitude: 42.6977,
-    longitude: 23.3219,
-    coverImage: "/media/gallery/Tezza_2025_07_13_155326413.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_13_155326413.webp",
-      "/media/gallery/Tezza_2025_07_13_155331795.webp",
-      "/media/gallery/Tezza_2025_07_13_155333570.webp",
-    ],
-    description: "Стилно тържество в полите на Витоша.",
-    eventDate: "2026-07-28",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "MAP-04",
-    eventName: "КАЛИНА И ИВАЙЛО",
-    cityName: "Червен",
-    venueName: "Комплекс Червен",
-    eventType: "сватбено тържество",
-    latitude: 43.6192,
-    longitude: 25.9758,
-    coverImage: "/media/gallery/Tezza_2025_07_13_155331795.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_13_155331795.webp",
-      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
-    ],
-    description: "Рустик сватбено тържество сред природата.",
-    eventDate: "2026-07-12",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "MAP-05",
-    eventName: "АНА И БОРИС",
-    cityName: "Перущица",
-    venueName: "Вила Юстина",
-    eventType: "сватбено тържество",
-    latitude: 42.0544,
-    longitude: 24.5447,
-    coverImage: "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
-      "/media/gallery/Tezza_2025_07_13_155333570.webp",
-    ],
-    description: "Винен празник и романтика в полите на Родопите.",
-    eventDate: "2026-06-25",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "MAP-06",
-    eventName: "ДИАНА И КРИСТИЯН",
-    cityName: "Велико Търново",
-    venueName: "Царевец Панорама",
-    eventType: "сватбено тържество",
-    latitude: 43.0757,
-    longitude: 25.6172,
-    coverImage: "/media/gallery/Tezza_2025_07_13_155333570.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_13_155333570.webp",
-      "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
-    ],
-    description: "Вълшебно празненство в старата българска столица.",
-    eventDate: "2026-06-08",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "MAP-07",
-    eventName: "DEVTECH ANNUAL SUMMIT",
-    cityName: "Бургас",
-    venueName: "Flora Expo Center",
-    eventType: "корпоративно събитие",
-    latitude: 42.5048,
-    longitude: 27.4626,
-    coverImage: "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
-      "/media/gallery/Tezza_2025_07_13_155333570.webp",
-    ],
-    description: "Корпоративен брандинг и персонализирани подаръци за 200+ гости.",
-    eventDate: "2026-08-22",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "MAP-08",
-    eventName: "ЮБИЛЕЙ 50Г - WAVE RESORT",
-    cityName: "Поморие",
-    venueName: "Wave Resort",
-    eventType: "рожден ден",
-    latitude: 42.5583,
-    longitude: 27.6444,
-    coverImage: "/media/gallery/Tezza_2025_07_13_155331795.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_13_155331795.webp",
-      "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
-    ],
-    description: "Стилен юбилей с авторски картички и сувенири.",
-    eventDate: "2026-08-28",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "MAP-09",
-    eventName: "ВИКТОРИЯ И ВАСИЛ",
-    cityName: "София",
-    venueName: "Pasarel Lake Club",
-    eventType: "сватбено тържество",
-    latitude: 42.5412,
-    longitude: 23.5012,
-    coverImage: "/media/gallery/Tezza_2025_07_13_155324686.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_13_155324686.webp",
-      "/media/gallery/Tezza_2025_07_13_155326413.webp",
-    ],
-    description: "Романтично празненство в Pasarel Lake Club.",
-    eventDate: "2026-09-15",
-    createdAt: new Date().toISOString(),
-  },
-];
+const initialMapEvents: EventLocation[] = [];
 
 async function getStoredEvents(): Promise<EventLocation[]> {
   return await readCloudOrFileData<EventLocation[]>("map-events", initialMapEvents);
@@ -227,7 +90,9 @@ export async function POST(req: NextRequest) {
       latitude,
       longitude,
       coverImage,
+      coverImagePosition,
       galleryImages,
+      imagePositions,
       description,
       eventDate,
     } = body;
@@ -243,7 +108,9 @@ export async function POST(req: NextRequest) {
     const finalVenueName = venueName ? String(venueName).trim() : "";
     const finalEventType = eventType ? String(eventType).trim() : "";
     const finalCoverImage = coverImage ? String(coverImage).trim() : "";
+    const finalCoverImagePosition = coverImagePosition ? String(coverImagePosition).trim() : undefined;
     const finalGalleryImages = Array.isArray(galleryImages) ? galleryImages : [];
+    const finalImagePositions = imagePositions && typeof imagePositions === "object" ? imagePositions : undefined;
 
     const newEvent: EventLocation = {
       id: `MAP-${Date.now()}`,
@@ -254,7 +121,9 @@ export async function POST(req: NextRequest) {
       latitude: Number(latitude),
       longitude: Number(longitude),
       coverImage: finalCoverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
+      coverImagePosition: finalCoverImagePosition,
       galleryImages: finalGalleryImages.length > 0 ? finalGalleryImages : [finalCoverImage],
+      imagePositions: finalImagePositions,
       description: description ? String(description).trim() : "",
       eventDate: eventDate || new Date().toISOString().split("T")[0],
       createdAt: new Date().toISOString(),
@@ -319,7 +188,9 @@ export async function PUT(req: NextRequest) {
       latitude,
       longitude,
       coverImage,
+      coverImagePosition,
       galleryImages,
+      imagePositions,
       description,
       eventDate,
     } = body;
@@ -332,7 +203,9 @@ export async function PUT(req: NextRequest) {
     const finalVenueName = venueName !== undefined ? String(venueName) : "";
     const finalEventType = eventType !== undefined ? String(eventType) : "";
     const finalCoverImage = coverImage !== undefined ? String(coverImage) : "";
+    const finalCoverImagePosition = coverImagePosition !== undefined ? String(coverImagePosition) : undefined;
     const finalGalleryImages = Array.isArray(galleryImages) ? galleryImages : [];
+    const finalImagePositions = imagePositions && typeof imagePositions === "object" ? imagePositions : undefined;
 
     let updatedEvent: EventLocation | null = null;
 
@@ -367,7 +240,9 @@ export async function PUT(req: NextRequest) {
           latitude: Number(data.latitude),
           longitude: Number(data.longitude),
           coverImage: data.cover_image,
+          coverImagePosition: finalCoverImagePosition,
           galleryImages: data.gallery_images || [],
+          imagePositions: finalImagePositions,
           description: data.description,
           eventDate: data.event_date,
         };
@@ -386,7 +261,9 @@ export async function PUT(req: NextRequest) {
           latitude: latitude !== undefined ? Number(latitude) : ev.latitude,
           longitude: longitude !== undefined ? Number(longitude) : ev.longitude,
           coverImage: finalCoverImage || ev.coverImage,
+          coverImagePosition: finalCoverImagePosition ?? ev.coverImagePosition,
           galleryImages: finalGalleryImages.length > 0 ? finalGalleryImages : ev.galleryImages,
+          imagePositions: finalImagePositions ?? ev.imagePositions,
           description: description ?? ev.description,
           eventDate: eventDate ?? ev.eventDate,
           updatedAt: new Date().toISOString(),

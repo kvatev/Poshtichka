@@ -24,7 +24,7 @@ const initialServices: ServiceItem[] = [
     ],
     image: "/media/gallery/Tezza_2025_07_13_155326413.webp",
     badgeAsset: "/media/Услуги/Asset 88@2x.png",
-    badgeAssets: ["/media/Услуги/Asset 88@2x.png", "/media/Услуги/Asset 86@2x.png"],
+    badgeAssets: ["/media/Услуги/Asset 86@2x.png", "/media/Услуги/Asset 90@2x.png"],
   },
   {
     id: "SRV-02",
@@ -40,7 +40,7 @@ const initialServices: ServiceItem[] = [
     ],
     image: "/media/gallery/Tezza_2025_07_13_155324686.webp",
     badgeAsset: "/media/Услуги/Asset 86@2x.png",
-    badgeAssets: ["/media/Услуги/Asset 86@2x.png"],
+    badgeAssets: ["/media/Услуги/Asset 86@2x.png", "/media/Услуги/Asset 90@2x.png"],
   },
   {
     id: "SRV-03",
@@ -49,14 +49,30 @@ const initialServices: ServiceItem[] = [
     description:
       "Забавна интерактивна станция с уникални временни татуировки по ваш собствен мотив или илюстрация.",
     features: [
-      "АВТОРСКИ ДИЗАЙНИ НА ТАТУИРОВКИ С ИНИЦИАЛИ ИЛИ ЛОГО",
-      "БЕЗОПАСНИ И ВОДОУСТОЙЧИВИ МАТЕРИАЛИ ЗА ГОСТИТЕ",
-      "ИНТЕРАКТИВЕН КЪТ С ИНСТРУКЦИИ И АКСЕСОАРИ",
-      "ПЪЛНА КООРДИНАЦИЯ И СЪДЕЙСТВИЕ ОТ ЕКИПА",
+      "ПЕРСОНАЛИЗИРАНИ ВРЕМЕННИ ТАТУИРОВКИ ПО ВАШ ДИЗАЙН",
+      "БЕЗВРЕДНИ, ВОДОУСТОЙЧИВИ И ДЕРМАТОЛОГИЧНО ТЕСТВАНИ",
+      "СТАНЦИЯ ЗА БЪРЗО И ЛЕСНО ПОСТАВЯНЕ НА СЪБИТИЕТО",
+      "СТРАХОТНО ЗАБАВЛЕНИЕ КАКТО ЗА ДЕЦА, ТАКА И ЗА ВЪЗРАСТНИ",
     ],
     image: "/media/gallery/Tezza_2025_07_13_155331795.webp",
     badgeAsset: "/media/Услуги/Asset 90@2x.png",
-    badgeAssets: ["/media/Услуги/Asset 86@2x.png"],
+    badgeAssets: ["/media/Услуги/Asset 86@2x.png", "/media/Услуги/Asset 90@2x.png"],
+  },
+  {
+    id: "SRV-04",
+    title: "ПЕРСОНАЛИЗИРАНИ КАРТИЧКИ И ПЛИКОВЕ",
+    subtitle: "подходящо за сватби, фирмени събития, лични празници",
+    description:
+      "Уникални авторски илюстрации и дизайн, превърнати в картички, които гостите отнасят със себе си като вечен спомен.",
+    features: [
+      "ИНДИВИДУАЛНА КОНЦЕПЦИЯ И АВТОРСКИ ИЛЮСТРАЦИИ",
+      "ПРЕМИУМ ПЕЧАТ И КАЧЕСТВЕНИ КАРТОНИ",
+      "РАЗНООБРАЗИЕ ОТ ФОРМАТИ И ДОВЪРШИТЕЛНИ ЕФЕКТИ",
+      "ИДЕАЛЕН ПОДАРЪК-СПОМЕН ЗА ВСЕКИ ПРИСЪСТВАЩ",
+    ],
+    image: "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
+    badgeAsset: "/media/Услуги/Asset 86@2x.png",
+    badgeAssets: ["/media/Услуги/Asset 86@2x.png", "/media/Услуги/Asset 90@2x.png"],
   },
 ];
 
@@ -110,10 +126,9 @@ export default function ServicesPage() {
               ? service.badgeAssets
               : service.badgeAsset
                 ? [service.badgeAsset]
-                : ["/media/Услуги/Asset 86@2x.png"];
+                : ["/media/Услуги/Asset 86@2x.png", "/media/Услуги/Asset 90@2x.png"];
 
             const hasCheckmarkAsset = activeAssets.includes("/media/Услуги/Asset 86@2x.png");
-            const hasTealBarAsset = activeAssets.includes("/media/Услуги/Asset 88@2x.png");
             const hasFrameAsset = activeAssets.includes("/media/Услуги/Asset 90@2x.png");
 
             return (
@@ -157,19 +172,6 @@ export default function ServicesPage() {
                     )}
                   </div>
 
-                  {/* Decorative Teal Bar if Asset 88 is selected */}
-                  {hasTealBarAsset && (
-                    <div className="relative w-32 h-2.5 my-1">
-                      <Image
-                        src={encodeURI("/media/Услуги/Asset 88@2x.png")}
-                        alt="Тюркоазена лента"
-                        fill
-                        className="object-contain object-left"
-                        unoptimized
-                      />
-                    </div>
-                  )}
-
                   {service.description && (
                     <p className="font-stampatello text-base sm:text-lg text-[#182b2c]/85 leading-relaxed font-normal">
                       {service.description}
@@ -181,20 +183,16 @@ export default function ServicesPage() {
                     <ul className="space-y-4 pt-2">
                       {service.features.map((feat, i) => (
                         <li key={i} className="flex items-center space-x-3.5 sm:space-x-4">
-                          {/* Official Hand-Drawn Teal Checkmark Asset 86@2x.png or bullet */}
-                          <div className="w-8 h-8 sm:w-10 sm:h-10 shrink-0 relative flex items-center justify-center">
-                            {hasCheckmarkAsset ? (
-                              <Image
-                                src={encodeURI("/media/Услуги/Asset 86@2x.png")}
-                                alt="Отметка"
-                                width={44}
-                                height={44}
-                                className="w-full h-full object-contain pointer-events-none"
-                                unoptimized
-                              />
-                            ) : (
-                              <div className="w-4 h-4 rounded-full bg-[#00b4b6]" />
-                            )}
+                          {/* Official Hand-Drawn Teal Checkmark Asset 86@2x.png */}
+                          <div className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 relative flex items-center justify-center">
+                            <Image
+                              src={encodeURI("/media/Услуги/Asset 86@2x.png")}
+                              alt="Отметка"
+                              width={32}
+                              height={32}
+                              className="w-full h-full object-contain pointer-events-none"
+                              unoptimized
+                            />
                           </div>
 
                           <span className="font-salongbeach font-bold uppercase text-base sm:text-lg lg:text-xl text-[#182b2c] tracking-wider leading-snug">
