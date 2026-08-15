@@ -53,34 +53,38 @@ export const Footer = () => {
                 href="https://www.facebook.com/poshtichka"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/40 flex items-center justify-center transition-transform hover:scale-110"
-                title="Facebook - Poshtichka"
+                className="w-12 h-12 rounded-full bg-white/15 hover:bg-white/30 border border-white/40 flex items-center justify-center transition-all hover:scale-110 active:scale-95 shadow-sm"
+                title="Facebook - Пощичка"
                 aria-label="Facebook"
               >
-                <Image
-                  src="/media/Main Page/facebook.png"
-                  alt="Facebook"
-                  width={24}
-                  height={24}
-                  className="w-5 h-5 object-contain"
-                />
+                <div className="relative w-6 h-6 flex items-center justify-center">
+                  <Image
+                    src={encodeURI("/media/Main Page/Asset 98@2x.png")}
+                    alt="Facebook"
+                    fill
+                    className="object-contain"
+                    unoptimized
+                  />
+                </div>
               </a>
 
               <a
                 href="https://www.instagram.com/poshtichka/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/40 flex items-center justify-center transition-transform hover:scale-110"
-                title="Instagram - Poshtichka"
+                className="w-12 h-12 rounded-full bg-white/15 hover:bg-white/30 border border-white/40 flex items-center justify-center transition-all hover:scale-110 active:scale-95 shadow-sm"
+                title="Instagram - Пощичка"
                 aria-label="Instagram"
               >
-                <Image
-                  src="/media/Main Page/instagram.png"
-                  alt="Instagram"
-                  width={24}
-                  height={24}
-                  className="w-5 h-5 object-contain"
-                />
+                <div className="relative w-7 h-7 flex items-center justify-center">
+                  <Image
+                    src={encodeURI("/media/Main Page/Asset 97@2x.png")}
+                    alt="Instagram"
+                    fill
+                    className="object-contain"
+                    unoptimized
+                  />
+                </div>
               </a>
             </div>
           </div>
