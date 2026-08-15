@@ -149,23 +149,4 @@ export function calculateRemainingBalance(p: PricingBreakdown): number {
 
 export const defaultMockLeads: CrmLead[] = [];
 
-export const defaultNotifications: CrmNotification[] = [
-  {
-    id: "notif-1",
-    title: "Ново запитване",
-    message: "Светлана Василева изпрати запитване за сватба в Созопол на 14.08.2026.",
-    type: "lead",
-    timestamp: "Преди 10 минути",
-    read: false,
-    leadId: "BK-1001",
-  },
-  {
-    id: "notif-2",
-    title: "Потвърдено капаро",
-    message: "Запитване BK-1001 премина в статус Потвърдена Резервация.",
-    type: "payment",
-    timestamp: "Преди 1 час",
-    read: false,
-    leadId: "BK-1001",
-  },
-];
+export const defaultNotifications: CrmNotification[] = [];

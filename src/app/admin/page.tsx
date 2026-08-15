@@ -36,7 +36,7 @@ export default function AdminDashboardPage() {
 
   // CRM State
   const [leads, setLeads] = useState<CrmLead[]>([]);
-  const [notifications, setNotifications] = useState<CrmNotification[]>(defaultNotifications);
+  const [notifications, setNotifications] = useState<CrmNotification[]>([]);
   const [selectedLead, setSelectedLead] = useState<CrmLead | null>(null);
   const [showNewLeadModal, setShowNewLeadModal] = useState(false);
 
@@ -68,6 +68,17 @@ export default function AdminDashboardPage() {
       .catch(() => {
         router.push("/admin/login");
       });
+
+    // Load cached notifications if any
+    try {
+      const cachedNotifs = localStorage.getItem("poshtichka_admin_notifications");
+      if (cachedNotifs) {
+        const parsed = JSON.parse(cachedNotifs);
+        if (Array.isArray(parsed)) {
+          setNotifications(parsed);
+        }
+      }
+    } catch {}
 
     // Fetch live bookings
     fetch("/api/bookings", { cache: "no-store" })
@@ -142,9 +153,30 @@ export default function AdminDashboardPage() {
   };
 
   const handleMarkNotificationRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-    );
+    setNotifications((prev) => {
+      const updated = prev.map((n) => (n.id === id ? { ...n, read: true } : n));
+      try {
+        localStorage.setItem("poshtichka_admin_notifications", JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+  };
+
+  const handleDeleteNotification = (id: string) => {
+    setNotifications((prev) => {
+      const updated = prev.filter((n) => n.id !== id);
+      try {
+        localStorage.setItem("poshtichka_admin_notifications", JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+  };
+
+  const handleClearAllNotifications = () => {
+    setNotifications([]);
+    try {
+      localStorage.removeItem("poshtichka_admin_notifications");
+    } catch {}
   };
 
   const handleCreateNewLead = (e: React.FormEvent) => {
@@ -231,6 +263,8 @@ export default function AdminDashboardPage() {
           onSelectLead={(lead) => setSelectedLead(lead)}
           onOpenNewLeadForm={() => setShowNewLeadModal(true)}
           onMarkNotificationRead={handleMarkNotificationRead}
+          onDeleteNotification={handleDeleteNotification}
+          onClearAllNotifications={handleClearAllNotifications}
         />
 
         {/* Dynamic CRM Modules Body */}

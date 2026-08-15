@@ -25,6 +25,8 @@ interface AdminHeaderProps {
   onSelectLead: (lead: CrmLead) => void;
   onOpenNewLeadForm: () => void;
   onMarkNotificationRead: (id: string) => void;
+  onDeleteNotification?: (id: string) => void;
+  onClearAllNotifications?: () => void;
 }
 
 export const AdminHeader = ({
@@ -34,6 +36,8 @@ export const AdminHeader = ({
   onSelectLead,
   onOpenNewLeadForm,
   onMarkNotificationRead,
+  onDeleteNotification,
+  onClearAllNotifications,
 }: AdminHeaderProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -188,13 +192,25 @@ export const AdminHeader = ({
           {notifOpen && (
             <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-3xl shadow-2xl border border-brand-primary/30 p-4 space-y-3 z-50">
               <div className="flex items-center justify-between border-b border-brand-primary/10 pb-2">
-                <h3 className="font-serif font-bold text-base text-brand-dark">
-                  Известия ({notifications.length})
-                </h3>
-                {unreadCount > 0 && (
-                  <span className="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-bold">
-                    {unreadCount} нови
-                  </span>
+                <div className="flex items-center space-x-2">
+                  <h3 className="font-serif font-bold text-base text-brand-dark">
+                    Известия ({notifications.length})
+                  </h3>
+                  {unreadCount > 0 && (
+                    <span className="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-bold">
+                      {unreadCount} нови
+                    </span>
+                  )}
+                </div>
+
+                {notifications.length > 0 && onClearAllNotifications && (
+                  <button
+                    type="button"
+                    onClick={onClearAllNotifications}
+                    className="text-[11px] text-red-600 hover:text-red-800 font-semibold cursor-pointer px-2 py-0.5 rounded-lg hover:bg-red-50 transition-colors"
+                  >
+                    Изчисти всички
+                  </button>
                 )}
               </div>
 
@@ -208,17 +224,32 @@ export const AdminHeader = ({
                     <div
                       key={n.id}
                       onClick={() => onMarkNotificationRead(n.id)}
-                      className={`p-3 rounded-2xl text-xs space-y-1 transition-colors cursor-pointer border ${
+                      className={`p-3 rounded-2xl text-xs space-y-1 transition-colors cursor-pointer border relative group ${
                         n.read
                           ? "bg-gray-50 border-gray-100 text-gray-700"
                           : "bg-amber-50/60 border-amber-200 text-amber-950 font-medium"
                       }`}
                     >
-                      <div className="flex justify-between items-center">
+                      <div className="flex justify-between items-center pr-6">
                         <span className="font-bold">{n.title}</span>
                         <span className="text-[10px] text-brand-muted">{n.timestamp}</span>
                       </div>
                       <p className="leading-relaxed text-brand-dark/80">{n.message}</p>
+
+                      {/* Delete notification button */}
+                      {onDeleteNotification && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDeleteNotification(n.id);
+                          }}
+                          className="absolute top-2.5 right-2.5 p-1 rounded-full text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                          title="Изтрий известието"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   ))
                 )}
