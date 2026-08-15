@@ -540,17 +540,17 @@ export const CalendarView = ({
             {/* Modal Body */}
             <div className="px-6 py-6 overflow-y-auto custom-modal-scroll flex-1">
               <form id="calendar-event-form" onSubmit={handleSaveModal} className="space-y-4 font-sans text-left">
-                {/* Title / Name */}
+                {/* Title / Name (Optional) */}
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#182b2c] uppercase tracking-wider">
-                    Заглавие на събитието / Клиент / Младоженци *
+                  <label className="text-xs font-bold text-[#182b2c] uppercase tracking-wider flex justify-between">
+                    <span>Заглавие / Клиент</span>
+                    <span className="text-gray-400 font-normal lowercase">(по избор)</span>
                   </label>
                   <input
                     type="text"
-                    required
                     value={formName}
                     onChange={(e) => setFormName(e.target.value)}
-                    placeholder="напр. Сватба: Марина и Иван"
+                    placeholder="напр. Сватба / Заета дата (по избор)"
                     className="w-full px-4 py-2.5 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-sm focus:outline-none focus:ring-2 focus:ring-[#00b4b6] font-semibold"
                   />
                 </div>

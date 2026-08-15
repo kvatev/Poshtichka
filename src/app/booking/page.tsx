@@ -43,12 +43,14 @@ const bookingSchema = z.object({
 type BookingFormData = z.infer<typeof bookingSchema>;
 
 const initialBookedDates = new Set([
-  "2026-08-14",
-  "2026-08-22",
-  "2026-08-28",
-  "2026-09-05",
+  "2026-08-23",
+  "2026-08-30",
+  "2026-09-07",
   "2026-09-12",
-  "2026-09-19",
+  "2026-10-03",
+  "2026-10-10",
+  "2027-06-17",
+  "2027-06-26",
 ]);
 
 export default function BookingPage() {

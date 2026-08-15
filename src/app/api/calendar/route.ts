@@ -5,7 +5,12 @@ import { BookingRecord } from "@/app/api/bookings/route";
 export const revalidate = 0; // Fresh calendar data
 
 const defaultBookedDates = [
-  // 2027 дати
+  "2026-08-23",
+  "2026-08-30",
+  "2026-09-07",
+  "2026-09-12",
+  "2026-10-03",
+  "2026-10-10",
   "2027-06-17",
   "2027-06-26",
 ];

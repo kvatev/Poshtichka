@@ -181,32 +181,33 @@ export default function AdminDashboardPage() {
 
   const handleCreateNewLead = (e: React.FormEvent) => {
     e.preventDefault();
+    const eventDate = newLeadForm.eventDate || new Date().toISOString().split("T")[0];
     const created: CrmLead = {
       id: `BK-${1000 + leads.length + 1}`,
-      fullName: newLeadForm.fullName,
-      phone: newLeadForm.phone,
-      email: newLeadForm.email,
-      eventType: newLeadForm.eventType,
-      eventDate: newLeadForm.eventDate || new Date().toISOString().split("T")[0],
-      startTime: newLeadForm.startTime,
-      endTime: newLeadForm.endTime,
-      city: newLeadForm.city,
-      venueLocation: newLeadForm.venueLocation || newLeadForm.city,
-      guestCount: newLeadForm.guestCount,
+      fullName: newLeadForm.fullName.trim() || `Заета дата (${eventDate})`,
+      phone: newLeadForm.phone.trim(),
+      email: newLeadForm.email.trim(),
+      eventType: newLeadForm.eventType || "Сватбено тържество",
+      eventDate: eventDate,
+      startTime: newLeadForm.startTime || "16:00",
+      endTime: newLeadForm.endTime || "23:00",
+      city: newLeadForm.city.trim() || "България",
+      venueLocation: newLeadForm.venueLocation.trim() || "Локация на събитието",
+      guestCount: newLeadForm.guestCount || 100,
       requestedProducts: ["Акварелни Картички"],
-      message: newLeadForm.message,
-      createdAt: new Date().toLocaleString("bg-BG"),
-      status: "new",
+      message: newLeadForm.message.trim(),
+      status: "confirmed",
       pricing: {
-        rentalPrice: 400,
-        designPrice: 35,
-        distanceKm: 10,
+        rentalPrice: 350,
+        designPrice: 0,
+        distanceKm: 0,
         transportPrice: 0,
         additionalServicesPrice: 0,
         discountAmount: 0,
         depositPaid: 0,
         paymentStatus: "unpaid",
       },
+      createdAt: new Date().toISOString(),
       internalNotes: [],
       attachedFiles: [],
       communicationHistory: [],
@@ -348,31 +349,51 @@ export default function AdminDashboardPage() {
             </div>
 
             <form onSubmit={handleCreateNewLead} className="space-y-4 text-xs">
+              <div className="space-y-1">
+                <label className="font-semibold text-brand-dark flex justify-between">
+                  <span>Дата на събитието *</span>
+                  <span className="text-[#00b4b6] font-bold">(Задължително)</span>
+                </label>
+                <input
+                  type="date"
+                  required
+                  value={newLeadForm.eventDate}
+                  onChange={(e) =>
+                    setNewLeadForm({ ...newLeadForm, eventDate: e.target.value })
+                  }
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#00b4b6]/40 bg-white font-bold"
+                />
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="font-semibold text-brand-dark">Име и фамилия *</label>
+                  <label className="font-semibold text-brand-dark flex justify-between">
+                    <span>Име / Заглавие</span>
+                    <span className="text-gray-400 font-normal lowercase">(по избор)</span>
+                  </label>
                   <input
                     type="text"
-                    required
                     value={newLeadForm.fullName}
                     onChange={(e) =>
                       setNewLeadForm({ ...newLeadForm, fullName: e.target.value })
                     }
-                    placeholder="напр. Георги Попов"
+                    placeholder="напр. Георги Попов / Заета дата"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-brand-primary/30"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-semibold text-brand-dark">Телефон *</label>
+                  <label className="font-semibold text-brand-dark flex justify-between">
+                    <span>Телефон</span>
+                    <span className="text-gray-400 font-normal lowercase">(по избор)</span>
+                  </label>
                   <input
                     type="tel"
-                    required
                     value={newLeadForm.phone}
                     onChange={(e) =>
                       setNewLeadForm({ ...newLeadForm, phone: e.target.value })
                     }
-                    placeholder="+359 888 123 456"
+                    placeholder="+359 888 ..."
                     className="w-full px-3.5 py-2.5 rounded-xl border border-brand-primary/30"
                   />
                 </div>
@@ -380,10 +401,12 @@ export default function AdminDashboardPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="font-semibold text-brand-dark">Имейл *</label>
+                  <label className="font-semibold text-brand-dark flex justify-between">
+                    <span>Имейл</span>
+                    <span className="text-gray-400 font-normal lowercase">(по избор)</span>
+                  </label>
                   <input
                     type="email"
-                    required
                     value={newLeadForm.email}
                     onChange={(e) =>
                       setNewLeadForm({ ...newLeadForm, email: e.target.value })
@@ -394,10 +417,12 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-semibold text-brand-dark">Град *</label>
+                  <label className="font-semibold text-brand-dark flex justify-between">
+                    <span>Град</span>
+                    <span className="text-gray-400 font-normal lowercase">(по избор)</span>
+                  </label>
                   <input
                     type="text"
-                    required
                     value={newLeadForm.city}
                     onChange={(e) =>
                       setNewLeadForm({ ...newLeadForm, city: e.target.value })
