@@ -76,14 +76,33 @@ export const MapGallery = () => {
     }
   }, [activeModalEvent]);
 
-  // Deduplicate events to ensure no cards ever render twice
+  // Deduplicate and automatically sort events by date (newest first, oldest last/bottom)
   const uniqueEvents = useMemo(() => {
     const seen = new Set<string>();
-    return events.filter((ev) => {
+    const filtered = events.filter((ev) => {
       const key = `${(ev.eventName || "").trim()}_${(ev.cityName || "").trim()}_${(ev.venueName || "").trim()}`.toLowerCase();
       if (seen.has(key)) return false;
       seen.add(key);
       return true;
+    });
+
+    // Sort descending by eventDate / createdAt: Newest event at the top, oldest event at the bottom
+    return filtered.sort((a, b) => {
+      const parseDate = (d?: string, fallback?: string) => {
+        if (d && d.trim()) {
+          const t = new Date(d.trim()).getTime();
+          if (!isNaN(t)) return t;
+        }
+        if (fallback && fallback.trim()) {
+          const t = new Date(fallback.trim()).getTime();
+          if (!isNaN(t)) return t;
+        }
+        return 0;
+      };
+
+      const dateA = parseDate(a.eventDate, a.createdAt);
+      const dateB = parseDate(b.eventDate, b.createdAt);
+      return dateB - dateA;
     });
   }, [events]);
 

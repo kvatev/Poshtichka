@@ -158,6 +158,24 @@ export const GalleryManager = () => {
     return Array.from(new Set([...savedEventTypes, ...fromItems])).filter((t): t is string => Boolean(t));
   }, [savedEventTypes, items]);
 
+  // Sorted items by eventDate descending (newest first, oldest last)
+  const sortedItems = React.useMemo(() => {
+    return [...items].sort((a, b) => {
+      const parseDate = (d?: string, fallback?: string) => {
+        if (d && d.trim()) {
+          const t = new Date(d.trim()).getTime();
+          if (!isNaN(t)) return t;
+        }
+        if (fallback && fallback.trim()) {
+          const t = new Date(fallback.trim()).getTime();
+          if (!isNaN(t)) return t;
+        }
+        return 0;
+      };
+      return parseDate(b.eventDate, b.createdAt) - parseDate(a.eventDate, a.createdAt);
+    });
+  }, [items]);
+
   // Map Container Ref for Modal
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -802,7 +820,7 @@ export const GalleryManager = () => {
         </Card>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {items.map((item) => {
+          {sortedItems.map((item) => {
             const title = item.eventName || `Пощичка в ${item.cityName}`;
             const cover = item.coverImage || (item.galleryImages && item.galleryImages[0]) || "/media/gallery/Tezza_2025_07_07_170901960_1.webp";
 

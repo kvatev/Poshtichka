@@ -73,7 +73,21 @@ export async function GET() {
 
   // Cloud store priority
   const currentEvents = await getStoredEvents();
-  return NextResponse.json({ events: currentEvents, source: "cloud" });
+  const sorted = [...currentEvents].sort((a, b) => {
+    const parseDate = (d?: string, fallback?: string) => {
+      if (d && d.trim()) {
+        const t = new Date(d.trim()).getTime();
+        if (!isNaN(t)) return t;
+      }
+      if (fallback && fallback.trim()) {
+        const t = new Date(fallback.trim()).getTime();
+        if (!isNaN(t)) return t;
+      }
+      return 0;
+    };
+    return parseDate(b.eventDate, b.createdAt) - parseDate(a.eventDate, a.createdAt);
+  });
+  return NextResponse.json({ events: sorted, source: "cloud" });
 }
 
 /**
