@@ -11,6 +11,7 @@ export interface ServiceItem {
   features: string[];
   image: string;
   badgeAsset?: string;
+  badgeAssets?: string[];
 }
 
 declare global {
@@ -33,7 +34,8 @@ const initialServices: ServiceItem[] = [
       "2-МА СЛУЖИТЕЛИ ЗА СЪДЕЙСТВИЕ НА ГОСТИТЕ И МОНТАЖ",
     ],
     image: "/media/gallery/Tezza_2025_07_13_155326413.webp",
-    badgeAsset: "/media/Услуги/Asset 88@2x.png",
+    badgeAsset: "/media/Услуги/Asset 86@2x.png",
+    badgeAssets: ["/media/Услуги/Asset 86@2x.png"],
   },
   {
     id: "SRV-02",
@@ -48,7 +50,8 @@ const initialServices: ServiceItem[] = [
       "ДЕКОРАТИВЕН СТАНОК И МОНТАЖ НА МЯСТО НА СЪБИТИЕТО",
     ],
     image: "/media/gallery/Tezza_2025_07_13_155324686.webp",
-    badgeAsset: "/media/Услуги/Asset 89@2x.png",
+    badgeAsset: "/media/Услуги/Asset 86@2x.png",
+    badgeAssets: ["/media/Услуги/Asset 86@2x.png"],
   },
   {
     id: "SRV-03",
@@ -63,12 +66,20 @@ const initialServices: ServiceItem[] = [
       "ПЪЛНА КООРДИНАЦИЯ И СЪДЕЙСТВИЕ ОТ ЕКИПА",
     ],
     image: "/media/gallery/Tezza_2025_07_13_155331795.webp",
-    badgeAsset: "/media/Услуги/Asset 90@2x.png",
+    badgeAsset: "/media/Услуги/Asset 86@2x.png",
+    badgeAssets: ["/media/Услуги/Asset 86@2x.png"],
   },
 ];
 
 async function getStoredServices(): Promise<ServiceItem[]> {
-  return await readCloudOrFileData<ServiceItem[]>("services", initialServices);
+  try {
+    const data = await readCloudOrFileData<ServiceItem[]>("services", initialServices);
+    if (Array.isArray(data) && data.length > 0) {
+      global.__POSHTICHKA_SERVICES__ = data;
+      return data;
+    }
+  } catch {}
+  return initialServices;
 }
 
 async function saveStoredServices(services: ServiceItem[]): Promise<void> {
@@ -96,6 +107,7 @@ export async function GET() {
         features: Array.isArray(s.features) ? s.features : [],
         image: s.image || "/media/gallery/Tezza_2025_07_13_155326413.webp",
         badgeAsset: s.badge_asset || "",
+        badgeAssets: s.badge_assets || [],
       }));
 
       await saveStoredServices(formatted);
@@ -113,11 +125,17 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { title, subtitle, description, features, image, badgeAsset } = body;
+    const { title, subtitle, description, features, image, badgeAsset, badgeAssets } = body;
 
     if (!title) {
       return NextResponse.json({ error: "Заглавието е задължително." }, { status: 400 });
     }
+
+    const resolvedBadgeAssets: string[] = Array.isArray(badgeAssets)
+      ? badgeAssets
+      : badgeAsset
+        ? [badgeAsset]
+        : ["/media/Услуги/Asset 86@2x.png"];
 
     const newService: ServiceItem = {
       id: `SRV-${Date.now()}`,
@@ -126,7 +144,8 @@ export async function POST(req: NextRequest) {
       description: description ? String(description).trim() : "",
       features: Array.isArray(features) ? features : [],
       image: image || "/media/gallery/Tezza_2025_07_13_155326413.webp",
-      badgeAsset: badgeAsset || "/media/Услуги/Asset 88@2x.png",
+      badgeAsset: resolvedBadgeAssets[0] || "/media/Услуги/Asset 86@2x.png",
+      badgeAssets: resolvedBadgeAssets,
     };
 
     try {
@@ -141,6 +160,7 @@ export async function POST(req: NextRequest) {
             features: newService.features,
             image: newService.image,
             badge_asset: newService.badgeAsset,
+            badge_assets: newService.badgeAssets,
           },
         ])
         .select()
@@ -184,11 +204,17 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ success: true, services: body.services });
     }
 
-    const { id, title, subtitle, description, features, image, badgeAsset } = body;
+    const { id, title, subtitle, description, features, image, badgeAsset, badgeAssets } = body;
 
     if (!id) {
       return NextResponse.json({ error: "Липсва ИД на услугата за редакция." }, { status: 400 });
     }
+
+    const resolvedBadgeAssets: string[] = Array.isArray(badgeAssets)
+      ? badgeAssets
+      : badgeAsset
+        ? [badgeAsset]
+        : ["/media/Услуги/Asset 86@2x.png"];
 
     let updatedService: ServiceItem | null = null;
 
@@ -202,7 +228,8 @@ export async function PUT(req: NextRequest) {
           description,
           features: Array.isArray(features) ? features : [],
           image,
-          badge_asset: badgeAsset,
+          badge_asset: resolvedBadgeAssets[0],
+          badge_assets: resolvedBadgeAssets,
         })
         .eq("id", id)
         .select()
