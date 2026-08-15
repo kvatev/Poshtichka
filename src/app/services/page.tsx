@@ -134,23 +134,24 @@ export default function ServicesPage() {
             return (
               <div
                 key={service.id || index}
-                className="relative bg-[#f9f6f0] border-2 border-[#182b2c] shadow-xl rounded-[36px] sm:rounded-[44px] p-6 sm:p-10 lg:p-12 transition-all duration-300 hover:shadow-2xl flex flex-col lg:flex-row items-center gap-8 lg:gap-14 overflow-hidden"
+                className="relative bg-white border-2 border-[#182b2c] shadow-xl rounded-[36px] sm:rounded-[44px] overflow-hidden transition-all duration-300 hover:shadow-2xl flex flex-col lg:flex-row items-stretch"
               >
-                <div className="relative w-full lg:w-1/2 flex-shrink-0 flex items-center justify-center z-0">
-                  <div className="relative w-full h-[360px] sm:h-[460px] lg:h-[520px] rounded-[32px] sm:rounded-[36px] overflow-hidden border-2 border-[#182b2c] shadow-lg bg-gray-100">
-                    <Image
-                      src={service.image || "/media/gallery/Tezza_2025_07_13_155326413.webp"}
-                      alt={service.title}
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  </div>
+                {/* Left Side: Edge-to-Edge Image with No Inner Frame/Padding */}
+                <div className="relative w-full lg:w-1/2 min-h-[380px] sm:min-h-[460px] lg:min-h-[540px] flex-shrink-0 bg-gray-100 overflow-hidden">
+                  <Image
+                    src={service.image || "/media/gallery/Tezza_2025_07_13_155326413.webp"}
+                    alt={service.title}
+                    fill
+                    className="object-cover"
+                    style={{ objectPosition: service.imagePosition || "center" }}
+                    unoptimized
+                  />
                 </div>
 
-                <div className="w-full lg:w-1/2 space-y-6 text-left z-0">
+                {/* Right Side: Content */}
+                <div className="w-full lg:w-1/2 p-6 sm:p-10 lg:p-12 flex flex-col justify-center space-y-6 text-left">
                   <div className="space-y-2">
-                    <h2 className="font-salongbeach text-3xl sm:text-4xl lg:text-5xl font-bold uppercase text-[#182b2c] tracking-wider leading-none">
+                    <h2 className="font-salongbeach text-3xl sm:text-4xl lg:text-5xl font-bold uppercase text-[#182b2c] tracking-wider leading-tight">
                       {service.title}
                     </h2>
                     {service.subtitle && (

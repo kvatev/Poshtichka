@@ -28,6 +28,7 @@ export interface ServiceItem {
   description: string;
   features: string[];
   image: string;
+  imagePosition?: string;
   badgeAsset?: string;
   badgeAssets?: string[];
 }
@@ -57,8 +58,26 @@ export const ServicesManager = () => {
   const [description, setDescription] = useState("");
   const [features, setFeatures] = useState<string[]>([""]);
   const [image, setImage] = useState("");
+  const [imagePosX, setImagePosX] = useState(50);
+  const [imagePosY, setImagePosY] = useState(50);
   const defaultAssets = ["/media/Услуги/Asset 86@2x.png", "/media/Услуги/Asset 90@2x.png"];
   const [selectedAssets, setSelectedAssets] = useState<string[]>(defaultAssets);
+
+  const parsePosition = (posStr?: string) => {
+    if (!posStr) return { x: 50, y: 50 };
+    if (posStr === "top") return { x: 50, y: 0 };
+    if (posStr === "bottom") return { x: 50, y: 100 };
+    if (posStr === "center") return { x: 50, y: 50 };
+    if (posStr === "left") return { x: 0, y: 50 };
+    if (posStr === "right") return { x: 100, y: 50 };
+    const parts = posStr.split(" ");
+    if (parts.length === 2) {
+      const x = parseInt(parts[0]) || 50;
+      const y = parseInt(parts[1]) || 50;
+      return { x, y };
+    }
+    return { x: 50, y: 50 };
+  };
 
   const fetchServices = () => {
     setLoading(true);
@@ -98,13 +117,15 @@ export const ServicesManager = () => {
       "Подарете на гостите си момент на радост и изненада. Дизайните се изготвят по идея на клиента, съобразно цветовата гама на събитието."
     );
     setFeatures([
-      "НАЕМ НА ВЕНДНИГ МАШИНА ЗА КОНКРЕТНИ ЧАСОВЕ",
+      "НАЕМ НА ВЕНДИНГ МАШИНА ЗА КОНКРЕТНИ ЧАСОВЕ",
       "БУРКАН СЪС ЖЕТОНИ, СПРЯМО ГОСТИТЕ НА СЪБИТИЕТО",
       "ДИЗАЙН НА 4 ВИДА ИЛЮСТРАЦИИ, КАКТО И ЗА ПОСТЕРИТЕ",
       "ПЕЧАТ + СТАНДАРТНИ/ПЕРСОНАЛИЗИРАНИ КАРТОНЧЕТА",
       "2-МА СЛУЖИТЕЛИ ЗА СЪДЕЙСТВИЕ НА ГОСТИТЕ И МОНТАЖ",
     ]);
     setImage("/media/gallery/Tezza_2025_07_13_155326413.webp");
+    setImagePosX(50);
+    setImagePosY(50);
     setSelectedAssets(defaultAssets);
     setErrorMsg("");
     setSuccessMsg("");
@@ -118,6 +139,9 @@ export const ServicesManager = () => {
     setDescription(service.description || "");
     setFeatures(service.features && service.features.length > 0 ? service.features : [""]);
     setImage(service.image || "/media/gallery/Tezza_2025_07_13_155326413.webp");
+    const pos = parsePosition(service.imagePosition);
+    setImagePosX(pos.x);
+    setImagePosY(pos.y);
     setSelectedAssets(defaultAssets);
     setErrorMsg("");
     setSuccessMsg("");
@@ -140,7 +164,6 @@ export const ServicesManager = () => {
     });
   };
 
-  // Auto-convert any image to WebP via HTML5 Canvas
   const processFileToWebp = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -165,17 +188,14 @@ export const ServicesManager = () => {
   };
 
   const handleWebpUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-    setErrorMsg("");
     try {
-      const webpDataUrl = await processFileToWebp(files[0]);
-      setImage(webpDataUrl);
+      const webpBase64 = await processFileToWebp(file);
+      setImage(webpBase64);
     } catch {
-      setErrorMsg("Възникна грешка при обработка на снимката.");
-    } finally {
-      e.target.value = "";
+      setErrorMsg("Неуспешно конвертиране на изображението в WebP.");
     }
   };
 
@@ -199,6 +219,7 @@ export const ServicesManager = () => {
       description: description.trim(),
       features: cleanFeatures,
       image: image || "/media/gallery/Tezza_2025_07_13_155326413.webp",
+      imagePosition: `${imagePosX}% ${imagePosY}%`,
       badgeAsset: selectedAssets[0] || "",
       badgeAssets: selectedAssets,
     };
@@ -248,10 +269,8 @@ export const ServicesManager = () => {
 
   const handleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-    if (dragOverIndex !== index) {
-      setDragOverIndex(index);
-    }
+    if (draggedIndex === null || draggedIndex === index) return;
+    setDragOverIndex(index);
   };
 
   const handleDrop = async (e: React.DragEvent, targetIndex: number) => {
@@ -269,7 +288,17 @@ export const ServicesManager = () => {
     setServices(reordered);
     setDraggedIndex(null);
     setDragOverIndex(null);
-    await persistReorderedServices(reordered);
+
+    try {
+      await fetch("/api/services", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ services: reordered }),
+      });
+      localStorage.setItem("poshtichka_cached_services", JSON.stringify(reordered));
+    } catch (err) {
+      console.error("Reorder save failed:", err);
+    }
   };
 
   const moveService = async (index: number, direction: "up" | "down") => {
@@ -281,22 +310,17 @@ export const ServicesManager = () => {
     reordered.splice(targetIndex, 0, movedItem);
 
     setServices(reordered);
-    await persistReorderedServices(reordered);
-  };
 
-  const persistReorderedServices = async (reordered: ServiceItem[]) => {
     try {
-      localStorage.setItem("poshtichka_cached_services", JSON.stringify(reordered));
-      const res = await fetch("/api/services", {
+      await fetch("/api/services", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ services: reordered }),
       });
-      if (res.ok) {
-        setSuccessMsg("Подредбата на услугите е запазена успешно!");
-        setTimeout(() => setSuccessMsg(""), 3000);
-      }
-    } catch {}
+      localStorage.setItem("poshtichka_cached_services", JSON.stringify(reordered));
+    } catch (err) {
+      console.error("Move save failed:", err);
+    }
   };
 
   return (
@@ -380,7 +404,14 @@ export const ServicesManager = () => {
 
               {/* Service Image Preview */}
               <div className="relative w-full md:w-64 h-52 sm:h-60 rounded-[24px] overflow-hidden border-2 border-white shadow-md flex-shrink-0 bg-gray-100">
-                <Image src={srv.image} alt={srv.title} fill className="object-cover" unoptimized />
+                <Image 
+                    src={srv.image} 
+                    alt={srv.title} 
+                    fill 
+                    className="object-cover" 
+                    style={{ objectPosition: srv.imagePosition || "center" }}
+                    unoptimized 
+                />
               </div>
 
               {/* Service Details */}
@@ -422,7 +453,7 @@ export const ServicesManager = () => {
                   </p>
                 )}
 
-                {/* Features List Preview with Asset 86@2x.png Hand-Drawn Teal Checkmark */}
+                {/* Features List Preview */}
                 {srv.features && srv.features.length > 0 && (
                   <ul className="space-y-2 pt-2">
                     {srv.features.map((f, i) => (
@@ -450,8 +481,8 @@ export const ServicesManager = () => {
 
       {/* Add / Edit Service Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 font-sans">
-          <div className="bg-white rounded-3xl border-2 border-[#00b4b6] max-w-2xl w-full flex flex-col max-h-[90vh] shadow-2xl relative overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 font-sans overflow-y-auto">
+          <div className="bg-white rounded-3xl border-2 border-[#00b4b6] max-w-2xl w-full flex flex-col my-8 max-h-[90vh] shadow-2xl relative overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             {/* Modal Fixed Header */}
             <div className="px-6 py-4 border-b border-[#00b4b6]/20 flex items-center justify-between flex-shrink-0 bg-white z-10">
               <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6]">
@@ -532,7 +563,7 @@ export const ServicesManager = () => {
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-semibold text-[#182b2c] flex items-center space-x-1">
                       <ListPlus className="w-4 h-4 text-[#00b4b6]" />
-                      <span>Списък с включени предимства (бюлети със сини отметки)</span>
+                      <span>Списък с включени предимства</span>
                     </label>
                     <button
                       type="button"
@@ -554,7 +585,7 @@ export const ServicesManager = () => {
                           type="text"
                           value={feat}
                           onChange={(e) => handleFeatureChange(idx, e.target.value)}
-                          placeholder="напр. НАЕМ НА ВЕНДИНГ МАШИНА ЗА КОНКРЕТНИ ЧАСОВЕ"
+                          placeholder="напр. НАЕМ НА ВЕНДИНГ МАШИНА..."
                           className="w-full px-3.5 py-2.5 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
                         />
                         {features.length > 1 && (
@@ -572,24 +603,18 @@ export const ServicesManager = () => {
                   </div>
                 </div>
 
-                {/* Service Main Image (Strict .webp) */}
-                <div className="space-y-2 pt-2 border-t border-gray-200">
+                {/* Service Main Image (Strict .webp) & Positioning */}
+                <div className="space-y-4 pt-4 border-t border-gray-200">
                   <label className="text-xs font-semibold text-[#182b2c] flex items-center space-x-1">
                     <ImageIcon className="w-4 h-4 text-[#00b4b6]" />
                     <span>Снимка на услугата (Задължително .WEBP) *</span>
                   </label>
 
                   <div className="flex items-center space-x-4">
-                    {image && (
-                      <div className="relative w-24 h-24 rounded-2xl overflow-hidden border-2 border-[#00b4b6]/40 flex-shrink-0">
-                        <Image src={image} alt="Преглед" fill className="object-cover" unoptimized />
-                      </div>
-                    )}
-
                     <label className="cursor-pointer border-2 border-dashed border-[#00b4b6]/50 bg-[#00b4b6]/5 hover:bg-[#00b4b6]/10 p-3.5 rounded-2xl flex flex-col items-center justify-center space-y-1 transition-colors text-center w-full">
                       <Upload className="w-5 h-5 text-[#00b4b6]" />
                       <span className="text-xs font-bold text-[#182b2c]">
-                        Прикачи снимка
+                        {image ? "Смени снимката" : "Прикачи снимка"}
                       </span>
                       <input
                         type="file"
@@ -599,6 +624,132 @@ export const ServicesManager = () => {
                       />
                     </label>
                   </div>
+
+                  {/* Image Positioning & Live Preview in Modal */}
+                  {image && (
+                    <div className="bg-[#f9f6f0] p-4 sm:p-5 rounded-2xl border border-[#00b4b6]/30 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold uppercase tracking-wider text-[#182b2c] flex items-center space-x-1.5">
+                          <Sparkles className="w-4 h-4 text-[#00b4b6]" />
+                          <span>Наместване / Позиция на снимката</span>
+                        </span>
+                        <span className="text-xs font-mono font-bold text-[#00b4b6] bg-white px-2 py-0.5 rounded-md border border-[#00b4b6]/20">
+                          X: {imagePosX}% | Y: {imagePosY}%
+                        </span>
+                      </div>
+
+                      {/* Quick Preset Buttons */}
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => { setImagePosX(50); setImagePosY(0); }}
+                          className={`px-3 py-1 text-xs rounded-xl border transition-all cursor-pointer font-bold ${
+                            imagePosX === 50 && imagePosY === 0
+                              ? "bg-[#00b4b6] text-white border-[#00b4b6]"
+                              : "bg-white text-[#182b2c] border-[#182b2c]/20 hover:border-[#00b4b6]"
+                          }`}
+                        >
+                          ⬆️ Горе
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => { setImagePosX(50); setImagePosY(50); }}
+                          className={`px-3 py-1 text-xs rounded-xl border transition-all cursor-pointer font-bold ${
+                            imagePosX === 50 && imagePosY === 50
+                              ? "bg-[#00b4b6] text-white border-[#00b4b6]"
+                              : "bg-white text-[#182b2c] border-[#182b2c]/20 hover:border-[#00b4b6]"
+                          }`}
+                        >
+                          ⏺️ Център
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => { setImagePosX(50); setImagePosY(100); }}
+                          className={`px-3 py-1 text-xs rounded-xl border transition-all cursor-pointer font-bold ${
+                            imagePosX === 50 && imagePosY === 100
+                              ? "bg-[#00b4b6] text-white border-[#00b4b6]"
+                              : "bg-white text-[#182b2c] border-[#182b2c]/20 hover:border-[#00b4b6]"
+                          }`}
+                        >
+                          ⬇️ Долу
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => { setImagePosX(0); setImagePosY(50); }}
+                          className={`px-3 py-1 text-xs rounded-xl border transition-all cursor-pointer font-bold ${
+                            imagePosX === 0 && imagePosY === 50
+                              ? "bg-[#00b4b6] text-white border-[#00b4b6]"
+                              : "bg-white text-[#182b2c] border-[#182b2c]/20 hover:border-[#00b4b6]"
+                          }`}
+                        >
+                          ⬅️ Ляво
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => { setImagePosX(100); setImagePosY(50); }}
+                          className={`px-3 py-1 text-xs rounded-xl border transition-all cursor-pointer font-bold ${
+                            imagePosX === 100 && imagePosY === 50
+                              ? "bg-[#00b4b6] text-white border-[#00b4b6]"
+                              : "bg-white text-[#182b2c] border-[#182b2c]/20 hover:border-[#00b4b6]"
+                          }`}
+                        >
+                          ➡️ Дясно
+                        </button>
+                      </div>
+
+                      {/* Sliders */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="text-[11px] font-semibold text-[#182b2c] flex justify-between">
+                            <span>Вертикално преместване (Y-ос)</span>
+                            <span className="text-[#00b4b6] font-bold">{imagePosY}%</span>
+                          </label>
+                          <input
+                            type="range"
+                            min={0}
+                            max={100}
+                            step={1}
+                            value={imagePosY}
+                            onChange={(e) => setImagePosY(Number(e.target.value))}
+                            className="w-full h-2 bg-[#00b4b6]/20 rounded-lg appearance-none cursor-pointer accent-[#00b4b6]"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-[11px] font-semibold text-[#182b2c] flex justify-between">
+                            <span>Хоризонтално преместване (X-ос)</span>
+                            <span className="text-[#00b4b6] font-bold">{imagePosX}%</span>
+                          </label>
+                          <input
+                            type="range"
+                            min={0}
+                            max={100}
+                            step={1}
+                            value={imagePosX}
+                            onChange={(e) => setImagePosX(Number(e.target.value))}
+                            className="w-full h-2 bg-[#00b4b6]/20 rounded-lg appearance-none cursor-pointer accent-[#00b4b6]"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Live Card Preview Box */}
+                      <div className="space-y-1 pt-1">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#182b2c]/60">
+                          Преглед на живо (как ще изглежда в картата):
+                        </span>
+                        <div className="relative w-full h-56 sm:h-64 rounded-2xl overflow-hidden border-2 border-[#182b2c] bg-gray-100 shadow-sm">
+                          <Image
+                            src={image}
+                            alt="Преглед на наместването"
+                            fill
+                            className="object-cover transition-all duration-75"
+                            style={{ objectPosition: `${imagePosX}% ${imagePosY}%` }}
+                            unoptimized
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </form>
             </div>

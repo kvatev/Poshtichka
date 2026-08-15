@@ -10,6 +10,7 @@ export interface ServiceItem {
   description: string;
   features: string[];
   image: string;
+  imagePosition?: string;
   badgeAsset?: string;
   badgeAssets?: string[];
 }
@@ -125,7 +126,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { title, subtitle, description, features, image, badgeAsset, badgeAssets } = body;
+    const { title, subtitle, description, features, image, imagePosition, badgeAsset, badgeAssets } = body;
 
     if (!title) {
       return NextResponse.json({ error: "Заглавието е задължително." }, { status: 400 });
@@ -144,6 +145,7 @@ export async function POST(req: NextRequest) {
       description: description ? String(description).trim() : "",
       features: Array.isArray(features) ? features : [],
       image: image || "/media/gallery/Tezza_2025_07_13_155326413.webp",
+      imagePosition: imagePosition || "center",
       badgeAsset: resolvedBadgeAssets[0] || "/media/Услуги/Asset 86@2x.png",
       badgeAssets: resolvedBadgeAssets,
     };
@@ -204,7 +206,7 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ success: true, services: body.services });
     }
 
-    const { id, title, subtitle, description, features, image, badgeAsset, badgeAssets } = body;
+    const { id, title, subtitle, description, features, image, imagePosition, badgeAsset, badgeAssets } = body;
 
     if (!id) {
       return NextResponse.json({ error: "Липсва ИД на услугата за редакция." }, { status: 400 });
@@ -243,6 +245,7 @@ export async function PUT(req: NextRequest) {
           description: data.description,
           features: data.features || [],
           image: data.image,
+          imagePosition: imagePosition || "center",
           badgeAsset: data.badge_asset,
         };
       }
@@ -258,6 +261,7 @@ export async function PUT(req: NextRequest) {
           description: description ?? s.description,
           features: Array.isArray(features) ? features : s.features,
           image: image ?? s.image,
+          imagePosition: imagePosition ?? s.imagePosition ?? "center",
           badgeAsset: badgeAsset ?? s.badgeAsset,
         };
       }
