@@ -211,21 +211,25 @@ export default function AboutPage() {
                 Проверете дали Пощичка може да пътува за вашия специален ден!
               </p>
 
-              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3 relative">
-                <Link href="/calendar">
-                  <button className="inline-flex items-center justify-center px-10 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white hover:bg-[#00b4b6] hover:text-white text-[#00b4b6] font-salongbeach text-lg sm:text-xl font-bold uppercase tracking-wider transition-all duration-300 shadow-md cursor-pointer">
-                    <span>ПРОВЕРЕТЕ ТУК</span>
-                  </button>
-                </Link>
+              <div className="pt-2 flex items-center justify-center relative">
+                <div className="relative inline-flex items-center justify-center">
+                  <Link href="/calendar">
+                    <button className="inline-flex items-center justify-center px-8 sm:px-10 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white hover:bg-[#00b4b6] hover:text-white text-[#00b4b6] font-salongbeach text-lg sm:text-xl font-bold uppercase tracking-wider transition-all duration-300 shadow-md cursor-pointer">
+                      <span>ПРОВЕРЕТЕ ТУК</span>
+                    </button>
+                  </Link>
 
-                {/* Curly Arrow to the right of the button pointing at it */}
-                <div className="relative w-12 h-12 flex-shrink-0 pointer-events-none">
-                  <Image
-                    src={encodeURI("/media/Main Page/curly-arrow-left.png")}
-                    alt="Стрелка"
-                    fill
-                    className="object-contain opacity-90 -rotate-12"
-                  />
+                  {/* Curly Arrow pointing directly at the button */}
+                  <div className="flex items-center justify-center absolute -right-10 sm:-right-14 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <Image
+                      src={encodeURI("/media/Main Page/curly-arrow-left.png")}
+                      alt="Стрелка"
+                      width={52}
+                      height={52}
+                      className="w-8 sm:w-11 h-auto object-contain opacity-90 translate-y-[2px]"
+                      unoptimized
+                    />
+                  </div>
                 </div>
               </div>
             </div>
