@@ -107,12 +107,12 @@ export default function ServicesPage() {
           {services.map((service, index) => (
             <div
               key={service.id || index}
-              className="bg-[#f9f6f0] border-2 border-[#182b2c]/20 shadow-xl rounded-[36px] p-6 sm:p-10 transition-all duration-300 hover:shadow-2xl flex flex-col lg:flex-row items-center gap-8 lg:gap-12"
+              className="bg-[#f9f6f0] border-2 border-[#182b2c] shadow-xl rounded-[40px] sm:rounded-[48px] p-6 sm:p-10 lg:p-12 transition-all duration-300 hover:shadow-2xl flex flex-col lg:flex-row items-center gap-8 lg:gap-14"
             >
               {/* Left Side: Photo Frame with Decorative Rays (Asset 86@2x.png) */}
               <div className="relative w-full lg:w-1/2 flex-shrink-0 flex items-center justify-center">
-                {/* Decorative Spark / Ray Asset 86@2x.png on left */}
-                <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-8 sm:w-12 h-16 sm:h-20 pointer-events-none z-10 hidden sm:block">
+                {/* Decorative Spark / Ray Asset 86@2x.png on top-left */}
+                <div className="absolute -top-4 -left-4 sm:-top-6 sm:-left-6 w-12 sm:w-16 h-12 sm:h-16 pointer-events-none z-10 hidden sm:block -rotate-12">
                   <Image
                     src={encodeURI("/media/Услуги/Asset 86@2x.png")}
                     alt="Декорация"
@@ -123,7 +123,7 @@ export default function ServicesPage() {
                 </div>
 
                 {/* Main Photo Frame */}
-                <div className="relative w-full h-[320px] sm:h-[400px] md:h-[440px] rounded-[28px] overflow-hidden border-2 border-[#182b2c]/10 shadow-lg bg-gray-100">
+                <div className="relative w-full h-[360px] sm:h-[460px] lg:h-[520px] rounded-[32px] sm:rounded-[36px] overflow-hidden border-2 border-[#182b2c] shadow-lg bg-gray-100">
                   <Image
                     src={service.image || "/media/gallery/Tezza_2025_07_13_155326413.webp"}
                     alt={service.title}
@@ -133,8 +133,8 @@ export default function ServicesPage() {
                   />
                 </div>
 
-                {/* Decorative Spark / Ray Asset 86@2x.png on right */}
-                <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-8 sm:w-12 h-16 sm:h-20 pointer-events-none z-10 hidden sm:block rotate-180">
+                {/* Decorative Spark / Ray Asset 86@2x.png on bottom-left */}
+                <div className="absolute -bottom-4 -left-4 sm:-bottom-6 sm:-left-6 w-12 sm:w-16 h-12 sm:h-16 pointer-events-none z-10 hidden sm:block rotate-45">
                   <Image
                     src={encodeURI("/media/Услуги/Asset 86@2x.png")}
                     alt="Декорация"
@@ -146,39 +146,50 @@ export default function ServicesPage() {
               </div>
 
               {/* Right Side: Title, Subtitle, Description & Bullet List */}
-              <div className="w-full lg:w-1/2 space-y-5 text-left">
-                <div className="space-y-1.5">
+              <div className="w-full lg:w-1/2 space-y-6 text-left">
+                <div className="space-y-2">
                   <h2 className="font-salongbeach text-3xl sm:text-4xl lg:text-5xl font-bold uppercase text-[#182b2c] tracking-wider leading-none">
                     {service.title}
                   </h2>
                   {service.subtitle && (
-                    <p className="font-sans text-xs sm:text-sm text-[#00b4b6] font-medium leading-relaxed">
+                    <p className="font-stampatello text-base sm:text-lg text-[#00b4b6] font-normal leading-relaxed">
                       {service.subtitle}
                     </p>
                   )}
                 </div>
 
                 {service.description && (
-                  <p className="font-sans text-sm sm:text-base text-[#182b2c]/85 leading-relaxed">
+                  <p className="font-stampatello text-base sm:text-lg text-[#182b2c]/85 leading-relaxed font-normal">
                     {service.description}
                   </p>
                 )}
 
-                {/* Bullet List with Teal Circular Checkmarks matching Asset 88@2x.png */}
+                {/* Bullet List with Double-Ring Teal Circular Checkmarks matching Screenshot 2 */}
                 {service.features && service.features.length > 0 && (
-                  <ul className="space-y-3.5 pt-2">
+                  <ul className="space-y-4 pt-2">
                     {service.features.map((feat, i) => (
-                      <li key={i} className="flex items-center space-x-3.5">
-                        {/* Teal Circular Checkmark Icon Asset 88@2x.png */}
-                        <div className="w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0 relative flex items-center justify-center">
-                          <img
-                            src="/media/Услуги/Asset 88@2x.png"
-                            alt="Отметка"
-                            className="w-full h-full object-contain pointer-events-none"
-                          />
+                      <li key={i} className="flex items-center space-x-3.5 sm:space-x-4">
+                        {/* Teal Double-Ring Checkmark Icon */}
+                        <div className="w-9 h-9 sm:w-11 sm:h-11 flex-shrink-0 relative flex items-center justify-center">
+                          <svg
+                            viewBox="0 0 48 48"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-full h-full"
+                          >
+                            <circle cx="24" cy="24" r="22" stroke="#00b4b6" strokeWidth="3" />
+                            <circle cx="24" cy="24" r="17" stroke="#00b4b6" strokeWidth="2.5" />
+                            <path
+                              d="M15 24.5L21.5 31L33 18"
+                              stroke="#00b4b6"
+                              strokeWidth="3.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
                         </div>
 
-                        <span className="font-salongbeach font-bold uppercase text-sm sm:text-base lg:text-lg text-[#182b2c] tracking-wider leading-snug">
+                        <span className="font-salongbeach font-bold uppercase text-base sm:text-lg lg:text-xl text-[#182b2c] tracking-wider leading-snug">
                           {feat}
                         </span>
                       </li>
@@ -187,14 +198,14 @@ export default function ServicesPage() {
                 )}
 
                 {/* CTA Booking Button */}
-                <div className="pt-3">
+                <div className="pt-4">
                   <Link href="/booking">
                     <Button
                       variant="primary"
-                      className="bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-base font-bold uppercase tracking-wider px-8 py-3.5 rounded-full shadow-md flex items-center space-x-2 cursor-pointer"
+                      className="bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-lg font-bold uppercase tracking-wider px-9 py-4 rounded-full shadow-lg flex items-center space-x-2 cursor-pointer"
                     >
                       <span>Резервирай тази услуга</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-5 h-5" />
                     </Button>
                   </Link>
                 </div>

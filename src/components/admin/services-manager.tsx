@@ -14,6 +14,9 @@ import {
   Sparkles,
   ListPlus,
   ImageIcon,
+  GripVertical,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -43,6 +46,10 @@ export const ServicesManager = () => {
   const [saving, setSaving] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+
+  // Drag-and-drop reordering state
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
   // Form State
   const [title, setTitle] = useState("");
@@ -232,6 +239,64 @@ export const ServicesManager = () => {
     }
   };
 
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (dragOverIndex !== index) {
+      setDragOverIndex(index);
+    }
+  };
+
+  const handleDrop = async (e: React.DragEvent, targetIndex: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === targetIndex) {
+      setDraggedIndex(null);
+      setDragOverIndex(null);
+      return;
+    }
+
+    const reordered = [...services];
+    const [movedItem] = reordered.splice(draggedIndex, 1);
+    reordered.splice(targetIndex, 0, movedItem);
+
+    setServices(reordered);
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+    await persistReorderedServices(reordered);
+  };
+
+  const moveService = async (index: number, direction: "up" | "down") => {
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= services.length) return;
+
+    const reordered = [...services];
+    const [movedItem] = reordered.splice(index, 1);
+    reordered.splice(targetIndex, 0, movedItem);
+
+    setServices(reordered);
+    await persistReorderedServices(reordered);
+  };
+
+  const persistReorderedServices = async (reordered: ServiceItem[]) => {
+    try {
+      localStorage.setItem("poshtichka_cached_services", JSON.stringify(reordered));
+      const res = await fetch("/api/services", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ services: reordered }),
+      });
+      if (res.ok) {
+        setSuccessMsg("Подредбата на услугите е запазена успешно!");
+        setTimeout(() => setSuccessMsg(""), 3000);
+      }
+    } catch {}
+  };
+
   return (
     <div className="space-y-6 font-sans text-[#182b2c]">
       {/* Header Bar */}
@@ -241,7 +306,7 @@ export const ServicesManager = () => {
             Управление на Услугите ({services.length})
           </h2>
           <p className="text-xs text-[#182b2c]/70 mt-1">
-            Добавяйте и редактирайте услугите с техните описания, подзаглавия и списък с предимства!
+            Хванете и плъзнете (Drag & Drop) или използвайте стрелките за пренареждане на услугите!
           </p>
         </div>
 
@@ -254,6 +319,13 @@ export const ServicesManager = () => {
         </Button>
       </div>
 
+      {successMsg && (
+        <div className="p-4 rounded-2xl bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center space-x-2 text-sm font-semibold animate-in fade-in">
+          <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+          <span>{successMsg}</span>
+        </div>
+      )}
+
       {/* Services Grid / Cards List */}
       {loading ? (
         <div className="p-12 text-center text-[#182b2c]/60">Зареждане на услугите...</div>
@@ -263,11 +335,47 @@ export const ServicesManager = () => {
         </Card>
       ) : (
         <div className="space-y-6">
-          {services.map((srv) => (
-            <Card
+          {services.map((srv, idx) => (
+            <div
               key={srv.id}
-              className="p-6 sm:p-8 bg-[#f9f6f0] border-2 border-[#182b2c]/20 rounded-[32px] shadow-lg flex flex-col md:flex-row items-start gap-6 relative group"
+              draggable
+              onDragStart={(e) => handleDragStart(e, idx)}
+              onDragOver={(e) => handleDragOver(e, idx)}
+              onDrop={(e) => handleDrop(e, idx)}
+              className={`p-6 sm:p-8 bg-[#f9f6f0] border-2 rounded-[32px] shadow-lg flex flex-col md:flex-row items-start gap-6 relative group transition-all duration-200 ${
+                dragOverIndex === idx
+                  ? "border-[#00b4b6] ring-4 ring-[#00b4b6]/30 scale-[1.01]"
+                  : "border-[#182b2c]/20 hover:border-[#00b4b6]/60"
+              }`}
             >
+              {/* Drag Handle & Reorder Controls */}
+              <div className="flex md:flex-col items-center justify-center gap-1 text-[#182b2c]/50 group-hover:text-[#00b4b6] shrink-0 pt-2">
+                <div
+                  className="cursor-grab active:cursor-grabbing p-1.5 rounded-lg hover:bg-white transition-colors"
+                  title="Хванете и плъзнете за пренареждане"
+                >
+                  <GripVertical className="w-6 h-6" />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => moveService(idx, "up")}
+                  disabled={idx === 0}
+                  className="p-1.5 rounded-lg bg-white border border-[#182b2c]/10 hover:bg-[#00b4b6]/10 hover:text-[#00b4b6] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                  title="Премести нагоре"
+                >
+                  <ChevronUp className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moveService(idx, "down")}
+                  disabled={idx === services.length - 1}
+                  className="p-1.5 rounded-lg bg-white border border-[#182b2c]/10 hover:bg-[#00b4b6]/10 hover:text-[#00b4b6] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                  title="Премести надолу"
+                >
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+              </div>
+
               {/* Service Image Preview */}
               <div className="relative w-full md:w-64 h-52 sm:h-60 rounded-[24px] overflow-hidden border-2 border-white shadow-md flex-shrink-0 bg-gray-100">
                 <Image src={srv.image} alt={srv.title} fill className="object-cover" unoptimized />
@@ -277,6 +385,9 @@ export const ServicesManager = () => {
               <div className="flex-grow space-y-3 w-full">
                 <div className="flex items-start justify-between gap-4">
                   <div>
+                    <span className="text-[11px] font-bold text-[#00b4b6] uppercase tracking-wider bg-[#00b4b6]/10 px-2.5 py-0.5 rounded-md mb-1 inline-block">
+                      Позиция #{idx + 1}
+                    </span>
                     <h3 className="font-salongbeach text-2xl sm:text-3xl font-bold uppercase text-[#182b2c] tracking-wider">
                       {srv.title}
                     </h3>
@@ -309,23 +420,36 @@ export const ServicesManager = () => {
                   </p>
                 )}
 
-                {/* Features List Preview */}
+                {/* Features List Preview with Double-Ring Teal Checkmark */}
                 {srv.features && srv.features.length > 0 && (
                   <ul className="space-y-2 pt-2">
                     {srv.features.map((f, i) => (
                       <li key={i} className="flex items-center space-x-2.5 text-xs font-bold text-[#182b2c]">
-                        <img
-                          src="/media/Услуги/Asset 88@2x.png"
-                          alt="Отметка"
-                          className="w-6 h-6 object-contain flex-shrink-0"
-                        />
+                        <div className="w-5 h-5 shrink-0 flex items-center justify-center">
+                          <svg
+                            viewBox="0 0 48 48"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-full h-full"
+                          >
+                            <circle cx="24" cy="24" r="22" stroke="#00b4b6" strokeWidth="3.5" />
+                            <circle cx="24" cy="24" r="17" stroke="#00b4b6" strokeWidth="2.5" />
+                            <path
+                              d="M15 24.5L21.5 31L33 18"
+                              stroke="#00b4b6"
+                              strokeWidth="4"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </div>
                         <span className="font-salongbeach uppercase tracking-wider">{f}</span>
                       </li>
                     ))}
                   </ul>
                 )}
               </div>
-            </Card>
+            </div>
           ))}
         </div>
       )}

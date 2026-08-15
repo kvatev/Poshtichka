@@ -173,6 +173,17 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
+
+    // Check for reordering array
+    if (Array.isArray(body.services)) {
+      await saveStoredServices(body.services);
+      try {
+        revalidatePath("/services");
+        revalidatePath("/");
+      } catch {}
+      return NextResponse.json({ success: true, services: body.services });
+    }
+
     const { id, title, subtitle, description, features, image, badgeAsset } = body;
 
     if (!id) {
