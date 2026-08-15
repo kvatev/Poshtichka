@@ -457,10 +457,15 @@ export const CalendarView = () => {
                         {ev.fullName}
                       </div>
                       <div className="flex items-center justify-between text-[10px] text-gray-500 mt-0.5">
-                        <span className="truncate">{ev.city}</span>
-                        <span className="font-bold text-emerald-600 font-salongbeach text-xs shrink-0">
-                          +{ev.price} €
-                        </span>
+                        {ev.price > 0 ? (
+                          <span className="font-bold text-emerald-600 font-salongbeach text-xs shrink-0">
+                            +{ev.price} €
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-md font-semibold shrink-0">
+                            Заета дата
+                          </span>
+                        )}
                       </div>
                     </div>
                   ))}
