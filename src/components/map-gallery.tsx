@@ -144,7 +144,7 @@ export const MapGallery = () => {
   const [events, setEvents] = useState<EventLocation[]>(DEFAULT_LOCATIONS);
   const [selectedCity, setSelectedCity] = useState<string>("");
   const [cityPresets, setCityPresets] = useState<string[]>([
-    "Каварна", "София", "Червен", "Перущица", "Велико Търново", "Бургас", "Пловдив", "Варна"
+    "Каварна", "София", "Перущица", "Велико Търново", "Пловдив", "Варна", "с. Равно поле, Елин Пелин", "В.С. Свети Тома", "Червен", "Бургас", "Поморие"
   ]);
   const [activeModalEvent, setActiveModalEvent] = useState<EventLocation | null>(null);
   const [activeLightboxIndex, setActiveLightboxIndex] = useState<number>(0);
@@ -192,18 +192,29 @@ export const MapGallery = () => {
       .catch(() => {});
   }, []);
 
-  const cityNamesList = useMemo(() => {
-    const fromEvents = events.map((e) => e.cityName).filter(Boolean);
-    return Array.from(new Set([...cityPresets, ...fromEvents])).filter((c) => c.toLowerCase() !== "созопол");
-  }, [cityPresets, events]);
+  // Deduplicate events to ensure no cards ever render twice
+  const uniqueEvents = useMemo(() => {
+    const seen = new Set<string>();
+    return events.filter((ev) => {
+      const key = `${(ev.eventName || "").trim()}_${(ev.cityName || "").trim()}_${(ev.venueName || "").trim()}`.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }, [events]);
 
-  // Active events for the selected city (or all events if no city selected)
+  const cityNamesList = useMemo(() => {
+    const fromEvents = uniqueEvents.map((e) => e.cityName).filter(Boolean);
+    return Array.from(new Set([...cityPresets, ...fromEvents])).filter((c) => c.toLowerCase() !== "созопол");
+  }, [cityPresets, uniqueEvents]);
+
+  // Active events for the selected city (or all unique events if ВСИЧКИ is selected)
   const selectedCityEvents = useMemo(() => {
-    if (!selectedCity) return events;
-    return events.filter(
+    if (!selectedCity) return uniqueEvents;
+    return uniqueEvents.filter(
       (e) => e.cityName.toLowerCase().trim() === selectedCity.toLowerCase().trim()
     );
-  }, [events, selectedCity]);
+  }, [uniqueEvents, selectedCity]);
 
   // Leaflet Map Initialization with Asset 82@2x.png pins (ScrollWheelZoom Enabled + Dynamic Events Markers)
   useEffect(() => {
@@ -245,7 +256,7 @@ export const MapGallery = () => {
       });
 
       // Render markers for all dynamic event locations
-      events.forEach((ev) => {
+      uniqueEvents.forEach((ev) => {
         if (!ev.latitude || !ev.longitude) return;
 
         const coords: [number, number] = [ev.latitude, ev.longitude];
@@ -266,7 +277,7 @@ export const MapGallery = () => {
     return () => {
       isMounted = false;
     };
-  }, [events]);
+  }, [uniqueEvents]);
 
   const zoomToCity = (cityName: string) => {
     // If clicking already selected city, toggle off and zoom out to full Bulgaria
@@ -283,7 +294,7 @@ export const MapGallery = () => {
     if (!mapInstanceRef.current) return;
 
     // 1. Look in active events
-    const match = events.find(
+    const match = uniqueEvents.find(
       (e) => e.cityName.toLowerCase().trim() === cityName.toLowerCase().trim()
     );
 
@@ -323,7 +334,7 @@ export const MapGallery = () => {
     }
   };
 
-  const resetCityFilter = () => {
+  const showAllLocations = () => {
     setSelectedCity("");
     if (mapInstanceRef.current) {
       mapInstanceRef.current.flyTo([42.75, 25.5], 7, { animate: true, duration: 1.2 });
@@ -355,6 +366,18 @@ export const MapGallery = () => {
 
       {/* 2. City Filter Oval Tabs */}
       <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 px-4 max-w-5xl mx-auto">
+        {/* All Locations Pill */}
+        <button
+          onClick={showAllLocations}
+          className={`px-5 sm:px-7 py-2 text-xs sm:text-sm font-salongbeach font-bold uppercase tracking-wider rounded-full transition-all duration-300 cursor-pointer shadow-xs ${
+            !selectedCity
+              ? "bg-[#00b4b6] text-white shadow-md scale-105"
+              : "bg-[#f9f6f0] border border-[#00b4b6] text-[#182b2c] hover:bg-[#00b4b6]/10"
+          }`}
+        >
+          ВСИЧКИ
+        </button>
+
         {cityNamesList.map((cityName) => {
           const isSelected = selectedCity.toLowerCase() === cityName.toLowerCase();
           return (
@@ -380,7 +403,7 @@ export const MapGallery = () => {
         </div>
       </div>
 
-      {/* 4. Active City Title Section with Asset 83@2x.png icon (Only shown when a city is selected) */}
+      {/* 4. Active City Title Section with Asset 83@2x.png icon (Shown when specific city selected) */}
       {selectedCity && (
         <div className="text-center space-y-2 px-4 pt-4 max-w-3xl mx-auto flex flex-col items-center justify-center">
           <div className="flex justify-center">
@@ -405,7 +428,7 @@ export const MapGallery = () => {
         </div>
       )}
 
-      {/* 5. Active City Event Banner Section (Teal Background #00b4b6) */}
+      {/* 5. Static Cards Section (Teal Background #00b4b6) */}
       <section className="w-full bg-[#00b4b6] py-12 sm:py-16 px-4 sm:px-8 flex justify-center">
         <div className="max-w-6xl mx-auto w-full">
           {selectedCityEvents.length > 0 ? (
