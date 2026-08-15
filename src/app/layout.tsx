@@ -49,9 +49,16 @@ export const metadata: Metadata = {
     telephone: false,
   },
   icons: {
-    icon: "/media/logos/Logo.png",
-    shortcut: "/media/logos/Logo.png",
-    apple: "/apple-touch-icon.png",
+    icon: [
+      { url: encodeURI("/media/Галерия/Asset 82@2x.png"), type: "image/png" },
+      { url: "/icon.png", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    shortcut: encodeURI("/media/Галерия/Asset 82@2x.png"),
+    apple: [
+      { url: encodeURI("/media/Галерия/Asset 82@2x.png"), sizes: "180x180", type: "image/png" },
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+    ],
   },
   openGraph: {
     title: "Пощичка | Всеки гост си тръгва със спомен",
