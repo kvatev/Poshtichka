@@ -8,22 +8,15 @@ import { DashboardOverview } from "@/components/admin/dashboard-overview";
 import { LeadsKanbanManager } from "@/components/admin/leads-kanban-manager";
 import { CalendarView } from "@/components/admin/calendar-view";
 import { FinanceManager } from "@/components/admin/finance-manager";
-import { CustomersManager } from "@/components/admin/customers-manager";
 import { ServicesManager } from "@/components/admin/services-manager";
 import { GalleryManager } from "@/components/admin/gallery-manager";
-import { AdminMapManager } from "@/components/admin/admin-map-manager";
 import { TestimonialsManager } from "@/components/admin/testimonials-manager";
 import { FAQManager } from "@/components/admin/faq-manager";
 import { PricingManager } from "@/components/admin/pricing-manager";
-import { ProductsManager } from "@/components/admin/products-manager";
 import { SettingsManager } from "@/components/admin/settings-manager";
-import { MediaLibraryManager } from "@/components/admin/media-library-manager";
 import { WebsiteContentManager } from "@/components/admin/website-content-manager";
 import { HomepageEditor } from "@/components/admin/homepage-editor";
 import { SeoManager } from "@/components/admin/seo-manager";
-import { AnalyticsDashboard } from "@/components/admin/analytics-dashboard";
-import { BannerManager } from "@/components/admin/banner-manager";
-import { BackupManager } from "@/components/admin/backup-manager";
 import { BookingDetailModal } from "@/components/admin/booking-detail-modal";
 import {
   CrmLead,
@@ -249,27 +242,14 @@ export default function AdminDashboardPage() {
             <FinanceManager leads={leads} onUpdateLead={handleUpdateLead} />
           )}
 
-          {activeTab === "customers" && (
-            <CustomersManager
-              leads={leads}
-              onSelectLead={(lead) => setSelectedLead(lead)}
-            />
-          )}
-
           {activeTab === "services" && <ServicesManager />}
-          {activeTab === "media" && <MediaLibraryManager />}
           {activeTab === "homepage" && <HomepageEditor />}
           {activeTab === "content" && <WebsiteContentManager />}
           {activeTab === "gallery" && <GalleryManager />}
-          {activeTab === "map-events" && <AdminMapManager />}
           {activeTab === "testimonials" && <TestimonialsManager />}
           {activeTab === "faq" && <FAQManager />}
           {activeTab === "pricing" && <PricingManager />}
-          {activeTab === "products" && <ProductsManager />}
-          {activeTab === "banners" && <BannerManager />}
           {activeTab === "seo" && <SeoManager />}
-          {activeTab === "analytics" && <AnalyticsDashboard />}
-          {activeTab === "backup" && <BackupManager leads={leads} />}
           {activeTab === "settings" && <SettingsManager />}
         </main>
       </div>

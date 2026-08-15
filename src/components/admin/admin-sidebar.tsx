@@ -37,21 +37,14 @@ export type AdminTab =
   | "leads"
   | "calendar"
   | "finance"
-  | "customers"
   | "services"
-  | "media"
   | "homepage"
   | "content"
   | "gallery"
-  | "map-events"
   | "testimonials"
   | "faq"
   | "pricing"
-  | "products"
-  | "banners"
   | "seo"
-  | "analytics"
-  | "backup"
   | "settings";
 
 interface AdminSidebarProps {
@@ -66,22 +59,15 @@ export const adminNavItems: { id: AdminTab; label: string; icon: React.ElementTy
   { id: "leads", label: "Запитвания (Канбан)", icon: Kanban },
   { id: "calendar", label: "Календар Заетост", icon: Calendar },
   { id: "finance", label: "Финанси & Плащания", icon: DollarSign },
-  { id: "customers", label: "Клиенти & Профили", icon: Users },
   { id: "services", label: "Услуги & Описание", icon: Sparkles, section: "Управление" },
-  { id: "media", label: "Медийна Библиотека", icon: FolderOpen },
   { id: "homepage", label: "Начална Страница", icon: HomeIcon },
   { id: "content", label: "Текстове & Съдържание", icon: FileText },
   { id: "gallery", label: "Галерия", icon: ImageIcon },
-  { id: "map-events", label: "Карта & Локации", icon: MapPin },
   { id: "testimonials", label: "Отзиви", icon: MessageSquareQuote },
   { id: "faq", label: "ЧЗВ", icon: HelpCircle },
   { id: "pricing", label: "Цени & Калкулатор", icon: Tag },
-  { id: "products", label: "Продукти & Сувенири", icon: Package },
-  { id: "banners", label: "Промо Банери", icon: Megaphone, section: "Маркетинг" },
-  { id: "seo", label: "SEO & Метатегове", icon: Search },
-  { id: "analytics", label: "Аналитика & Отчети", icon: BarChart3 },
-  { id: "backup", label: "Бекъп & Сигурност", icon: Database, section: "Система" },
-  { id: "settings", label: "Общи Настройки", icon: Settings },
+  { id: "seo", label: "SEO & Метатегове", icon: Search, section: "Маркетинг" },
+  { id: "settings", label: "Общи Настройки", icon: Settings, section: "Система" },
 ];
 
 export const AdminSidebar = ({
