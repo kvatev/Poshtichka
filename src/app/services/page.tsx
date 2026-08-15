@@ -207,7 +207,7 @@ export default function ServicesPage() {
 
                   {/* CTA Booking Button */}
                   <div className="pt-4">
-                    <Link href="/booking">
+                    <Link href="/contact">
                       <Button
                         variant="primary"
                         className="bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-lg font-bold uppercase tracking-wider px-9 py-4 rounded-full shadow-lg flex items-center space-x-2 cursor-pointer"
