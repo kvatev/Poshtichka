@@ -122,32 +122,11 @@ export default function ServicesPage() {
 
         <section className="max-w-6xl mx-auto px-4 sm:px-8 space-y-12">
           {services.map((service, index) => {
-            const activeAssets = service.badgeAssets && service.badgeAssets.length > 0
-              ? service.badgeAssets
-              : service.badgeAsset
-                ? [service.badgeAsset]
-                : ["/media/Услуги/Asset 86@2x.png", "/media/Услуги/Asset 90@2x.png"];
-
-            const hasCheckmarkAsset = activeAssets.includes("/media/Услуги/Asset 86@2x.png");
-            const hasFrameAsset = activeAssets.includes("/media/Услуги/Asset 90@2x.png");
-
             return (
               <div
                 key={service.id || index}
-                className="relative bg-[#f9f6f0] border-2 border-[#182b2c] shadow-xl rounded-[40px] sm:rounded-[48px] p-6 sm:p-10 lg:p-12 transition-all duration-300 hover:shadow-2xl flex flex-col lg:flex-row items-center gap-8 lg:gap-14 overflow-hidden"
+                className="relative bg-[#f9f6f0] border-2 border-[#182b2c] shadow-xl rounded-[36px] sm:rounded-[44px] p-6 sm:p-10 lg:p-12 transition-all duration-300 hover:shadow-2xl flex flex-col lg:flex-row items-center gap-8 lg:gap-14 overflow-hidden"
               >
-                {hasFrameAsset && (
-                  <div className="absolute inset-0 w-full h-full pointer-events-none z-10 opacity-70">
-                    <Image
-                      src={encodeURI("/media/Услуги/Asset 90@2x.png")}
-                      alt="Рамка"
-                      fill
-                      className="object-fill"
-                      unoptimized
-                    />
-                  </div>
-                )}
-
                 <div className="relative w-full lg:w-1/2 flex-shrink-0 flex items-center justify-center z-0">
                   <div className="relative w-full h-[360px] sm:h-[460px] lg:h-[520px] rounded-[32px] sm:rounded-[36px] overflow-hidden border-2 border-[#182b2c] shadow-lg bg-gray-100">
                     <Image
