@@ -403,84 +403,85 @@ export const MapGallery = () => {
         </div>
       </div>
 
-      {/* 4. Active City Title Section with Asset 83@2x.png icon (Shown when specific city selected) */}
+      {/* 4 & 5. Active City Title & Teal Event Banner (Shown ONLY when a specific city is selected from the map/tabs) */}
       {selectedCity && (
-        <div className="text-center space-y-2 px-4 pt-4 max-w-3xl mx-auto flex flex-col items-center justify-center">
-          <div className="flex justify-center">
-            <div className="relative w-12 sm:w-14 h-12 sm:h-14">
-              <Image
-                src={encodeURI("/media/Галерия/Asset 83@2x.png")}
-                alt="Иконка локация"
-                fill
-                className="object-contain"
-                unoptimized
-              />
+        <>
+          <div className="text-center space-y-2 px-4 pt-4 max-w-3xl mx-auto flex flex-col items-center justify-center">
+            <div className="flex justify-center">
+              <div className="relative w-12 sm:w-14 h-12 sm:h-14">
+                <Image
+                  src={encodeURI("/media/Галерия/Asset 83@2x.png")}
+                  alt="Иконка локация"
+                  fill
+                  className="object-contain"
+                  unoptimized
+                />
+              </div>
             </div>
+            <h2 className="font-salongbeach text-3xl sm:text-5xl font-bold uppercase tracking-wider text-[#182b2c]">
+              {selectedCity}
+            </h2>
+            <p className="font-stampatello text-base sm:text-lg text-[#182b2c]/85 italic">
+              {selectedCityEvents.length > 0
+                ? `${selectedCityEvents.length} ${selectedCityEvents.length === 1 ? "гостуване" : "гостувания"} на тази локация`
+                : "Няма намерени събития"}
+            </p>
           </div>
-          <h2 className="font-salongbeach text-3xl sm:text-5xl font-bold uppercase tracking-wider text-[#182b2c]">
-            {selectedCity}
-          </h2>
-          <p className="font-stampatello text-base sm:text-lg text-[#182b2c]/85 italic">
-            {selectedCityEvents.length > 0
-              ? `${selectedCityEvents.length} ${selectedCityEvents.length === 1 ? "гостуване" : "гостувания"} на тази локация`
-              : "Няма намерени събития"}
-          </p>
-        </div>
-      )}
 
-      {/* 5. Static Cards Section (Teal Background #00b4b6) */}
-      <section className="w-full bg-[#00b4b6] py-12 sm:py-16 px-4 sm:px-8 flex justify-center">
-        <div className="max-w-6xl mx-auto w-full">
-          {selectedCityEvents.length > 0 ? (
-            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8">
-              {selectedCityEvents.map((ev) => (
-                <div
-                  key={ev.id}
-                  onClick={() => {
-                    setActiveModalEvent(ev);
-                    setActiveLightboxIndex(0);
-                  }}
-                  className="relative group w-[300px] sm:w-[340px] md:w-[360px] h-[430px] sm:h-[480px] border-[2.5px] border-[#182b2c] rounded-[40px] sm:rounded-[46px] overflow-hidden shadow-xl hover:scale-[1.03] transition-all duration-300 cursor-pointer flex flex-col mx-auto bg-[#f9f6f0]"
-                >
-                  {/* Photo Container filling top ~68% seamlessly */}
-                  <div className="relative w-full h-[68%] overflow-hidden">
-                    <Image
-                      src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
-                      alt={ev.eventName || ev.cityName}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      unoptimized
-                    />
-                  </div>
+          <section className="w-full bg-[#00b4b6] py-12 sm:py-16 px-4 sm:px-8 flex justify-center">
+            <div className="max-w-6xl mx-auto w-full">
+              {selectedCityEvents.length > 0 ? (
+                <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8">
+                  {selectedCityEvents.map((ev) => (
+                    <div
+                      key={ev.id}
+                      onClick={() => {
+                        setActiveModalEvent(ev);
+                        setActiveLightboxIndex(0);
+                      }}
+                      className="relative group w-[300px] sm:w-[340px] md:w-[360px] h-[430px] sm:h-[480px] border-[2.5px] border-[#182b2c] rounded-[40px] sm:rounded-[46px] overflow-hidden shadow-xl hover:scale-[1.03] transition-all duration-300 cursor-pointer flex flex-col mx-auto bg-[#f9f6f0]"
+                    >
+                      {/* Photo Container filling top ~68% seamlessly */}
+                      <div className="relative w-full h-[68%] overflow-hidden">
+                        <Image
+                          src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
+                          alt={ev.eventName || ev.cityName}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          unoptimized
+                        />
+                      </div>
 
-                  {/* Text Area filling bottom ~32% with solid cream/white background */}
-                  <div className="relative w-full h-[32%] bg-[#f9f6f0] px-4 py-2.5 text-center flex flex-col items-center justify-center space-y-0.5 z-0">
-                    {/* Line 1: ГЕРИ И КРАСИ (SALongBeach font, bold, uppercase, teal color #00b4b6) */}
-                    <h3 className="font-salongbeach text-2xl sm:text-3xl font-bold uppercase tracking-wider text-[#00b4b6] leading-tight">
-                      {ev.eventName || `ПОЩИЧКА В ${ev.cityName.toUpperCase()}`}
-                    </h3>
+                      {/* Text Area filling bottom ~32% with solid cream/white background */}
+                      <div className="relative w-full h-[32%] bg-[#f9f6f0] px-4 py-2.5 text-center flex flex-col items-center justify-center space-y-0.5 z-0">
+                        {/* Line 1: ГЕРИ И КРАСИ (SALongBeach font, bold, uppercase, teal color #00b4b6) */}
+                        <h3 className="font-salongbeach text-2xl sm:text-3xl font-bold uppercase tracking-wider text-[#00b4b6] leading-tight">
+                          {ev.eventName || `ПОЩИЧКА В ${ev.cityName.toUpperCase()}`}
+                        </h3>
 
-                    {/* Line 2: Комплекс Свети Тома (Stampatello font, dark gray #182b2c) */}
-                    <p className="font-stampatello text-lg sm:text-xl font-normal text-[#182b2c] leading-snug">
-                      {ev.venueName || `Локация в гр. ${ev.cityName}`}
-                    </p>
+                        {/* Line 2: Комплекс Свети Тома (Stampatello font, dark gray #182b2c) */}
+                        <p className="font-stampatello text-lg sm:text-xl font-normal text-[#182b2c] leading-snug">
+                          {ev.venueName || `Локация в гр. ${ev.cityName}`}
+                        </p>
 
-                    {/* Line 3: сватбено тържество (Stampatello font, teal color #00b4b6) */}
-                    <p className="font-stampatello text-sm sm:text-base font-normal text-[#00b4b6] leading-tight">
-                      {ev.eventType || "сватбено тържество"}
-                    </p>
-                  </div>
+                        {/* Line 3: сватбено тържество (Stampatello font, teal color #00b4b6) */}
+                        <p className="font-stampatello text-sm sm:text-base font-normal text-[#00b4b6] leading-tight">
+                          {ev.eventType || "сватбено тържество"}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              ) : (
+                <div className="text-center text-white space-y-2 py-8 font-sans">
+                  <p className="text-lg font-bold">Няма намерени събития за {selectedCity}</p>
+                  <p className="text-sm opacity-90">Изберете друг град от списъка или картата.</p>
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="text-center text-white space-y-2 py-8 font-sans">
-              <p className="text-lg font-bold">Няма намерени събития за {selectedCity}</p>
-              <p className="text-sm opacity-90">Изберете друг град от списъка или картата.</p>
-            </div>
-          )}
-        </div>
-      </section>
+          </section>
+        </>
+      )}
 
       {/* 6. ВСИЧКИ ЛОКАЦИИ Section with Asset 83@2x.png icon */}
       <div className="max-w-6xl mx-auto px-4 sm:px-8 space-y-10 pt-6">
@@ -503,7 +504,7 @@ export const MapGallery = () => {
 
         {/* 3-Column Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 justify-items-center">
-          {events.map((ev) => (
+          {uniqueEvents.map((ev) => (
             <div
               key={ev.id}
               onClick={() => {
