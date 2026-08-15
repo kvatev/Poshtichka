@@ -105,19 +105,30 @@ export default function ServicesPage() {
 
   return (
     <PageWrapper>
-      <div className="pt-28 sm:pt-36 pb-24 space-y-16 sm:space-y-24 bg-[#fdfbf7] text-[#182b2c] min-h-screen">
-        <section className="relative px-4 text-center max-w-4xl mx-auto space-y-4">
-          <div className="inline-flex items-center space-x-2 bg-[#00b4b6]/10 text-[#00b4b6] px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold uppercase tracking-widest">
-            <span>Интерактивни преживявания за вашите гости</span>
+      <div className="pt-28 sm:pt-32 pb-24 space-y-12 sm:space-y-16 bg-[#fdfbf7] text-[#182b2c] min-h-screen">
+        {/* Top Header Banner with Asset 88@2x.png Background */}
+        <section className="relative w-full max-w-6xl mx-auto px-4 sm:px-8">
+          <div className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-md flex items-center justify-center py-10 sm:py-14 md:py-16 px-4 sm:px-8 text-center min-h-[160px] sm:min-h-[200px] md:min-h-[220px]">
+            {/* Background Image: Asset 88@2x.png */}
+            <Image
+              src={encodeURI("/media/Услуги/Asset 88@2x.png")}
+              alt="Всички услуги"
+              fill
+              priority
+              className="object-cover object-center"
+              unoptimized
+            />
+
+            {/* Banner Text Content */}
+            <div className="relative z-10 space-y-2 sm:space-y-3 max-w-4xl mx-auto">
+              <h1 className="font-salongbeach text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold uppercase tracking-wider text-white leading-tight">
+                ВСИЧКИ УСЛУГИ
+              </h1>
+              <p className="font-stampatello text-sm sm:text-base md:text-lg lg:text-xl text-[#182b2c] font-normal max-w-3xl mx-auto leading-relaxed">
+                Предлагаме широка гама от услуги, подходящи за вашето събитие – от поканата, до подарък за самия повод!
+              </p>
+            </div>
           </div>
-
-          <h1 className="font-salongbeach text-4xl sm:text-6xl md:text-7xl font-bold uppercase tracking-tight text-[#182b2c] leading-none">
-            Нашите Услуги
-          </h1>
-
-          <p className="font-stampatello text-base sm:text-xl text-[#182b2c]/80 max-w-2xl mx-auto leading-relaxed">
-            Подарете на своите гости персонализирани спомени, създадени на живо по време на вашето събитие.
-          </p>
         </section>
 
         <section className="max-w-6xl mx-auto px-4 sm:px-8 space-y-12">
