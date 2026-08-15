@@ -34,17 +34,23 @@ export const FinanceManager = ({ leads, onUpdateLead, onDeleteLead }: FinanceMan
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
 
   // Calculate Financial Aggregates
-  let totalRevenue = 0;
+  let totalGrossRevenue = 0;
+  let totalTransportCosts = 0;
   let totalDepositsPaid = 0;
   let totalRemainingBalance = 0;
 
   leads.forEach((l) => {
     const tot = calculateTotalPrice(l.pricing);
+    const transport = Number(l.pricing?.transportPrice) || 0;
     const rem = calculateRemainingBalance(l.pricing);
-    totalRevenue += tot;
-    totalDepositsPaid += l.pricing.depositPaid;
+    
+    totalGrossRevenue += tot;
+    totalTransportCosts += transport;
+    totalDepositsPaid += Number(l.pricing?.depositPaid) || 0;
     totalRemainingBalance += rem;
   });
+
+  const totalNetRevenue = Math.max(0, totalGrossRevenue - totalTransportCosts);
 
   const handlePaymentStatusChange = (lead: CrmLead, newStatus: PaymentStatus) => {
     const updated = {
@@ -77,7 +83,7 @@ export const FinanceManager = ({ leads, onUpdateLead, onDeleteLead }: FinanceMan
             Финанси & Плащания (Finance Management)
           </h2>
           <p className="text-xs text-brand-dark/70 mt-1">
-            Проследяване на приходи, платени капара, остатъци и финансови статуси
+            Проследяване на чист приход (без гориво), общ приход, разходи и капара
           </p>
         </div>
 
@@ -107,24 +113,56 @@ export const FinanceManager = ({ leads, onUpdateLead, onDeleteLead }: FinanceMan
         </div>
       </div>
 
-      {/* Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <Card className="p-6 bg-white border border-brand-primary/20 shadow-xs space-y-2">
-          <span className="text-xs font-bold text-brand-muted uppercase">Общ Прогнозен Приход</span>
-          <div className="font-serif text-3xl font-bold text-brand-dark">{totalRevenue.toFixed(2)} €</div>
-          <p className="text-[11px] text-brand-muted">От всички {leads.length} записани резервации</p>
+      {/* Metric Cards Grid: Net Revenue, Gross Revenue, Fuel Costs, Deposits, Remaining */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
+        {/* Card 1: Чист Приход (Без гориво) */}
+        <Card className="p-5 bg-emerald-50/80 border-2 border-emerald-300 shadow-xs space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold text-emerald-950 uppercase tracking-wider">Чист Приход (Без Гориво)</span>
+            <span className="text-xs">✨</span>
+          </div>
+          <div className="font-serif text-2xl sm:text-3xl font-bold text-emerald-700">{totalNetRevenue.toFixed(2)} €</div>
+          <p className="text-[10px] text-emerald-800 font-medium">Реален приход след приспадане на горивото</p>
         </Card>
 
-        <Card className="p-6 bg-emerald-50 border-emerald-200 shadow-xs space-y-2">
-          <span className="text-xs font-bold text-emerald-900 uppercase">Постъпили Капара</span>
-          <div className="font-serif text-3xl font-bold text-emerald-700">{totalDepositsPaid.toFixed(2)} €</div>
-          <p className="text-[11px] text-emerald-800">Потвърдени банкови депозити</p>
+        {/* Card 2: Общ Брутен Приход (С гориво) */}
+        <Card className="p-5 bg-white border border-brand-primary/20 shadow-xs space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold text-brand-muted uppercase tracking-wider">Общ Приход (С Гориво)</span>
+            <span className="text-xs">🏷️</span>
+          </div>
+          <div className="font-serif text-2xl sm:text-3xl font-bold text-brand-dark">{totalGrossRevenue.toFixed(2)} €</div>
+          <p className="text-[10px] text-brand-muted font-medium">Обща фактурирана стойност от всички {leads.length} резервации</p>
         </Card>
 
-        <Card className="p-6 bg-amber-50 border-amber-200 shadow-xs space-y-2">
-          <span className="text-xs font-bold text-amber-900 uppercase">Оставащи Плащания</span>
-          <div className="font-serif text-3xl font-bold text-amber-700">{totalRemainingBalance.toFixed(2)} €</div>
-          <p className="text-[11px] text-amber-800">Дължими суми преди събитието</p>
+        {/* Card 3: Разход за Транспорт / Гориво */}
+        <Card className="p-5 bg-blue-50/70 border border-blue-200 shadow-xs space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold text-blue-950 uppercase tracking-wider">Разход за Гориво & Път</span>
+            <span className="text-xs">⛽</span>
+          </div>
+          <div className="font-serif text-2xl sm:text-3xl font-bold text-blue-700">{totalTransportCosts.toFixed(2)} €</div>
+          <p className="text-[10px] text-blue-800 font-medium">Фирмен разход за транспорт и гориво</p>
+        </Card>
+
+        {/* Card 4: Постъпили Капара */}
+        <Card className="p-5 bg-[#00b4b6]/5 border border-[#00b4b6]/30 shadow-xs space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold text-[#008b8d] uppercase tracking-wider">Постъпили Капара</span>
+            <span className="text-xs">💳</span>
+          </div>
+          <div className="font-serif text-2xl sm:text-3xl font-bold text-[#00b4b6]">{totalDepositsPaid.toFixed(2)} €</div>
+          <p className="text-[10px] text-[#008b8d] font-medium">Потвърдени получени депозити</p>
+        </Card>
+
+        {/* Card 5: Оставащи Плащания */}
+        <Card className="p-5 bg-amber-50 border border-amber-200 shadow-xs space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold text-amber-950 uppercase tracking-wider">Оставащи Плащания</span>
+            <span className="text-xs">⏳</span>
+          </div>
+          <div className="font-serif text-2xl sm:text-3xl font-bold text-amber-700">{totalRemainingBalance.toFixed(2)} €</div>
+          <p className="text-[10px] text-amber-800 font-medium">Дължими суми преди събитията</p>
         </Card>
       </div>
 
