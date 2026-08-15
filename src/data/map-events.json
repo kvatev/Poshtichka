@@ -1,0 +1,175 @@
+[
+  {
+    "id": "MAP-1786785690188",
+    "eventName": "ТЕСТОВО СЪБИТИЕ БАНСКО",
+    "cityName": "Банско",
+    "venueName": "Kempinski Grand Arena",
+    "eventType": "сватбено тържество",
+    "latitude": 41.8384,
+    "longitude": 23.4885,
+    "coverImage": "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
+    "galleryImages": [
+      "/media/gallery/Tezza_2025_07_07_170901960_1.webp"
+    ],
+    "description": "Тестово запазване в облачната база данни",
+    "eventDate": "2026-08-15",
+    "createdAt": "2026-08-15T09:21:30.188Z"
+  },
+  {
+    "id": "MAP-01",
+    "eventName": "СВЕТЛАНА И ДИМИТЪР",
+    "cityName": "Созопол",
+    "venueName": "Hacienda Beach",
+    "eventType": "сватбено тържество",
+    "latitude": 42.4175,
+    "longitude": 27.6958,
+    "coverImage": "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
+    "galleryImages": [
+      "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
+      "/media/gallery/Tezza_2025_07_13_155324686.webp",
+      "/media/gallery/Tezza_2025_07_13_155326413.webp",
+      "/media/gallery/Tezza_2025_07_13_155331795.webp"
+    ],
+    "description": "Незабравимо сватбено изживяване край морето в Созопол.",
+    "eventDate": "2026-08-14",
+    "createdAt": "2026-08-15T09:21:30.175Z"
+  },
+  {
+    "id": "MAP-02",
+    "eventName": "МАРТИНА И АЛЕКСАНДЪР",
+    "cityName": "Каварна",
+    "venueName": "Thracian Cliffs Resort",
+    "eventType": "сватбено тържество",
+    "latitude": 43.4358,
+    "longitude": 28.3392,
+    "coverImage": "/media/gallery/Tezza_2025_07_13_155324686.webp",
+    "galleryImages": [
+      "/media/gallery/Tezza_2025_07_13_155324686.webp",
+      "/media/gallery/Tezza_2025_07_13_155326413.webp",
+      "/media/gallery/Tezza_2025_07_13_155331795.webp"
+    ],
+    "description": "Сватбено тържество с гледка към скалите на Каварна.",
+    "eventDate": "2026-08-20",
+    "createdAt": "2026-08-15T09:21:30.175Z"
+  },
+  {
+    "id": "MAP-03",
+    "eventName": "ЕЛЕНА И ВИКТОР",
+    "cityName": "София",
+    "venueName": "Резиденция Бояна",
+    "eventType": "сватбено тържество",
+    "latitude": 42.6977,
+    "longitude": 23.3219,
+    "coverImage": "/media/gallery/Tezza_2025_07_13_155326413.webp",
+    "galleryImages": [
+      "/media/gallery/Tezza_2025_07_13_155326413.webp",
+      "/media/gallery/Tezza_2025_07_13_155331795.webp",
+      "/media/gallery/Tezza_2025_07_13_155333570.webp"
+    ],
+    "description": "Стилно тържество в полите на Витоша.",
+    "eventDate": "2026-07-28",
+    "createdAt": "2026-08-15T09:21:30.175Z"
+  },
+  {
+    "id": "MAP-04",
+    "eventName": "КАЛИНА И ИВАЙЛО",
+    "cityName": "Червен",
+    "venueName": "Комплекс Червен",
+    "eventType": "сватбено тържество",
+    "latitude": 43.6192,
+    "longitude": 25.9758,
+    "coverImage": "/media/gallery/Tezza_2025_07_13_155331795.webp",
+    "galleryImages": [
+      "/media/gallery/Tezza_2025_07_13_155331795.webp",
+      "/media/gallery/Tezza_2025_07_07_152559638_1.webp"
+    ],
+    "description": "Рустик сватбено тържество сред природата.",
+    "eventDate": "2026-07-12",
+    "createdAt": "2026-08-15T09:21:30.175Z"
+  },
+  {
+    "id": "MAP-05",
+    "eventName": "АНА И БОРИС",
+    "cityName": "Перущица",
+    "venueName": "Вила Юстина",
+    "eventType": "сватбено тържество",
+    "latitude": 42.0544,
+    "longitude": 24.5447,
+    "coverImage": "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
+    "galleryImages": [
+      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
+      "/media/gallery/Tezza_2025_07_13_155333570.webp"
+    ],
+    "description": "Винен празник и романтика в полите на Родопите.",
+    "eventDate": "2026-06-25",
+    "createdAt": "2026-08-15T09:21:30.175Z"
+  },
+  {
+    "id": "MAP-06",
+    "eventName": "ДИАНА И КРИСТИЯН",
+    "cityName": "Велико Търново",
+    "venueName": "Царевец Панорама",
+    "eventType": "сватбено тържество",
+    "latitude": 43.0757,
+    "longitude": 25.6172,
+    "coverImage": "/media/gallery/Tezza_2025_07_13_155333570.webp",
+    "galleryImages": [
+      "/media/gallery/Tezza_2025_07_13_155333570.webp",
+      "/media/gallery/Tezza_2025_07_07_170901960_1.webp"
+    ],
+    "description": "Вълшебно празненство в старата българска столица.",
+    "eventDate": "2026-06-08",
+    "createdAt": "2026-08-15T09:21:30.175Z"
+  },
+  {
+    "id": "MAP-07",
+    "eventName": "DEVTECH ANNUAL SUMMIT",
+    "cityName": "Бургас",
+    "venueName": "Flora Expo Center",
+    "eventType": "корпоративно събитие",
+    "latitude": 42.5048,
+    "longitude": 27.4626,
+    "coverImage": "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
+    "galleryImages": [
+      "/media/gallery/Tezza_2025_07_07_152559638_1.webp",
+      "/media/gallery/Tezza_2025_07_13_155333570.webp"
+    ],
+    "description": "Корпоративен брандинг и персонализирани подаръци за 200+ гости.",
+    "eventDate": "2026-08-22",
+    "createdAt": "2026-08-15T09:21:30.175Z"
+  },
+  {
+    "id": "MAP-08",
+    "eventName": "ЮБИЛЕЙ 50Г - WAVE RESORT",
+    "cityName": "Поморие",
+    "venueName": "Wave Resort",
+    "eventType": "рожден ден",
+    "latitude": 42.5583,
+    "longitude": 27.6444,
+    "coverImage": "/media/gallery/Tezza_2025_07_13_155331795.webp",
+    "galleryImages": [
+      "/media/gallery/Tezza_2025_07_13_155331795.webp",
+      "/media/gallery/Tezza_2025_07_07_170901960_1.webp"
+    ],
+    "description": "Стилен юбилей с авторски картички и сувенири.",
+    "eventDate": "2026-08-28",
+    "createdAt": "2026-08-15T09:21:30.175Z"
+  },
+  {
+    "id": "MAP-09",
+    "eventName": "ВИКТОРИЯ И ВАСИЛ",
+    "cityName": "София",
+    "venueName": "Pasarel Lake Club",
+    "eventType": "сватбено тържество",
+    "latitude": 42.5412,
+    "longitude": 23.5012,
+    "coverImage": "/media/gallery/Tezza_2025_07_13_155324686.webp",
+    "galleryImages": [
+      "/media/gallery/Tezza_2025_07_13_155324686.webp",
+      "/media/gallery/Tezza_2025_07_13_155326413.webp"
+    ],
+    "description": "Романтично празненство в Pasarel Lake Club.",
+    "eventDate": "2026-09-15",
+    "createdAt": "2026-08-15T09:21:30.175Z"
+  }
+]
