@@ -109,37 +109,14 @@ export default function ServicesPage() {
               key={service.id || index}
               className="bg-[#f9f6f0] border-2 border-[#182b2c] shadow-xl rounded-[40px] sm:rounded-[48px] p-6 sm:p-10 lg:p-12 transition-all duration-300 hover:shadow-2xl flex flex-col lg:flex-row items-center gap-8 lg:gap-14"
             >
-              {/* Left Side: Photo Frame with Decorative Rays (Asset 86@2x.png) */}
+              {/* Left Side: Clean Photo Frame */}
               <div className="relative w-full lg:w-1/2 flex-shrink-0 flex items-center justify-center">
-                {/* Decorative Spark / Ray Asset 86@2x.png on top-left */}
-                <div className="absolute -top-4 -left-4 sm:-top-6 sm:-left-6 w-12 sm:w-16 h-12 sm:h-16 pointer-events-none z-10 hidden sm:block -rotate-12">
-                  <Image
-                    src={encodeURI("/media/Услуги/Asset 86@2x.png")}
-                    alt="Декорация"
-                    fill
-                    className="object-contain"
-                    unoptimized
-                  />
-                </div>
-
-                {/* Main Photo Frame */}
                 <div className="relative w-full h-[360px] sm:h-[460px] lg:h-[520px] rounded-[32px] sm:rounded-[36px] overflow-hidden border-2 border-[#182b2c] shadow-lg bg-gray-100">
                   <Image
                     src={service.image || "/media/gallery/Tezza_2025_07_13_155326413.webp"}
                     alt={service.title}
                     fill
                     className="object-cover"
-                    unoptimized
-                  />
-                </div>
-
-                {/* Decorative Spark / Ray Asset 86@2x.png on bottom-left */}
-                <div className="absolute -bottom-4 -left-4 sm:-bottom-6 sm:-left-6 w-12 sm:w-16 h-12 sm:h-16 pointer-events-none z-10 hidden sm:block rotate-45">
-                  <Image
-                    src={encodeURI("/media/Услуги/Asset 86@2x.png")}
-                    alt="Декорация"
-                    fill
-                    className="object-contain"
                     unoptimized
                   />
                 </div>
@@ -164,29 +141,21 @@ export default function ServicesPage() {
                   </p>
                 )}
 
-                {/* Bullet List with Double-Ring Teal Circular Checkmarks matching Screenshot 2 */}
+                {/* Bullet List with Official Teal Hand-Drawn Checkmark Asset 86@2x.png */}
                 {service.features && service.features.length > 0 && (
                   <ul className="space-y-4 pt-2">
                     {service.features.map((feat, i) => (
                       <li key={i} className="flex items-center space-x-3.5 sm:space-x-4">
-                        {/* Teal Double-Ring Checkmark Icon */}
-                        <div className="w-9 h-9 sm:w-11 sm:h-11 flex-shrink-0 relative flex items-center justify-center">
-                          <svg
-                            viewBox="0 0 48 48"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-full h-full"
-                          >
-                            <circle cx="24" cy="24" r="22" stroke="#00b4b6" strokeWidth="3" />
-                            <circle cx="24" cy="24" r="17" stroke="#00b4b6" strokeWidth="2.5" />
-                            <path
-                              d="M15 24.5L21.5 31L33 18"
-                              stroke="#00b4b6"
-                              strokeWidth="3.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
+                        {/* Official Hand-Drawn Teal Checkmark Asset 86@2x.png */}
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 shrink-0 relative flex items-center justify-center">
+                          <Image
+                            src={encodeURI("/media/Услуги/Asset 86@2x.png")}
+                            alt="Отметка"
+                            width={44}
+                            height={44}
+                            className="w-full h-full object-contain pointer-events-none"
+                            unoptimized
+                          />
                         </div>
 
                         <span className="font-salongbeach font-bold uppercase text-base sm:text-lg lg:text-xl text-[#182b2c] tracking-wider leading-snug">

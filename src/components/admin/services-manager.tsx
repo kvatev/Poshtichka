@@ -420,28 +420,20 @@ export const ServicesManager = () => {
                   </p>
                 )}
 
-                {/* Features List Preview with Double-Ring Teal Checkmark */}
+                {/* Features List Preview with Asset 86@2x.png Hand-Drawn Teal Checkmark */}
                 {srv.features && srv.features.length > 0 && (
                   <ul className="space-y-2 pt-2">
                     {srv.features.map((f, i) => (
                       <li key={i} className="flex items-center space-x-2.5 text-xs font-bold text-[#182b2c]">
-                        <div className="w-5 h-5 shrink-0 flex items-center justify-center">
-                          <svg
-                            viewBox="0 0 48 48"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-full h-full"
-                          >
-                            <circle cx="24" cy="24" r="22" stroke="#00b4b6" strokeWidth="3.5" />
-                            <circle cx="24" cy="24" r="17" stroke="#00b4b6" strokeWidth="2.5" />
-                            <path
-                              d="M15 24.5L21.5 31L33 18"
-                              stroke="#00b4b6"
-                              strokeWidth="4"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
+                        <div className="w-5 h-5 shrink-0 relative flex items-center justify-center">
+                          <Image
+                            src={encodeURI("/media/Услуги/Asset 86@2x.png")}
+                            alt="Отметка"
+                            width={20}
+                            height={20}
+                            className="w-full h-full object-contain pointer-events-none"
+                            unoptimized
+                          />
                         </div>
                         <span className="font-salongbeach uppercase tracking-wider">{f}</span>
                       </li>
