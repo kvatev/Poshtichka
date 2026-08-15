@@ -61,11 +61,11 @@ export const AdminMapManager = () => {
   // Form State
   const [formData, setFormData] = useState<CreateEventLocationInput>({
     eventName: "",
-    cityName: "Созопол",
+    cityName: "София",
     venueName: "",
     eventType: "сватбено тържество",
-    latitude: 42.4175,
-    longitude: 27.6958,
+    latitude: 42.6977,
+    longitude: 23.3219,
     coverImage: "",
     galleryImages: [],
     description: "",
@@ -205,11 +205,11 @@ export const AdminMapManager = () => {
     setEditingId(null);
     setFormData({
       eventName: "",
-      cityName: "Созопол",
+      cityName: "София",
       venueName: "",
       eventType: "сватбено тържество",
-      latitude: 42.4175,
-      longitude: 27.6958,
+      latitude: 42.6977,
+      longitude: 23.3219,
       coverImage: "",
       galleryImages: [],
       description: "",

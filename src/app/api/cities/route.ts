@@ -16,7 +16,6 @@ declare global {
 }
 
 const defaultCities: CityPreset[] = [
-  { id: "c1", name: "Созопол", lat: 42.4175, lng: 27.6958 },
   { id: "c2", name: "Каварна", lat: 43.4342, lng: 28.3392 },
   { id: "c3", name: "София", lat: 42.6977, lng: 23.3219 },
   { id: "c4", name: "Червен", lat: 43.6212, lng: 25.9961 },

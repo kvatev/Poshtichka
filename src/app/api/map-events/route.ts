@@ -26,25 +26,6 @@ declare global {
 
 const initialMapEvents: EventLocation[] = [
   {
-    id: "MAP-01",
-    eventName: "СВЕТЛАНА И ДИМИТЪР",
-    cityName: "Созопол",
-    venueName: "Hacienda Beach",
-    eventType: "сватбено тържество",
-    latitude: 42.4175,
-    longitude: 27.6958,
-    coverImage: "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
-      "/media/gallery/Tezza_2025_07_13_155324686.webp",
-      "/media/gallery/Tezza_2025_07_13_155326413.webp",
-      "/media/gallery/Tezza_2025_07_13_155331795.webp",
-    ],
-    description: "Незабравимо сватбено изживяване край морето в Созопол.",
-    eventDate: "2026-08-14",
-    createdAt: new Date().toISOString(),
-  },
-  {
     id: "MAP-02",
     eventName: "МАРТИНА И АЛЕКСАНДЪР",
     cityName: "Каварна",

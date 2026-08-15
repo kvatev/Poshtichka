@@ -33,7 +33,6 @@ export interface CityPreset {
 
 // Preset Bulgarian cities fallback
 const defaultBgCitiesPresets: CityPreset[] = [
-  { id: "c1", name: "Созопол", lat: 42.4175, lng: 27.6958 },
   { id: "c2", name: "Каварна", lat: 43.4342, lng: 28.3392 },
   { id: "c3", name: "София", lat: 42.6977, lng: 23.3219 },
   { id: "c4", name: "Червен", lat: 43.6212, lng: 25.9961 },
@@ -135,11 +134,11 @@ export const GalleryManager = () => {
 
   // Form State
   const [eventName, setEventName] = useState("");
-  const [cityName, setCityName] = useState("Созопол");
+  const [cityName, setCityName] = useState("София");
   const [venueName, setVenueName] = useState("");
   const [eventType, setEventType] = useState("сватбено тържество");
-  const [latitude, setLatitude] = useState<number>(42.4175);
-  const [longitude, setLongitude] = useState<number>(27.6958);
+  const [latitude, setLatitude] = useState<number>(42.6977);
+  const [longitude, setLongitude] = useState<number>(23.3219);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [customPathInput, setCustomPathInput] = useState("");
   const [description, setDescription] = useState("");
@@ -406,11 +405,11 @@ export const GalleryManager = () => {
   const openAddModal = () => {
     setEditingItem(null);
     setEventName("");
-    setCityName("Созопол");
+    setCityName("София");
     setVenueName("");
     setEventType("сватбено тържество");
-    setLatitude(42.4175);
-    setLongitude(27.6958);
+    setLatitude(42.6977);
+    setLongitude(23.3219);
     setGalleryImages([]);
     setCustomPathInput("");
     setDescription("");

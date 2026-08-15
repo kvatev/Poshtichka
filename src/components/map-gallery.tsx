@@ -7,26 +7,8 @@ import { X } from "lucide-react";
 import { EventLocation } from "@/types/map-event";
 import { BG_LOCATIONS_DATABASE } from "@/lib/bg-locations";
 
-// Default locations pre-populated matching exact user screenshots & data
+// Default locations pre-populated matching exact user data
 const DEFAULT_LOCATIONS: EventLocation[] = [
-  {
-    id: "MAP-01",
-    eventName: "ГЕРИ И КРАСИ",
-    cityName: "Созопол",
-    venueName: "Комплекс Свети Тома",
-    eventType: "сватбено тържество",
-    latitude: 42.4175,
-    longitude: 27.6958,
-    coverImage: "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
-    galleryImages: [
-      "/media/gallery/Tezza_2025_07_07_170901960_1.webp",
-      "/media/gallery/Tezza_2025_07_13_155324686.webp",
-      "/media/gallery/Tezza_2025_07_13_155326413.webp",
-    ],
-    description:
-      "За сватбения ден на Гери и Краси изготвихме 2 марки, стикер и татуировка. Младоженците искаха ключови локации, домашния си любимец и тях самите въплатени в дизайните. Машината се изпразни още на първия час от сватбения ден!",
-    eventDate: "2026-07-15",
-  },
   {
     id: "MAP-02",
     eventName: "МИЛКА И АНДРЕЙ",
@@ -160,9 +142,9 @@ const DEFAULT_LOCATIONS: EventLocation[] = [
 
 export const MapGallery = () => {
   const [events, setEvents] = useState<EventLocation[]>(DEFAULT_LOCATIONS);
-  const [selectedCity, setSelectedCity] = useState<string>("Созопол");
+  const [selectedCity, setSelectedCity] = useState<string>("");
   const [cityPresets, setCityPresets] = useState<string[]>([
-    "Созопол", "Каварна", "София", "Червен", "Перущица", "Велико Търново", "Бургас", "Пловдив", "Варна"
+    "Каварна", "София", "Червен", "Перущица", "Велико Търново", "Бургас", "Пловдив", "Варна"
   ]);
   const [activeModalEvent, setActiveModalEvent] = useState<EventLocation | null>(null);
   const [activeLightboxIndex, setActiveLightboxIndex] = useState<number>(0);
@@ -212,11 +194,12 @@ export const MapGallery = () => {
 
   const cityNamesList = useMemo(() => {
     const fromEvents = events.map((e) => e.cityName).filter(Boolean);
-    return Array.from(new Set([...cityPresets, ...fromEvents]));
+    return Array.from(new Set([...cityPresets, ...fromEvents])).filter((c) => c.toLowerCase() !== "созопол");
   }, [cityPresets, events]);
 
-  // Active events for the selected city
+  // Active events for the selected city (or all events if no city selected)
   const selectedCityEvents = useMemo(() => {
+    if (!selectedCity) return events;
     return events.filter(
       (e) => e.cityName.toLowerCase().trim() === selectedCity.toLowerCase().trim()
     );
@@ -273,13 +256,7 @@ export const MapGallery = () => {
           .bindTooltip(label, { direction: "top", offset: [0, -10] });
 
         marker.on("click", () => {
-          setSelectedCity(ev.cityName);
-          if (mapInstanceRef.current) {
-            mapInstanceRef.current.flyTo(coords, 13, {
-              animate: true,
-              duration: 1.2,
-            });
-          }
+          zoomToCity(ev.cityName);
         });
 
         markersRef.current.push(marker);
@@ -292,6 +269,15 @@ export const MapGallery = () => {
   }, [events]);
 
   const zoomToCity = (cityName: string) => {
+    // If clicking already selected city, toggle off and zoom out to full Bulgaria
+    if (selectedCity.toLowerCase() === cityName.toLowerCase()) {
+      setSelectedCity("");
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.flyTo([42.75, 25.5], 7, { animate: true, duration: 1.2 });
+      }
+      return;
+    }
+
     setSelectedCity(cityName);
 
     if (!mapInstanceRef.current) return;
@@ -337,31 +323,12 @@ export const MapGallery = () => {
     }
   };
 
-  // Center & zoom map on selected city when it changes
-  useEffect(() => {
-    if (!mapInstanceRef.current || !selectedCity) return;
-
-    const match = events.find(
-      (e) => e.cityName.toLowerCase().trim() === selectedCity.toLowerCase().trim()
-    );
-    if (match && match.latitude && match.longitude) {
-      mapInstanceRef.current.flyTo([match.latitude, match.longitude], 13, {
-        animate: true,
-        duration: 1.2,
-      });
-      return;
+  const resetCityFilter = () => {
+    setSelectedCity("");
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.flyTo([42.75, 25.5], 7, { animate: true, duration: 1.2 });
     }
-
-    const bgMatch = BG_LOCATIONS_DATABASE.find(
-      (loc) => loc.name.toLowerCase().trim() === selectedCity.toLowerCase().trim()
-    );
-    if (bgMatch && bgMatch.lat && bgMatch.lng) {
-      mapInstanceRef.current.flyTo([bgMatch.lat, bgMatch.lng], 13, {
-        animate: true,
-        duration: 1.2,
-      });
-    }
-  }, [selectedCity, events]);
+  };
 
   return (
     <div className="space-y-12 sm:space-y-16 py-6 font-sans select-none bg-[#f9f6f0]">
@@ -388,6 +355,17 @@ export const MapGallery = () => {
 
       {/* 2. City Filter Oval Tabs */}
       <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 px-4 max-w-5xl mx-auto">
+        <button
+          onClick={resetCityFilter}
+          className={`px-5 sm:px-7 py-2 text-xs sm:text-sm font-salongbeach font-bold uppercase tracking-wider rounded-full transition-all duration-300 cursor-pointer shadow-xs ${
+            !selectedCity
+              ? "bg-[#00b4b6] text-white shadow-md scale-105"
+              : "bg-[#f9f6f0] border border-[#00b4b6] text-[#182b2c] hover:bg-[#00b4b6]/10"
+          }`}
+        >
+          ВСИЧКИ
+        </button>
+
         {cityNamesList.map((cityName) => {
           const isSelected = selectedCity.toLowerCase() === cityName.toLowerCase();
           return (
@@ -427,12 +405,12 @@ export const MapGallery = () => {
           </div>
         </div>
         <h2 className="font-salongbeach text-3xl sm:text-5xl font-bold uppercase tracking-wider text-[#182b2c]">
-          {selectedCity}
+          {selectedCity || "Всички локации"}
         </h2>
         <p className="font-stampatello text-base sm:text-lg text-[#182b2c]/85 italic">
           {selectedCityEvents.length > 0
-            ? `${selectedCityEvents.length} ${selectedCityEvents.length === 1 ? "гостуване" : "гостувания"} на тази локация`
-            : "1 гостуване на тази локация"}
+            ? `${selectedCityEvents.length} ${selectedCityEvents.length === 1 ? "гостуване" : "гостувания"} на ${selectedCity ? "тази локация" : "различни локации"}`
+            : "Няма намерени събития"}
         </p>
       </div>
 
