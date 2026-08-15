@@ -172,6 +172,19 @@ export const MapGallery = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const markersRef = useRef<any[]>([]);
 
+  // Load from local cache immediately on mount to prevent any visual jumps
+  useEffect(() => {
+    try {
+      const cached = localStorage.getItem("poshtichka_cached_events");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setEvents(parsed);
+        }
+      }
+    } catch {}
+  }, []);
+
   // Fetch API locations & cities
   useEffect(() => {
     fetch("/api/map-events")
@@ -179,6 +192,9 @@ export const MapGallery = () => {
       .then((data) => {
         if (data && data.events && Array.isArray(data.events) && data.events.length > 0) {
           setEvents(data.events);
+          try {
+            localStorage.setItem("poshtichka_cached_events", JSON.stringify(data.events));
+          } catch {}
         }
       })
       .catch(() => {});

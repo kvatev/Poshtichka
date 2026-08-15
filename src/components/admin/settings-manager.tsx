@@ -397,6 +397,44 @@ export const SettingsManager = () => {
             </form>
           </Card>
         </div>
+
+        {/* Supabase Cloud Database Status & 1-Click Setup Card */}
+        <Card className="p-6 space-y-4 bg-white border-2 border-[#00b4b6]/30 shadow-md rounded-3xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[#00b4b6]/15">
+            <div className="flex items-center space-x-2.5">
+              <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
+              <h4 className="font-salongbeach text-xl font-bold uppercase tracking-wider text-[#00b4b6]">
+                Облачна База Данни (Supabase PostgreSQL)
+              </h4>
+            </div>
+            <span className="text-xs font-mono bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-full w-fit">
+              🟢 СВЪРЗАНА
+            </span>
+          </div>
+
+          <div className="space-y-2 text-xs font-sans text-[#182b2c]/80">
+            <p>
+              Проектът е свързан директно към вашия Supabase инстанс:
+            </p>
+            <div className="p-3 bg-[#f9f6f0] rounded-xl border border-[#00b4b6]/20 font-mono text-[11px] text-[#182b2c] break-all">
+              https://nsrmhreocsjtrzjexrbu.supabase.co
+            </div>
+          </div>
+
+          <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
+            <a
+              href="https://supabase.com/dashboard/project/nsrmhreocsjtrzjexrbu/sql/new"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-xs font-bold uppercase tracking-wider px-5 py-2.5 rounded-full shadow-md text-center transition-colors"
+            >
+              Отвори Supabase SQL Editor ↗
+            </a>
+            <p className="text-[11px] text-[#182b2c]/60">
+              Всички промени от админ панела се синхронизират постоянно с базата данни!
+            </p>
+          </div>
+        </Card>
       </div>
     </div>
   );

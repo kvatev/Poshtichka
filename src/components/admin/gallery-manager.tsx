@@ -160,11 +160,25 @@ export const GalleryManager = () => {
 
   const fetchItems = () => {
     setLoading(true);
+    // Read from cache immediately
+    try {
+      const cached = localStorage.getItem("poshtichka_cached_events");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setItems(parsed);
+        }
+      }
+    } catch {}
+
     fetch("/api/map-events")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data && Array.isArray(data.events)) {
           setItems(data.events);
+          try {
+            localStorage.setItem("poshtichka_cached_events", JSON.stringify(data.events));
+          } catch {}
         }
       })
       .catch(() => {})
@@ -690,7 +704,13 @@ export const GalleryManager = () => {
     try {
       const res = await fetch(`/api/map-events?id=${id}`, { method: "DELETE" });
       if (res.ok) {
-        setItems((prev) => prev.filter((i) => i.id !== id));
+        setItems((prev) => {
+          const updated = prev.filter((i) => i.id !== id);
+          try {
+            localStorage.setItem("poshtichka_cached_events", JSON.stringify(updated));
+          } catch {}
+          return updated;
+        });
       }
     } catch {
       alert("Грешка при изтриването.");
