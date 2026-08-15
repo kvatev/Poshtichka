@@ -36,8 +36,8 @@ const mockBookingsList: BookingRecord[] = [
     preferredContact: "телефон",
     message: "Потвърдена резервация за 17 юни 2027 г.",
     status: "confirmed",
-    price: 500,
-    depositPaid: 150,
+    price: 0,
+    depositPaid: 0,
     createdAt: "2026-08-15",
   },
   {
@@ -52,8 +52,8 @@ const mockBookingsList: BookingRecord[] = [
     preferredContact: "телефон",
     message: "Потвърдена резервация за 26 юни 2027 г.",
     status: "confirmed",
-    price: 500,
-    depositPaid: 150,
+    price: 0,
+    depositPaid: 0,
     createdAt: "2026-08-15",
   },
 ];

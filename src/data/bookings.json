@@ -14,26 +14,26 @@
     "requestedProducts": [
       "Персонализирани картички"
     ],
-    "message": "Резервация за 17 юни 2027 г.",
-    "createdAt": "2026-08-15T12:13:39.062Z",
+    "message": "Потвърдена дата за 17 юни 2027 г.",
+    "createdAt": "2026-08-15T17:01:53.892Z",
     "status": "confirmed",
-    "price": 500,
-    "depositPaid": 150,
+    "price": 0,
+    "depositPaid": 0,
     "pricing": {
-      "rentalPrice": 500,
+      "rentalPrice": 0,
       "designPrice": 0,
       "distanceKm": 0,
       "transportPrice": 0,
       "additionalServicesPrice": 0,
       "discountAmount": 0,
-      "depositPaid": 150,
-      "paymentStatus": "deposit_paid"
+      "depositPaid": 0,
+      "paymentStatus": "unpaid"
     },
     "internalNotes": [
       {
         "id": "note-1",
         "author": "Админ",
-        "text": "Потвърдена дата за 17.06.2027",
+        "text": "Потвърдена заета дата за 17.06.2027 г.",
         "createdAt": "15.08.2026"
       }
     ],
@@ -55,26 +55,26 @@
     "requestedProducts": [
       "Персонализирани картички"
     ],
-    "message": "Резервация за 26 юни 2027 г.",
-    "createdAt": "2026-08-15T12:13:39.063Z",
+    "message": "Потвърдена дата за 26 юни 2027 г.",
+    "createdAt": "2026-08-15T17:01:53.893Z",
     "status": "confirmed",
-    "price": 500,
-    "depositPaid": 150,
+    "price": 0,
+    "depositPaid": 0,
     "pricing": {
-      "rentalPrice": 500,
+      "rentalPrice": 0,
       "designPrice": 0,
       "distanceKm": 0,
       "transportPrice": 0,
       "additionalServicesPrice": 0,
       "discountAmount": 0,
-      "depositPaid": 150,
-      "paymentStatus": "deposit_paid"
+      "depositPaid": 0,
+      "paymentStatus": "unpaid"
     },
     "internalNotes": [
       {
         "id": "note-2",
         "author": "Админ",
-        "text": "Потвърдена дата за 26.06.2027",
+        "text": "Потвърдена заета дата за 26.06.2027 г.",
         "createdAt": "15.08.2026"
       }
     ],

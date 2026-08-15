@@ -81,8 +81,8 @@ export const CalendarView = () => {
   const [formVenue, setFormVenue] = useState("");
   const [formEventType, setFormEventType] = useState("Сватбено тържество");
   const [formGuestCount, setFormGuestCount] = useState<number>(100);
-  const [formPrice, setFormPrice] = useState<number>(500);
-  const [formDeposit, setFormDeposit] = useState<number>(150);
+  const [formPrice, setFormPrice] = useState<number>(0);
+  const [formDeposit, setFormDeposit] = useState<number>(0);
   const [formStatus, setFormStatus] = useState<"confirmed" | "pending" | "deposit_pending" | "completed" | "cancelled">("confirmed");
   const [formPhone, setFormPhone] = useState("+359 888 000 000");
   const [formEmail, setFormEmail] = useState("");
@@ -108,8 +108,8 @@ export const CalendarView = () => {
             guestCount: Number(b.guestCount) || 100,
             message: b.message || "",
             status: b.status || "confirmed",
-            price: Number(b.price || b.pricing?.rentalPrice || 500),
-            depositPaid: Number(b.depositPaid || b.pricing?.depositPaid || 150),
+            price: Number(b.price || b.pricing?.rentalPrice || 0),
+            depositPaid: Number(b.depositPaid || b.pricing?.depositPaid || 0),
             createdAt: b.createdAt,
           }));
           setEvents(mapped);
@@ -191,8 +191,8 @@ export const CalendarView = () => {
     setFormVenue("");
     setFormEventType("Сватбено тържество");
     setFormGuestCount(100);
-    setFormPrice(500);
-    setFormDeposit(150);
+    setFormPrice(0);
+    setFormDeposit(0);
     setFormStatus("confirmed");
     setFormPhone("+359 888 000 000");
     setFormEmail("");
@@ -210,8 +210,8 @@ export const CalendarView = () => {
     setFormVenue(ev.venueLocation || "");
     setFormEventType(ev.eventType || "Сватбено тържество");
     setFormGuestCount(ev.guestCount || 100);
-    setFormPrice(ev.price || 500);
-    setFormDeposit(ev.depositPaid || 150);
+    setFormPrice(ev.price || 0);
+    setFormDeposit(ev.depositPaid || 0);
     setFormStatus(ev.status || "confirmed");
     setFormPhone(ev.phone || "");
     setFormEmail(ev.email || "");
