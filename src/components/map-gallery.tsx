@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { EventLocation } from "@/types/map-event";
+import { BG_LOCATIONS_DATABASE } from "@/lib/bg-locations";
 
 // Default locations pre-populated matching exact user screenshots & data
 const DEFAULT_LOCATIONS: EventLocation[] = [
@@ -274,7 +275,10 @@ export const MapGallery = () => {
         marker.on("click", () => {
           setSelectedCity(ev.cityName);
           if (mapInstanceRef.current) {
-            mapInstanceRef.current.panTo(coords);
+            mapInstanceRef.current.flyTo(coords, 13, {
+              animate: true,
+              duration: 1.2,
+            });
           }
         });
 
@@ -287,14 +291,75 @@ export const MapGallery = () => {
     };
   }, [events]);
 
-  // Center map on selected city
+  const zoomToCity = (cityName: string) => {
+    setSelectedCity(cityName);
+
+    if (!mapInstanceRef.current) return;
+
+    // 1. Look in active events
+    const match = events.find(
+      (e) => e.cityName.toLowerCase().trim() === cityName.toLowerCase().trim()
+    );
+
+    if (match && match.latitude && match.longitude) {
+      mapInstanceRef.current.flyTo([match.latitude, match.longitude], 13, {
+        animate: true,
+        duration: 1.2,
+      });
+
+      const targetMarker = markersRef.current.find((m) => {
+        try {
+          const pos = m.getLatLng();
+          return (
+            Math.abs(pos.lat - match.latitude) < 0.005 &&
+            Math.abs(pos.lng - match.longitude) < 0.005
+          );
+        } catch {
+          return false;
+        }
+      });
+      if (targetMarker) {
+        targetMarker.openTooltip();
+      }
+      return;
+    }
+
+    // 2. Look in Bulgarian locations database
+    const bgMatch = BG_LOCATIONS_DATABASE.find(
+      (loc) => loc.name.toLowerCase().trim() === cityName.toLowerCase().trim()
+    );
+
+    if (bgMatch && bgMatch.lat && bgMatch.lng) {
+      mapInstanceRef.current.flyTo([bgMatch.lat, bgMatch.lng], 13, {
+        animate: true,
+        duration: 1.2,
+      });
+    }
+  };
+
+  // Center & zoom map on selected city when it changes
   useEffect(() => {
     if (!mapInstanceRef.current || !selectedCity) return;
+
     const match = events.find(
       (e) => e.cityName.toLowerCase().trim() === selectedCity.toLowerCase().trim()
     );
     if (match && match.latitude && match.longitude) {
-      mapInstanceRef.current.panTo([match.latitude, match.longitude]);
+      mapInstanceRef.current.flyTo([match.latitude, match.longitude], 13, {
+        animate: true,
+        duration: 1.2,
+      });
+      return;
+    }
+
+    const bgMatch = BG_LOCATIONS_DATABASE.find(
+      (loc) => loc.name.toLowerCase().trim() === selectedCity.toLowerCase().trim()
+    );
+    if (bgMatch && bgMatch.lat && bgMatch.lng) {
+      mapInstanceRef.current.flyTo([bgMatch.lat, bgMatch.lng], 13, {
+        animate: true,
+        duration: 1.2,
+      });
     }
   }, [selectedCity, events]);
 
@@ -328,7 +393,7 @@ export const MapGallery = () => {
           return (
             <button
               key={cityName}
-              onClick={() => setSelectedCity(cityName)}
+              onClick={() => zoomToCity(cityName)}
               className={`px-5 sm:px-7 py-2 text-xs sm:text-sm font-salongbeach font-bold uppercase tracking-wider rounded-full transition-all duration-300 cursor-pointer shadow-xs ${
                 isSelected
                   ? "bg-[#00b4b6] text-white shadow-md scale-105"
