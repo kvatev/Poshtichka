@@ -11,7 +11,8 @@ export default function ContactPage() {
   const [loading, setLoading] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
-  const [service, setService] = useState("vending-machine");
+  const [service, setService] = useState("");
+  const [servicesList, setServicesList] = useState<Array<{ id: string; title: string }>>([]);
   const [message, setMessage] = useState("");
 
   const [contactAddress, setContactAddress] = useState("Бургас, България");
@@ -19,6 +20,7 @@ export default function ContactPage() {
   const [contactInstagram, setContactInstagram] = useState("@poshtichka");
 
   React.useEffect(() => {
+    // Fetch contact general info
     fetch("/api/content")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
@@ -29,22 +31,24 @@ export default function ContactPage() {
         }
       })
       .catch(() => {});
+
+    // Fetch dynamic services added in Admin
+    fetch("/api/services", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setServicesList(data);
+          setService(data[0].title);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    const serviceLabels: Record<string, string> = {
-      "vending-machine": "Вендинг машина Пощичка",
-      "audio-phone": "Аудио телефон за пожелания",
-      "wedding-gifts": "Подаръци за сватба & Хартиени спомени",
-      "digital-invitations": "Дигитални покани",
-      "corporate-branding": "Корпоративен брандинг & Маркетинг активация",
-      other: "Друга услуга / Общо запитване",
-    };
-
-    const selectedServiceLabel = serviceLabels[service] || service;
+    const selectedServiceLabel = service || (servicesList.length > 0 ? servicesList[0].title : "Общо запитване");
 
     try {
       await fetch("/api/bookings", {
@@ -250,12 +254,27 @@ export default function ContactPage() {
                       onChange={(e) => setService(e.target.value)}
                       className="w-full px-6 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base appearance-none focus:outline-none focus:ring-2 focus:ring-[#00b4b6] cursor-pointer shadow-sm text-center pr-10"
                     >
-                      <option value="vending-machine">Вендинг машина Пощичка</option>
-                      <option value="audio-phone">Аудио телефон за пожелания</option>
-                      <option value="wedding-gifts">Подаръци за сватба & Хартиени спомени</option>
-                      <option value="digital-invitations">Дигитални покани</option>
-                      <option value="corporate-branding">Корпоративен брандинг & Маркетинг активация</option>
-                      <option value="other">Друга услуга / Общо запитване</option>
+                      {servicesList.length > 0 ? (
+                        <>
+                          {servicesList.map((srv) => (
+                            <option key={srv.id} value={srv.title}>
+                              {srv.title}
+                            </option>
+                          ))}
+                          <option value="Друга услуга / Общо запитване">
+                            Друга услуга / Общо запитване
+                          </option>
+                        </>
+                      ) : (
+                        <>
+                          <option value="ВЕНДИНГ МАШИНА">ВЕНДИНГ МАШИНА</option>
+                          <option value="ТАБЛО С МАРКИ И КАРТИЧКИ">ТАБЛО С МАРКИ И КАРТИЧКИ</option>
+                          <option value="ВРЕМЕННИ ТАТУИРОВКИ">ВРЕМЕННИ ТАТУИРОВКИ</option>
+                          <option value="КАРТИЧКИ С ПРЕДИЗВИКАТЕЛСТВА">КАРТИЧКИ С ПРЕДИЗВИКАТЕЛСТВА</option>
+                          <option value="АУДИО КНИГА ЗА ПОЖЕЛАНИЯ">АУДИО КНИГА ЗА ПОЖЕЛАНИЯ</option>
+                          <option value="Друга услуга / Общо запитване">Друга услуга / Общо запитване</option>
+                        </>
+                      )}
                     </select>
                     <div className="pointer-events-none absolute inset-y-0 right-5 flex items-center text-[#00b4b6]">
                       ▼
