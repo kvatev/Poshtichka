@@ -90,7 +90,7 @@ export async function readCloudOrFileData<T>(fileName: string, fallback: T): Pro
         apikey: SUPABASE_SERVICE_KEY,
         Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
       },
-      cache: "no-store",
+      next: { revalidate: 30 },
     });
 
     if (res.ok) {

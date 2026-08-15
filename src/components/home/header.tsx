@@ -64,6 +64,7 @@ export const Header = () => {
             <Link
               key={link.href}
               href={link.href}
+              prefetch={true}
               className={`text-base sm:text-lg font-medium transition-colors relative py-1 ${
                 link.isCta
                   ? "text-[#00b4b6] hover:text-[#008b8d] font-semibold"
@@ -90,6 +91,7 @@ export const Header = () => {
                 <Link
                   key={link.href}
                   href={link.href}
+                  prefetch={true}
                   onClick={() => setMobileMenuOpen(false)}
                   className={`py-2 border-b border-[#f9f6f0] transition-colors ${
                     link.isCta ? "text-[#00b4b6] font-semibold" : "text-[#182b2c] hover:text-[#00b4b6]"
