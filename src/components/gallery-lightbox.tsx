@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ZoomIn, Heart } from "lucide-react";
@@ -15,6 +16,22 @@ export const GalleryGrid = ({ initialItems = [] }: GalleryGridProps) => {
   const [items, setItems] = useState<GalleryMediaItem[]>(initialItems);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [activeItem, setActiveItem] = useState<GalleryMediaItem | null>(null);
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (activeItem) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [activeItem]);
 
   useEffect(() => {
     // Dynamically fetch items on client to ensure newly added images are reflected instantly
@@ -109,64 +126,68 @@ export const GalleryGrid = ({ initialItems = [] }: GalleryGridProps) => {
         </AnimatePresence>
       </motion.div>
 
-      {/* Lightbox Modal */}
-      <AnimatePresence>
-        {activeItem && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setActiveItem(null)}
-            className="fixed inset-0 z-50 bg-brand-dark/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-8"
-          >
+      {/* Lightbox Modal Rendered via React Portal */}
+      {mounted && typeof document !== "undefined" && createPortal(
+        <AnimatePresence>
+          {activeItem && (
             <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-3xl overflow-hidden max-w-4xl w-full shadow-2xl relative border border-brand-primary/30"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setActiveItem(null)}
+              className="fixed inset-0 w-screen h-screen min-h-screen min-w-full z-[999999] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-8 overflow-y-auto overscroll-contain"
+              style={{ top: 0, left: 0, right: 0, bottom: 0, margin: 0 }}
             >
-              <button
-                onClick={() => setActiveItem(null)}
-                className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-brand-dark/70 text-white flex items-center justify-center hover:bg-brand-dark transition-colors cursor-pointer"
+              <motion.div
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white rounded-3xl overflow-hidden max-w-4xl w-full shadow-2xl relative border border-brand-primary/30 my-auto"
               >
-                <X className="w-5 h-5" />
-              </button>
+                <button
+                  onClick={() => setActiveItem(null)}
+                  className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-brand-dark/70 text-white flex items-center justify-center hover:bg-brand-dark transition-colors cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
 
-              <div className="grid grid-cols-1 md:grid-cols-2">
-                <div className="relative h-80 md:h-[480px] w-full bg-brand-secondary/20">
-                  <Image
-                    src={activeItem.imageUrl}
-                    alt={activeItem.alt || activeItem.title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="p-8 flex flex-col justify-between space-y-6">
-                  <div>
-                    <span className="text-xs uppercase tracking-widest text-brand-accent font-semibold">
-                      {activeItem.categoryLabel}
-                    </span>
-                    <h3 className="font-serif text-2xl sm:text-3xl font-bold text-brand-dark mt-2 mb-4">
-                      {activeItem.title}
-                    </h3>
-                    <p className="text-brand-dark/80 font-sans leading-relaxed text-sm sm:text-base">
-                      {activeItem.description}
-                    </p>
+                <div className="grid grid-cols-1 md:grid-cols-2">
+                  <div className="relative h-80 md:h-[480px] w-full bg-brand-secondary/20">
+                    <Image
+                      src={activeItem.imageUrl}
+                      alt={activeItem.alt || activeItem.title}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
+                  <div className="p-8 flex flex-col justify-between space-y-6">
+                    <div>
+                      <span className="text-xs uppercase tracking-widest text-brand-accent font-semibold">
+                        {activeItem.categoryLabel}
+                      </span>
+                      <h3 className="font-serif text-2xl sm:text-3xl font-bold text-brand-dark mt-2 mb-4">
+                        {activeItem.title}
+                      </h3>
+                      <p className="text-brand-dark/80 font-sans leading-relaxed text-sm sm:text-base">
+                        {activeItem.description}
+                      </p>
+                    </div>
 
-                  <div className="pt-4 border-t border-brand-secondary">
-                    <div className="flex items-center space-x-2 text-brand-accent text-sm font-sans font-medium">
-                      <Heart className="w-4 h-4 fill-current" />
-                      <span>Автентичен спомен от Пощичка</span>
+                    <div className="pt-4 border-t border-brand-secondary">
+                      <div className="flex items-center space-x-2 text-brand-accent text-sm font-sans font-medium">
+                        <Heart className="w-4 h-4 fill-current" />
+                        <span>Автентичен спомен от Пощичка</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 };

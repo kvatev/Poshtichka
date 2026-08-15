@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
@@ -18,6 +19,23 @@ export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
   const [cityPresets, setCityPresets] = useState<string[]>([]);
   const [activeModalEvent, setActiveModalEvent] = useState<EventLocation | null>(null);
   const [activeLightboxIndex, setActiveLightboxIndex] = useState<number>(0);
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Lock body scroll when lightbox modal is open to avoid background leaking
+  useEffect(() => {
+    if (activeModalEvent) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [activeModalEvent]);
 
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -460,132 +478,137 @@ export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
         </div>
       </div>
 
-      {/* 7. Lightbox Overlay Modal matching Screenshot 2 layout */}
-      <AnimatePresence>
-        {activeModalEvent && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[99999] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-hidden overscroll-contain"
-            onClick={() => setActiveModalEvent(null)}
-          >
-            <div
-              className="relative max-w-5xl w-full bg-[#f9f6f0] rounded-[36px] overflow-hidden shadow-2xl border border-white/60 flex flex-col md:flex-row text-left font-sans max-h-[90vh] md:max-h-[85vh]"
-              onClick={(e) => e.stopPropagation()}
+      {/* 7. Lightbox Overlay Modal matching Screenshot 2 layout rendered via React Portal directly on document.body to fill 100% full screen */}
+      {mounted && typeof document !== "undefined" && createPortal(
+        <AnimatePresence>
+          {activeModalEvent && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 w-screen h-screen min-h-screen min-w-full z-[999999] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto overscroll-contain"
+              style={{ top: 0, left: 0, right: 0, bottom: 0, margin: 0 }}
+              onClick={() => setActiveModalEvent(null)}
             >
-              {/* Left Side: Main Large Image */}
-              <div className="w-full md:w-1/2 relative min-h-[300px] sm:min-h-[380px] md:min-h-[480px]">
-                {(() => {
-                  const currentImg =
-                    (activeModalEvent.galleryImages && activeModalEvent.galleryImages[activeLightboxIndex]) ||
-                    activeModalEvent.coverImage ||
-                    "/media/gallery/Tezza_2025_07_07_170901960_1.webp";
-                  const pos =
-                    (activeModalEvent.imagePositions && (activeModalEvent.imagePositions[currentImg] || activeModalEvent.imagePositions[String(activeLightboxIndex)])) ||
-                    (activeLightboxIndex === 0 ? activeModalEvent.coverImagePosition : undefined) ||
-                    "center";
-                  return (
-                    <Image
-                      src={currentImg}
-                      alt={activeModalEvent.eventName || activeModalEvent.cityName}
-                      fill
-                      className="object-cover transition-all duration-300"
-                      style={{ objectPosition: pos }}
-                      unoptimized
-                    />
-                  );
-                })()}
-              </div>
+              <div
+                className="relative max-w-5xl w-full bg-[#f9f6f0] rounded-[36px] overflow-hidden shadow-2xl border border-white/60 flex flex-col md:flex-row text-left font-sans max-h-[90vh] md:max-h-[85vh] my-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Left Side: Main Large Image */}
+                <div className="w-full md:w-1/2 relative min-h-[300px] sm:min-h-[380px] md:min-h-[480px]">
+                  {(() => {
+                    const currentImg =
+                      (activeModalEvent.galleryImages && activeModalEvent.galleryImages[activeLightboxIndex]) ||
+                      activeModalEvent.coverImage ||
+                      "/media/gallery/Tezza_2025_07_07_170901960_1.webp";
+                    const pos =
+                      (activeModalEvent.imagePositions && (activeModalEvent.imagePositions[currentImg] || activeModalEvent.imagePositions[String(activeLightboxIndex)])) ||
+                      (activeLightboxIndex === 0 ? activeModalEvent.coverImagePosition : undefined) ||
+                      "center";
+                    return (
+                      <Image
+                        src={currentImg}
+                        alt={activeModalEvent.eventName || activeModalEvent.cityName}
+                        fill
+                        className="object-cover transition-all duration-300"
+                        style={{ objectPosition: pos }}
+                        unoptimized
+                      />
+                    );
+                  })()}
+                </div>
 
-              {/* Right Side: Info Content matching Screenshot 2 */}
-              <div className="w-full md:w-1/2 p-6 sm:p-8 flex flex-col justify-between space-y-6 overflow-y-auto relative">
-                {/* Close Button in cyan circle ring */}
-                <button
-                  onClick={() => setActiveModalEvent(null)}
-                  className="absolute top-4 right-4 w-9 h-9 rounded-full border-2 border-[#00b4b6] text-[#00b4b6] hover:bg-[#00b4b6] hover:text-white transition-all flex items-center justify-center cursor-pointer shadow-xs"
-                  aria-label="Затвори"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+                {/* Right Side: Info Content matching Screenshot 2 */}
+                <div className="w-full md:w-1/2 p-6 sm:p-8 flex flex-col justify-between space-y-6 overflow-y-auto relative">
+                  {/* Close Button in cyan circle ring */}
+                  <button
+                    onClick={() => setActiveModalEvent(null)}
+                    className="absolute top-4 right-4 w-9 h-9 rounded-full border-2 border-[#00b4b6] text-[#00b4b6] hover:bg-[#00b4b6] hover:text-white transition-all flex items-center justify-center cursor-pointer shadow-xs z-10"
+                    aria-label="Затвори"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
 
-                <div className="space-y-4 pr-6">
-                  {/* Category / Type Tag */}
-                  <span className="text-[#00b4b6] font-semibold text-xs uppercase tracking-wider block">
-                    {activeModalEvent.eventType || "СВАТБЕНО ТЪРЖЕСТВО"}
-                  </span>
+                  <div className="space-y-4 pr-6">
+                    {/* Category / Type Tag */}
+                    <span className="text-[#00b4b6] font-semibold text-xs uppercase tracking-wider block">
+                      {activeModalEvent.eventType || "СВАТБЕНО ТЪРЖЕСТВО"}
+                    </span>
 
-                  {/* Main Title */}
-                  <h3 className="font-salongbeach text-3xl sm:text-4xl font-bold uppercase tracking-wider text-[#182b2c] leading-tight">
-                    {activeModalEvent.eventName || `ПОЩИЧКА В ${activeModalEvent.cityName.toUpperCase()}`}
-                  </h3>
+                    {/* Main Title */}
+                    <h3 className="font-salongbeach text-3xl sm:text-4xl font-bold uppercase tracking-wider text-[#182b2c] leading-tight">
+                      {activeModalEvent.eventName || `ПОЩИЧКА В ${activeModalEvent.cityName.toUpperCase()}`}
+                    </h3>
 
-                  {/* Venue Name */}
-                  <p className="font-sans text-xs sm:text-sm text-[#00b4b6] uppercase tracking-wider font-semibold">
-                    {activeModalEvent.venueName || activeModalEvent.cityName}
-                  </p>
+                    {/* Venue Name */}
+                    <p className="font-sans text-xs sm:text-sm text-[#00b4b6] uppercase tracking-wider font-semibold">
+                      {activeModalEvent.venueName || activeModalEvent.cityName}
+                    </p>
 
-                  {/* Paragraph Description */}
-                  <p className="font-sans text-xs sm:text-sm text-[#182b2c]/85 leading-relaxed pt-1">
-                    {activeModalEvent.description ||
-                      "За събитието изготвихме авторски картички, стикери и татуировки за гостите. Персонализираното изживяване донесе много усмивки и спомени за цял живот!"}
-                  </p>
+                    {/* Paragraph Description */}
+                    <p className="font-sans text-xs sm:text-sm text-[#182b2c]/85 leading-relaxed pt-1">
+                      {activeModalEvent.description ||
+                        "За събитието изготвихме авторски картички, стикери и татуировки за гостите. Персонализираното изживяване донесе много усмивки и спомени за цял живот!"}
+                    </p>
 
-                  {/* Thumbnails Row */}
-                  {activeModalEvent.galleryImages && activeModalEvent.galleryImages.length > 0 && (
-                    <div className="pt-2">
-                      <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                        {activeModalEvent.galleryImages.slice(0, 3).map((img, idx) => {
-                          const thumbPos =
-                            (activeModalEvent.imagePositions && (activeModalEvent.imagePositions[img] || activeModalEvent.imagePositions[String(idx)])) ||
-                            (idx === 0 ? activeModalEvent.coverImagePosition : undefined) ||
-                            "center";
-                          return (
-                            <button
-                              key={idx}
-                              onClick={() => setActiveLightboxIndex(idx)}
-                              className={`relative h-20 sm:h-24 rounded-2xl overflow-hidden border-2 transition-all cursor-pointer ${
-                                activeLightboxIndex === idx
-                                  ? "border-[#00b4b6] scale-105 shadow-md"
-                                  : "border-transparent opacity-80 hover:opacity-100"
-                              }`}
-                            >
-                              <Image
-                                src={img}
-                                alt={`Снимка ${idx + 1}`}
-                                fill
-                                className="object-cover"
-                                style={{ objectPosition: thumbPos }}
-                                unoptimized
-                              />
-                            </button>
-                          );
-                        })}
+                    {/* Thumbnails Row */}
+                    {activeModalEvent.galleryImages && activeModalEvent.galleryImages.length > 0 && (
+                      <div className="pt-2">
+                        <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                          {activeModalEvent.galleryImages.slice(0, 3).map((img, idx) => {
+                            const thumbPos =
+                              (activeModalEvent.imagePositions && (activeModalEvent.imagePositions[img] || activeModalEvent.imagePositions[String(idx)])) ||
+                              (idx === 0 ? activeModalEvent.coverImagePosition : undefined) ||
+                              "center";
+                            return (
+                              <button
+                                key={idx}
+                                onClick={() => setActiveLightboxIndex(idx)}
+                                className={`relative h-20 sm:h-24 rounded-2xl overflow-hidden border-2 transition-all cursor-pointer ${
+                                  activeLightboxIndex === idx
+                                    ? "border-[#00b4b6] scale-105 shadow-md"
+                                    : "border-transparent opacity-80 hover:opacity-100"
+                                }`}
+                              >
+                                <Image
+                                  src={img}
+                                  alt={`Снимка ${idx + 1}`}
+                                  fill
+                                  className="object-cover"
+                                  style={{ objectPosition: thumbPos }}
+                                  unoptimized
+                                />
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Bottom Row with Asset 72@2x.png heart icon */}
-                <div className="pt-4 border-t border-[#00b4b6]/20 flex items-center space-x-3">
-                  <div className="relative w-9 h-9 flex-shrink-0">
-                    <Image
-                      src={encodeURI("/media/За Пощичка/Asset 72@2x.png")}
-                      alt="Автентичен спомен"
-                      fill
-                      className="object-contain"
-                      unoptimized
-                    />
+                    )}
                   </div>
-                  <span className="font-salongbeach text-[#00b4b6] font-bold text-base sm:text-lg uppercase tracking-wider">
-                    АВТЕНТИЧЕН СПОМЕН ОТ ПОЩИЧКА
-                  </span>
+
+                  {/* Bottom Row with Asset 72@2x.png heart icon */}
+                  <div className="pt-4 border-t border-[#00b4b6]/20 flex items-center space-x-3">
+                    <div className="relative w-9 h-9 flex-shrink-0">
+                      <Image
+                        src={encodeURI("/media/За Пощичка/Asset 72@2x.png")}
+                        alt="Автентичен спомен"
+                        fill
+                        className="object-contain"
+                        unoptimized
+                      />
+                    </div>
+                    <span className="font-salongbeach text-[#00b4b6] font-bold text-base sm:text-lg uppercase tracking-wider">
+                      АВТЕНТИЧЕН СПОМЕН ОТ ПОЩИЧКА
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 };
