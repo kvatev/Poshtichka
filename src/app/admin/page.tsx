@@ -111,7 +111,33 @@ export default function AdminDashboardPage() {
   }, [router]);
 
   const handleUpdateLead = (updated: CrmLead) => {
-    setLeads((prev) => prev.map((l) => (l.id === updated.id ? updated : l)));
+    setLeads((prev) => {
+      const updatedList = prev.map((l) => (l.id === updated.id ? updated : l));
+      try {
+        localStorage.setItem("poshtichka_cached_bookings", JSON.stringify(updatedList));
+      } catch {}
+      fetch("/api/admin/content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: "bookings", value: updatedList }),
+      }).catch(() => {});
+      return updatedList;
+    });
+  };
+
+  const handleDeleteLead = (id: string) => {
+    setLeads((prev) => {
+      const updatedList = prev.filter((l) => l.id !== id);
+      try {
+        localStorage.setItem("poshtichka_cached_bookings", JSON.stringify(updatedList));
+      } catch {}
+      fetch("/api/admin/content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: "bookings", value: updatedList }),
+      }).catch(() => {});
+      return updatedList;
+    });
   };
 
   const handleMarkNotificationRead = (id: string) => {
@@ -239,7 +265,11 @@ export default function AdminDashboardPage() {
           )}
 
           {activeTab === "finance" && (
-            <FinanceManager leads={leads} onUpdateLead={handleUpdateLead} />
+            <FinanceManager
+              leads={leads}
+              onUpdateLead={handleUpdateLead}
+              onDeleteLead={handleDeleteLead}
+            />
           )}
 
           {activeTab === "services" && <ServicesManager />}

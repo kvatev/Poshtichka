@@ -12,6 +12,7 @@ import {
   ArrowUpRight,
   Receipt,
   CreditCard,
+  Trash2,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,9 +26,10 @@ import {
 interface FinanceManagerProps {
   leads: CrmLead[];
   onUpdateLead: (updated: CrmLead) => void;
+  onDeleteLead?: (id: string) => void;
 }
 
-export const FinanceManager = ({ leads, onUpdateLead }: FinanceManagerProps) => {
+export const FinanceManager = ({ leads, onUpdateLead, onDeleteLead }: FinanceManagerProps) => {
   const [search, setSearch] = useState("");
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
 
@@ -139,6 +141,7 @@ export const FinanceManager = ({ leads, onUpdateLead }: FinanceManagerProps) => 
                 <th className="p-4">Капаро</th>
                 <th className="p-4">Остатък</th>
                 <th className="p-4">Статус на Плащането</th>
+                <th className="p-4 text-center">Действие</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-brand-primary/10">
@@ -194,6 +197,22 @@ export const FinanceManager = ({ leads, onUpdateLead }: FinanceManagerProps) => 
                         <option value="fully_paid">🟢 Напълно Платено</option>
                         <option value="refunded">⚪ Възстановено</option>
                       </select>
+                    </td>
+                    <td className="p-4 text-center">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (confirm(`Сигурни ли сте, че искате да изтриете резервацията за ${l.fullName} (${l.eventDate})?`)) {
+                            if (onDeleteLead) {
+                              onDeleteLead(l.id);
+                            }
+                          }
+                        }}
+                        className="p-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all cursor-pointer inline-flex items-center justify-center shadow-xs"
+                        title="Изтрий резервацията"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </td>
                   </tr>
                 );
