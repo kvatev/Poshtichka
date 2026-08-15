@@ -83,7 +83,7 @@ export const FinanceManager = ({ leads, onUpdateLead, onDeleteLead }: FinanceMan
             Финанси & Плащания (Finance Management)
           </h2>
           <p className="text-xs text-brand-dark/70 mt-1">
-            Проследяване на чист приход (без гориво), общ приход, разходи и капара
+            Проследяване на чист приход (без гориво), общ приход, разходи и капарота
           </p>
         </div>
 
@@ -145,10 +145,10 @@ export const FinanceManager = ({ leads, onUpdateLead, onDeleteLead }: FinanceMan
           <p className="text-[10px] text-blue-800 font-medium">Фирмен разход за транспорт и гориво</p>
         </Card>
 
-        {/* Card 4: Постъпили Капара */}
+        {/* Card 4: Постъпили Капарота */}
         <Card className="p-5 bg-[#00b4b6]/5 border border-[#00b4b6]/30 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[#008b8d] uppercase tracking-wider">Постъпили Капара</span>
+            <span className="text-[11px] font-bold text-[#008b8d] uppercase tracking-wider">Постъпили Капарота</span>
             <span className="text-xs">💳</span>
           </div>
           <div className="font-serif text-2xl sm:text-3xl font-bold text-[#00b4b6]">{totalDepositsPaid.toFixed(2)} €</div>
