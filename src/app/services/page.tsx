@@ -105,7 +105,7 @@ export default function ServicesPage() {
 
   return (
     <PageWrapper>
-      <div className="pt-28 sm:pt-32 pb-24 space-y-12 sm:space-y-16 bg-[#fdfbf7] text-[#182b2c] min-h-screen">
+      <div className="pt-28 sm:pt-32 pb-24 space-y-12 sm:space-y-16 bg-[#f9f6f0] text-[#182b2c] min-h-screen">
         {/* Top Header Banner with Asset 88@2x.png Background */}
         <section className="relative w-full max-w-6xl mx-auto px-4 sm:px-8">
           <div className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-md flex items-center justify-center py-10 sm:py-14 md:py-16 px-4 sm:px-8 text-center min-h-[160px] sm:min-h-[200px] md:min-h-[220px]">
