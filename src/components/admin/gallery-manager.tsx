@@ -752,11 +752,31 @@ export const GalleryManager = () => {
 
       if (res.ok && data?.success) {
         setSuccessMsg(editingItem ? "Събитието бе обновено успешно!" : "Новото събитие бе добавено в галерията!");
-        fetchItems();
+        
+        // Optimistically update local items state & browser cache immediately
+        if (data.events && Array.isArray(data.events)) {
+          setItems(data.events);
+          try {
+            localStorage.setItem("poshtichka_cached_events", JSON.stringify(data.events));
+          } catch {}
+        } else if (data.event) {
+          setItems((prev) => {
+            const updated = editingItem
+              ? prev.map((i) => (i.id === editingItem.id ? data.event : i))
+              : [data.event, ...prev];
+            try {
+              localStorage.setItem("poshtichka_cached_events", JSON.stringify(updated));
+            } catch {}
+            return updated;
+          });
+        } else {
+          fetchItems();
+        }
+
         setTimeout(() => {
           setShowModal(false);
           setSuccessMsg("");
-        }, 1000);
+        }, 500);
       } else {
         const errorText = data?.error || "Грешка при запис на събитието.";
         setErrorMsg(errorText);

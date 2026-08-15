@@ -7,9 +7,13 @@ import { X } from "lucide-react";
 import { EventLocation } from "@/types/map-event";
 import { BG_LOCATIONS_DATABASE } from "@/lib/bg-locations";
 
-export const MapGallery = () => {
-  const [events, setEvents] = useState<EventLocation[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+interface MapGalleryProps {
+  initialEvents?: EventLocation[];
+}
+
+export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
+  const [events, setEvents] = useState<EventLocation[]>(initialEvents);
+  const [loading, setLoading] = useState<boolean>(initialEvents.length === 0);
   const [selectedCity, setSelectedCity] = useState<string>("");
   const [cityPresets, setCityPresets] = useState<string[]>([]);
   const [activeModalEvent, setActiveModalEvent] = useState<EventLocation | null>(null);
@@ -21,8 +25,17 @@ export const MapGallery = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const markersRef = useRef<any[]>([]);
 
-  // Load from local cache immediately on mount to prevent any visual jumps
+  // Load from local cache immediately on mount if initialEvents was empty
   useEffect(() => {
+    if (initialEvents && initialEvents.length > 0) {
+      setEvents(initialEvents);
+      setLoading(false);
+      try {
+        localStorage.setItem("poshtichka_cached_events", JSON.stringify(initialEvents));
+      } catch {}
+      return;
+    }
+
     try {
       const cached = localStorage.getItem("poshtichka_cached_events");
       if (cached) {
@@ -35,7 +48,7 @@ export const MapGallery = () => {
         }
       }
     } catch {}
-  }, []);
+  }, [initialEvents]);
 
   // Fetch API locations
   useEffect(() => {
