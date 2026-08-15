@@ -35,7 +35,7 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true);
 
   // CRM State
-  const [leads, setLeads] = useState<CrmLead[]>(defaultMockLeads);
+  const [leads, setLeads] = useState<CrmLead[]>([]);
   const [notifications, setNotifications] = useState<CrmNotification[]>(defaultNotifications);
   const [selectedLead, setSelectedLead] = useState<CrmLead | null>(null);
   const [showNewLeadModal, setShowNewLeadModal] = useState(false);
@@ -70,11 +70,12 @@ export default function AdminDashboardPage() {
       });
 
     // Fetch live bookings
-    fetch("/api/bookings")
+    fetch("/api/bookings", { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (data && Array.isArray(data.bookings) && data.bookings.length > 0) {
-          const mapped: CrmLead[] = data.bookings.map((b: any) => ({
+        if (data) {
+          const rawList = Array.isArray(data.bookings) ? data.bookings : Array.isArray(data) ? data : [];
+          const mapped: CrmLead[] = rawList.map((b: any) => ({
             id: b.id,
             fullName: b.fullName || "Резервация",
             phone: b.phone || "",
