@@ -57,13 +57,8 @@ export const ServicesManager = () => {
   const [description, setDescription] = useState("");
   const [features, setFeatures] = useState<string[]>([""]);
   const [image, setImage] = useState("");
-  const [selectedAssets, setSelectedAssets] = useState<string[]>(["/media/Услуги/Asset 86@2x.png"]);
-
-  const toggleAsset = (path: string) => {
-    setSelectedAssets((prev) =>
-      prev.includes(path) ? prev.filter((p) => p !== path) : [...prev, path]
-    );
-  };
+  const defaultAssets = ["/media/Услуги/Asset 86@2x.png", "/media/Услуги/Asset 90@2x.png"];
+  const [selectedAssets, setSelectedAssets] = useState<string[]>(defaultAssets);
 
   const fetchServices = () => {
     setLoading(true);
@@ -110,7 +105,7 @@ export const ServicesManager = () => {
       "2-МА СЛУЖИТЕЛИ ЗА СЪДЕЙСТВИЕ НА ГОСТИТЕ И МОНТАЖ",
     ]);
     setImage("/media/gallery/Tezza_2025_07_13_155326413.webp");
-    setSelectedAssets(["/media/Услуги/Asset 86@2x.png"]);
+    setSelectedAssets(defaultAssets);
     setErrorMsg("");
     setSuccessMsg("");
     setShowModal(true);
@@ -123,12 +118,7 @@ export const ServicesManager = () => {
     setDescription(service.description || "");
     setFeatures(service.features && service.features.length > 0 ? service.features : [""]);
     setImage(service.image || "/media/gallery/Tezza_2025_07_13_155326413.webp");
-    const initialAssets = service.badgeAssets && service.badgeAssets.length > 0
-      ? service.badgeAssets
-      : service.badgeAsset
-        ? [service.badgeAsset]
-        : ["/media/Услуги/Asset 86@2x.png"];
-    setSelectedAssets(initialAssets);
+    setSelectedAssets(defaultAssets);
     setErrorMsg("");
     setSuccessMsg("");
     setShowModal(true);
@@ -608,69 +598,6 @@ export const ServicesManager = () => {
                         className="hidden"
                       />
                     </label>
-                  </div>
-                </div>
-
-                {/* Badge Icon Asset Visual Selector with Multiple Selection */}
-                <div className="space-y-2 pt-2 border-t border-gray-200">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-semibold text-[#182b2c]">
-                      Декоративни елементи / Значки:
-                    </label>
-                    <span className="text-[11px] text-[#00b4b6] font-bold">
-                      {selectedAssets.length === 0
-                        ? "Няма избрани"
-                        : selectedAssets.length === 1
-                        ? availableAssets.find((a) => a.path === selectedAssets[0])?.label
-                        : `Избрани (${selectedAssets.length})`}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    {availableAssets.map((a) => {
-                      const isSelected = selectedAssets.includes(a.path);
-                      return (
-                        <button
-                          key={a.path}
-                          type="button"
-                          onClick={() => toggleAsset(a.path)}
-                          className={`flex items-center space-x-3 p-2.5 rounded-2xl border-2 transition-all cursor-pointer text-left ${
-                            isSelected
-                              ? "border-[#00b4b6] bg-[#00b4b6]/10 shadow-sm ring-2 ring-[#00b4b6]/30"
-                              : "border-gray-200 bg-white hover:border-[#00b4b6]/40 hover:bg-gray-50"
-                          }`}
-                        >
-                          {/* Miniature icon image */}
-                          <div className="relative w-11 h-11 rounded-xl bg-[#f9f6f0] border border-gray-200 flex-shrink-0 p-1 flex items-center justify-center overflow-hidden">
-                            <Image
-                              src={encodeURI(a.path)}
-                              alt={a.label}
-                              fill
-                              className="object-contain p-1"
-                              unoptimized
-                            />
-                          </div>
-
-                          <div className="flex-grow min-w-0">
-                            <div className="flex items-center justify-between gap-1">
-                              <p className="text-xs font-bold text-[#182b2c] truncate">{a.label}</p>
-                              <div
-                                className={`w-4 h-4 rounded-md flex items-center justify-center border text-[10px] font-bold shrink-0 ${
-                                  isSelected
-                                    ? "bg-[#00b4b6] text-white border-[#00b4b6]"
-                                    : "border-gray-300 bg-white"
-                                }`}
-                              >
-                                {isSelected ? "✓" : ""}
-                              </div>
-                            </div>
-                            <p className={`text-[10px] ${isSelected ? "text-[#00b4b6] font-bold" : "text-gray-400"} truncate`}>
-                              {isSelected ? "✓ Активен елемент" : "Кликнете за добавяне"}
-                            </p>
-                          </div>
-                        </button>
-                      );
-                    })}
                   </div>
                 </div>
               </form>
