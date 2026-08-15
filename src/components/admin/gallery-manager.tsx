@@ -59,7 +59,7 @@ const processFileToWebp = (file: File): Promise<string> => {
       const img = new window.Image();
       img.onload = () => {
         try {
-          const maxDim = 960;
+          const maxDim = 800;
           let width = img.naturalWidth || img.width || 800;
           let height = img.naturalHeight || img.height || 600;
 
@@ -78,9 +78,16 @@ const processFileToWebp = (file: File): Promise<string> => {
           canvas.height = height;
           const ctx = canvas.getContext("2d");
           if (!ctx) return resolve(src);
+
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, width, height);
           ctx.drawImage(img, 0, 0, width, height);
-          const webpDataUrl = canvas.toDataURL("image/webp", 0.75);
-          resolve(webpDataUrl);
+
+          let compressed = canvas.toDataURL("image/webp", 0.72);
+          if (!compressed.startsWith("data:image/webp") || compressed.length > 250000) {
+            compressed = canvas.toDataURL("image/jpeg", 0.75);
+          }
+          resolve(compressed);
         } catch {
           resolve(src);
         }
@@ -794,14 +801,24 @@ export const GalleryManager = () => {
 
     try {
       const res = await fetch(`/api/map-events?id=${id}`, { method: "DELETE" });
+      const data = await res.json().catch(() => null);
       if (res.ok) {
-        setItems((prev) => {
-          const updated = prev.filter((i) => i.id !== id);
+        if (data?.events && Array.isArray(data.events)) {
+          setItems(data.events);
           try {
-            localStorage.setItem("poshtichka_cached_events", JSON.stringify(updated));
+            localStorage.setItem("poshtichka_cached_events", JSON.stringify(data.events));
           } catch {}
-          return updated;
-        });
+        } else {
+          setItems((prev) => {
+            const updated = prev.filter((i) => i.id !== id);
+            try {
+              localStorage.setItem("poshtichka_cached_events", JSON.stringify(updated));
+            } catch {}
+            return updated;
+          });
+        }
+      } else {
+        alert(data?.error || "Грешка при изтриването.");
       }
     } catch {
       alert("Грешка при изтриването.");

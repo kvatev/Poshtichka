@@ -38,6 +38,13 @@ async function saveStoredEvents(events: EventLocation[]): Promise<void> {
 }
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+const noCacheHeaders = {
+  "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+  "CDN-Cache-Control": "no-store",
+  "Vercel-CDN-Cache-Control": "no-store",
+};
 
 /**
  * GET: Fetch all map events
@@ -59,7 +66,7 @@ export async function GET() {
     };
     return parseDate(b.eventDate, b.createdAt) - parseDate(a.eventDate, a.createdAt);
   });
-  return NextResponse.json({ events: sorted, success: true });
+  return NextResponse.json({ events: sorted, success: true }, { headers: noCacheHeaders });
 }
 
 /**
@@ -151,7 +158,7 @@ export async function POST(req: NextRequest) {
       revalidatePath("/");
     } catch {}
 
-    return NextResponse.json({ success: true, event: newEvent, events: updatedList });
+    return NextResponse.json({ success: true, event: newEvent, events: updatedList }, { headers: noCacheHeaders });
   } catch (err: unknown) {
     console.error("Create event error:", err);
     const msg = err instanceof Error ? err.message : "Грешка при създаване на събитие.";
@@ -266,7 +273,7 @@ export async function PUT(req: NextRequest) {
     } catch {}
 
     const result = updatedEvent || updatedList.find((e) => e.id === id);
-    return NextResponse.json({ success: true, event: result, events: updatedList });
+    return NextResponse.json({ success: true, event: result, events: updatedList }, { headers: noCacheHeaders });
   } catch (err: unknown) {
     console.error("Update event error:", err);
     const msg = err instanceof Error ? err.message : "Грешка при редакция на събитие.";
@@ -300,7 +307,7 @@ export async function DELETE(req: NextRequest) {
       revalidatePath("/");
     } catch {}
 
-    return NextResponse.json({ success: true, id, events: updatedList });
+    return NextResponse.json({ success: true, id, events: updatedList }, { headers: noCacheHeaders });
   } catch (err: unknown) {
     console.error("Delete event error:", err);
     const msg = err instanceof Error ? err.message : "Грешка при изтриване на локацията.";
