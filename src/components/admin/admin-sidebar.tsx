@@ -91,11 +91,12 @@ export const AdminSidebar = ({
   return (
     <aside
       className={cn(
-        "bg-brand-dark text-white border-r border-white/10 flex flex-col justify-between transition-all duration-300 min-h-screen sticky top-0 z-40",
+        "bg-brand-dark text-white border-r border-white/10 flex flex-col h-screen max-h-screen sticky top-0 z-40 transition-all duration-300 overflow-hidden",
         collapsed ? "w-20" : "w-64"
       )}
     >
-      <div className="p-4 space-y-4 overflow-y-auto max-h-[calc(100vh-80px)]">
+      {/* Scrollable Top & Nav Area */}
+      <div className="p-4 space-y-4 overflow-y-auto flex-1 custom-modal-scroll">
         {/* Brand Header */}
         <div className="flex items-center justify-between pb-3 border-b border-white/10">
           <div className="flex items-center space-x-3 overflow-hidden">
@@ -121,7 +122,7 @@ export const AdminSidebar = ({
           </div>
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="text-white/50 hover:text-white text-xs p-1 rounded-lg hover:bg-white/5 hidden md:block"
+            className="text-white/50 hover:text-white text-xs p-1 rounded-lg hover:bg-white/5 hidden md:block cursor-pointer"
             title={collapsed ? "Разгъни" : "Свий"}
           >
             {collapsed ? "→" : "←"}
@@ -161,13 +162,13 @@ export const AdminSidebar = ({
         </nav>
       </div>
 
-      {/* Footer controls */}
-      <div className="p-4 border-t border-white/10 space-y-2 bg-brand-dark">
+      {/* Static Fixed Footer controls */}
+      <div className="p-4 border-t border-white/10 space-y-2 bg-brand-dark flex-shrink-0 z-10">
         <Link
           href="/"
           target="_blank"
           className={cn(
-            "w-full flex items-center space-x-3 px-3.5 py-2 rounded-xl text-xs font-sans text-white/60 hover:bg-white/5 hover:text-white transition-colors"
+            "w-full flex items-center space-x-3 px-3.5 py-2 rounded-xl text-xs font-sans text-white/60 hover:bg-white/5 hover:text-white transition-colors cursor-pointer"
           )}
           title="Преглед на уебсайта"
         >
