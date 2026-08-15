@@ -14,19 +14,19 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: "portrait-primary",
     icons: [
       {
-        src: encodeURI("/media/icons/Asset 95@2x.png"),
+        src: encodeURI("/media/icons/Asset 95@2x.png?v=poshtichka2"),
         sizes: "192x192 512x512",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: encodeURI("/media/icons/Asset 95@2x.png"),
+        src: encodeURI("/media/icons/Asset 95@2x.png?v=poshtichka2"),
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable",
       },
       {
-        src: "/icon.png",
+        src: "/icon.png?v=poshtichka2",
         sizes: "192x192 512x512",
         type: "image/png",
         purpose: "any",

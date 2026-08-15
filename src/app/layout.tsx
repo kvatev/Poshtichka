@@ -50,14 +50,14 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: encodeURI("/media/icons/Asset 95@2x.png"), type: "image/png" },
-      { url: "/icon.png", type: "image/png" },
-      { url: "/favicon.ico", sizes: "any" },
+      { url: encodeURI("/media/icons/Asset 95@2x.png?v=poshtichka2"), type: "image/png" },
+      { url: "/icon.png?v=poshtichka2", type: "image/png" },
+      { url: "/favicon.ico?v=poshtichka2", sizes: "any" },
     ],
-    shortcut: encodeURI("/media/icons/Asset 95@2x.png"),
+    shortcut: encodeURI("/media/icons/Asset 95@2x.png?v=poshtichka2"),
     apple: [
-      { url: encodeURI("/media/icons/Asset 95@2x.png"), sizes: "180x180", type: "image/png" },
-      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+      { url: encodeURI("/media/icons/Asset 95@2x.png?v=poshtichka2"), sizes: "180x180", type: "image/png" },
+      { url: "/apple-icon.png?v=poshtichka2", sizes: "180x180", type: "image/png" },
     ],
   },
   openGraph: {
@@ -107,9 +107,9 @@ export default function RootLayout({
   return (
     <html lang="bg" className={`${displayFont.variable} ${inter.variable}`}>
       <head>
-        <link rel="icon" href={encodeURI("/media/icons/Asset 95@2x.png")} type="image/png" sizes="any" />
-        <link rel="shortcut icon" href={encodeURI("/media/icons/Asset 95@2x.png")} type="image/png" />
-        <link rel="apple-touch-icon" href={encodeURI("/media/icons/Asset 95@2x.png")} />
+        <link rel="icon" href={encodeURI("/media/icons/Asset 95@2x.png?v=poshtichka2")} type="image/png" sizes="any" />
+        <link rel="shortcut icon" href={encodeURI("/media/icons/Asset 95@2x.png?v=poshtichka2")} type="image/png" />
+        <link rel="apple-touch-icon" href={encodeURI("/media/icons/Asset 95@2x.png?v=poshtichka2")} />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />

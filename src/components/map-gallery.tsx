@@ -30,7 +30,9 @@ export const MapGallery = () => {
       if (cached) {
         const parsed = JSON.parse(cached);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          setEvents(parsed);
+          // Clean legacy mock IDs from local cache
+          const cleaned = parsed.filter((e: EventLocation) => !e.id.startsWith("MAP-0") || e.id.includes("1786"));
+          setEvents(cleaned);
           setLoading(false);
         }
       }
