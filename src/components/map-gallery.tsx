@@ -448,7 +448,7 @@ export const MapGallery = () => {
                     setActiveModalEvent(ev);
                     setActiveLightboxIndex(0);
                   }}
-                  className="relative group w-[300px] sm:w-[340px] md:w-[360px] h-[440px] sm:h-[490px] rounded-[44px] sm:rounded-[48px] overflow-hidden shadow-xl hover:scale-[1.03] transition-all duration-300 cursor-pointer flex flex-col mx-auto bg-[#f9f6f0]"
+                  className="relative group w-[300px] sm:w-[340px] md:w-[360px] h-[430px] sm:h-[480px] border-[2.5px] border-[#182b2c] rounded-[40px] sm:rounded-[46px] overflow-hidden shadow-xl hover:scale-[1.03] transition-all duration-300 cursor-pointer flex flex-col mx-auto bg-[#f9f6f0]"
                 >
                   {/* Photo Container filling top ~68% seamlessly */}
                   <div className="relative w-full h-[68%] overflow-hidden">
@@ -477,17 +477,6 @@ export const MapGallery = () => {
                     <p className="font-stampatello text-sm sm:text-base font-normal text-[#00b4b6] leading-tight">
                       {ev.eventType || "сватбено тържество"}
                     </p>
-                  </div>
-
-                  {/* Outer Frame Graphic Overlay Asset 84@2x.png */}
-                  <div className="absolute inset-0 w-full h-full pointer-events-none z-10">
-                    <Image
-                      src={encodeURI("/media/Галерия/Asset 84@2x.png")}
-                      alt="Рамка"
-                      fill
-                      className="object-fill"
-                      unoptimized
-                    />
                   </div>
                 </div>
               ))}
@@ -529,7 +518,7 @@ export const MapGallery = () => {
                 setActiveModalEvent(ev);
                 setActiveLightboxIndex(0);
               }}
-              className="relative group w-full max-w-[340px] sm:max-w-[360px] h-[440px] sm:h-[490px] rounded-[44px] sm:rounded-[48px] overflow-hidden shadow-md hover:shadow-xl hover:scale-[1.03] transition-all duration-300 cursor-pointer flex flex-col mx-auto bg-[#f9f6f0] text-center"
+              className="relative group w-full max-w-[340px] sm:max-w-[360px] h-[430px] sm:h-[480px] border-[2.5px] border-[#182b2c] rounded-[40px] sm:rounded-[46px] overflow-hidden shadow-md hover:shadow-xl hover:scale-[1.03] transition-all duration-300 cursor-pointer flex flex-col mx-auto bg-[#f9f6f0] text-center"
             >
               {/* Photo Container filling top ~68% seamlessly */}
               <div className="relative w-full h-[68%] overflow-hidden">
@@ -558,17 +547,6 @@ export const MapGallery = () => {
                 <p className="font-stampatello text-sm sm:text-base font-normal text-[#00b4b6] leading-tight">
                   {ev.eventType || "сватбено тържество"}
                 </p>
-              </div>
-
-              {/* Outer Frame Graphic Overlay Asset 84@2x.png */}
-              <div className="absolute inset-0 w-full h-full pointer-events-none z-10">
-                <Image
-                  src={encodeURI("/media/Галерия/Asset 84@2x.png")}
-                  alt="Рамка"
-                  fill
-                  className="object-fill"
-                  unoptimized
-                />
               </div>
             </div>
           ))}
