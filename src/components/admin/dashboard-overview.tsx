@@ -158,11 +158,13 @@ export const DashboardOverview = ({
           <div className="space-y-4">
             {leads.length === 0 ? (
               <div className="p-8 text-center text-gray-500 text-sm">
-                Няма активни запитвания. Използвайте бутона "Ново запитване", за да въведете събитие.
+                Няма активни запитвания. Използвайте бутона "Ново запитване" или изберете дата в календара.
               </div>
             ) : (
-              leads.slice(0, 5).map((lead) => {
-                const price = calculateTotalPrice(lead.pricing);
+              [...leads]
+                .sort((a, b) => (new Date(a.eventDate).getTime() || 0) - (new Date(b.eventDate).getTime() || 0))
+                .map((lead) => {
+                  const price = calculateTotalPrice(lead.pricing);
                 return (
                   <div
                     key={lead.id}

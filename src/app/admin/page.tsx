@@ -232,7 +232,18 @@ export default function AdminDashboardPage() {
             />
           )}
 
-          {activeTab === "calendar" && <CalendarView />}
+          {activeTab === "calendar" && (
+            <CalendarView
+              leads={leads}
+              onUpdateLeads={(newLeads) => {
+                setLeads(newLeads);
+                try {
+                  localStorage.setItem("poshtichka_cached_bookings", JSON.stringify(newLeads));
+                } catch {}
+              }}
+              onSelectLead={(lead) => setSelectedLead(lead)}
+            />
+          )}
 
           {activeTab === "finance" && (
             <FinanceManager leads={leads} onUpdateLead={handleUpdateLead} />

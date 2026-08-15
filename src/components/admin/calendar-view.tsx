@@ -19,27 +19,16 @@ import {
   Edit2,
   Save,
   Check,
+  TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { CrmLead, calculateTotalPrice } from "@/lib/crm-store";
 
-export interface CalendarEvent {
-  id: string;
-  fullName: string;
-  phone: string;
-  email: string;
-  eventType: string;
-  eventDate: string; // YYYY-MM-DD
-  startTime?: string;
-  endTime?: string;
-  city?: string;
-  venueLocation?: string;
-  guestCount?: number;
-  message?: string;
-  status: "confirmed" | "pending" | "deposit_pending" | "completed" | "cancelled";
-  price: number; // In EUR
-  depositPaid: number; // In EUR
-  createdAt?: string;
+export interface CalendarViewProps {
+  leads?: CrmLead[];
+  onUpdateLeads?: (updatedLeads: CrmLead[]) => void;
+  onSelectLead?: (lead: CrmLead) => void;
 }
 
 const MONTH_NAMES = [
@@ -59,18 +48,24 @@ const MONTH_NAMES = [
 
 const DAYS_OF_WEEK = ["Пон", "Втор", "Сря", "Четв", "Пет", "Съб", "Нед"];
 
-export const CalendarView = () => {
+export const CalendarView = ({
+  leads: propsLeads,
+  onUpdateLeads,
+  onSelectLead,
+}: CalendarViewProps) => {
   // Current view date (default June 2027 so the user immediately sees the requested 17.06.27 and 26.06.27 events!)
   const [viewYear, setViewYear] = useState<number>(2027);
   const [viewMonth, setViewMonth] = useState<number>(5); // 0-indexed, 5 = June
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [internalLeads, setInternalLeads] = useState<CrmLead[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [saving, setSaving] = useState<boolean>(false);
-  const [savedSuccess, setSavedSuccess] = useState<boolean>(false);
+
+  // Active leads list (use props if provided, otherwise internal state)
+  const activeLeads = propsLeads || internalLeads;
 
   // Modal State
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
+  const [editingLead, setEditingLead] = useState<CrmLead | null>(null);
 
   // Form fields
   const [formName, setFormName] = useState("");
@@ -89,12 +84,13 @@ export const CalendarView = () => {
   const [formMessage, setFormMessage] = useState("");
 
   const fetchBookings = () => {
+    if (propsLeads && propsLeads.length > 0) return;
     setLoading(true);
     fetch("/api/bookings")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data && Array.isArray(data.bookings)) {
-          const mapped: CalendarEvent[] = data.bookings.map((b: any) => ({
+          const mapped: CrmLead[] = data.bookings.map((b: any) => ({
             id: b.id,
             fullName: b.fullName || "Резервация",
             phone: b.phone || "",
@@ -106,13 +102,28 @@ export const CalendarView = () => {
             city: b.city || b.venueLocation?.split(",")[0] || "София",
             venueLocation: b.venueLocation || "",
             guestCount: Number(b.guestCount) || 100,
+            requestedProducts: b.requestedProducts || ["Персонализирани картички"],
             message: b.message || "",
+            createdAt: b.createdAt || new Date().toISOString(),
             status: b.status || "confirmed",
-            price: Number(b.price || b.pricing?.rentalPrice || 0),
-            depositPaid: Number(b.depositPaid || b.pricing?.depositPaid || 0),
-            createdAt: b.createdAt,
+            pricing: b.pricing || {
+              rentalPrice: Number(b.price) || 0,
+              designPrice: 0,
+              distanceKm: 0,
+              transportPrice: 0,
+              additionalServicesPrice: 0,
+              discountAmount: 0,
+              depositPaid: Number(b.depositPaid) || 0,
+              paymentStatus: "unpaid",
+            },
+            internalNotes: b.internalNotes || [],
+            attachedFiles: b.attachedFiles || [],
+            communicationHistory: b.communicationHistory || [],
           }));
-          setEvents(mapped);
+          setInternalLeads(mapped);
+          if (onUpdateLeads) {
+            onUpdateLeads(mapped);
+          }
         }
       })
       .catch(() => {})
@@ -163,9 +174,9 @@ export const CalendarView = () => {
     }
 
     const monthPrefix = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}`;
-    const mEvents = events.filter((e) => e.eventDate.startsWith(monthPrefix));
-    const mRevenue = mEvents.reduce((sum, e) => sum + (Number(e.price) || 0), 0);
-    const mDeposit = mEvents.reduce((sum, e) => sum + (Number(e.depositPaid) || 0), 0);
+    const mEvents = activeLeads.filter((e) => e.eventDate.startsWith(monthPrefix));
+    const mRevenue = mEvents.reduce((sum, e) => sum + (calculateTotalPrice(e.pricing) || 0), 0);
+    const mDeposit = mEvents.reduce((sum, e) => sum + (Number(e.pricing?.depositPaid) || 0), 0);
 
     return {
       calendarCells: cells,
@@ -173,16 +184,16 @@ export const CalendarView = () => {
       monthlyRevenue: mRevenue,
       monthlyDeposit: mDeposit,
     };
-  }, [viewYear, viewMonth, events]);
+  }, [viewYear, viewMonth, activeLeads]);
 
   const getEventsForDay = (dayNum: number) => {
     const dateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(dayNum).padStart(2, "0")}`;
-    return events.filter((e) => e.eventDate === dateStr);
+    return activeLeads.filter((e) => e.eventDate === dateStr);
   };
 
   // Modal open handlers
   const handleOpenAddModal = (dateStr?: string) => {
-    setEditingEvent(null);
+    setEditingLead(null);
     setFormName("");
     setFormDate(dateStr || `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-01`);
     setFormStartTime("16:00");
@@ -200,22 +211,22 @@ export const CalendarView = () => {
     setShowModal(true);
   };
 
-  const handleOpenEditModal = (ev: CalendarEvent) => {
-    setEditingEvent(ev);
-    setFormName(ev.fullName || "");
-    setFormDate(ev.eventDate || "");
-    setFormStartTime(ev.startTime || "16:00");
-    setFormEndTime(ev.endTime || "23:00");
-    setFormCity(ev.city || "София");
-    setFormVenue(ev.venueLocation || "");
-    setFormEventType(ev.eventType || "Сватбено тържество");
-    setFormGuestCount(ev.guestCount || 100);
-    setFormPrice(ev.price || 0);
-    setFormDeposit(ev.depositPaid || 0);
-    setFormStatus(ev.status || "confirmed");
-    setFormPhone(ev.phone || "");
-    setFormEmail(ev.email || "");
-    setFormMessage(ev.message || "");
+  const handleOpenEditModal = (lead: CrmLead) => {
+    setEditingLead(lead);
+    setFormName(lead.fullName || "");
+    setFormDate(lead.eventDate || "");
+    setFormStartTime(lead.startTime || "16:00");
+    setFormEndTime(lead.endTime || "23:00");
+    setFormCity(lead.city || "София");
+    setFormVenue(lead.venueLocation || "");
+    setFormEventType(lead.eventType || "Сватбено тържество");
+    setFormGuestCount(lead.guestCount || 100);
+    setFormPrice(calculateTotalPrice(lead.pricing) || 0);
+    setFormDeposit(lead.pricing?.depositPaid || 0);
+    setFormStatus(lead.status as any || "confirmed");
+    setFormPhone(lead.phone || "");
+    setFormEmail(lead.email || "");
+    setFormMessage(lead.message || "");
     setShowModal(true);
   };
 
@@ -227,10 +238,12 @@ export const CalendarView = () => {
     }
 
     setSaving(true);
-    setSavedSuccess(false);
 
-    const payload: CalendarEvent = {
-      id: editingEvent?.id || `BK-${Date.now()}`,
+    const priceNum = Number(formPrice) || 0;
+    const depositNum = Number(formDeposit) || 0;
+
+    const payload: CrmLead = {
+      id: editingLead?.id || `BK-${Date.now()}`,
       fullName: formName.trim() || `Резервация ${formDate}`,
       phone: formPhone.trim(),
       email: formEmail.trim(),
@@ -241,60 +254,74 @@ export const CalendarView = () => {
       city: formCity.trim(),
       venueLocation: formVenue.trim() || `${formCity.trim()}, Локация на събитието`,
       guestCount: Number(formGuestCount) || 100,
+      requestedProducts: editingLead?.requestedProducts || ["Персонализирани картички"],
       message: formMessage.trim(),
-      status: formStatus,
-      price: Number(formPrice) || 0,
-      depositPaid: Number(formDeposit) || 0,
-      createdAt: editingEvent?.createdAt || new Date().toISOString(),
+      status: formStatus as any,
+      pricing: {
+        rentalPrice: priceNum,
+        designPrice: 0,
+        distanceKm: 0,
+        transportPrice: 0,
+        additionalServicesPrice: 0,
+        discountAmount: 0,
+        depositPaid: depositNum,
+        paymentStatus: depositNum > 0 ? (depositNum >= priceNum && priceNum > 0 ? "fully_paid" : "deposit_paid") : "unpaid",
+      },
+      createdAt: editingLead?.createdAt || new Date().toISOString(),
+      internalNotes: editingLead?.internalNotes || [],
+      attachedFiles: editingLead?.attachedFiles || [],
+      communicationHistory: editingLead?.communicationHistory || [],
     };
 
-    const updatedEvents = editingEvent
-      ? events.map((ev) => (ev.id === editingEvent.id ? payload : ev))
-      : [payload, ...events];
+    const updatedLeads = editingLead
+      ? activeLeads.map((ev) => (ev.id === editingLead.id ? payload : ev))
+      : [payload, ...activeLeads];
 
-    // Optimistically update local state & cache
-    setEvents(updatedEvents);
-    try {
-      localStorage.setItem("poshtichka_cached_bookings", JSON.stringify(updatedEvents));
-    } catch {}
-
-    try {
-      const res = await fetch("/api/admin/content", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key: "bookings", value: updatedEvents }),
-      });
-
-      if (res.ok) {
-        setSavedSuccess(true);
-        setTimeout(() => {
-          setShowModal(false);
-          setSavedSuccess(false);
-        }, 500);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setSaving(false);
+    // Optimistically update
+    if (onUpdateLeads) {
+      onUpdateLeads(updatedLeads);
+    } else {
+      setInternalLeads(updatedLeads);
     }
-  };
-
-  const handleDeleteEvent = async (id: string) => {
-    if (!confirm("Сигурни ли сте, че искате да изтриете това събитие от календара?")) return;
-
-    const updatedEvents = events.filter((ev) => ev.id !== id);
-    setEvents(updatedEvents);
-    setShowModal(false);
 
     try {
-      localStorage.setItem("poshtichka_cached_bookings", JSON.stringify(updatedEvents));
+      localStorage.setItem("poshtichka_cached_bookings", JSON.stringify(updatedLeads));
     } catch {}
 
     try {
       await fetch("/api/admin/content", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key: "bookings", value: updatedEvents }),
+        body: JSON.stringify({ key: "bookings", value: updatedLeads }),
+      });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSaving(false);
+      setShowModal(false);
+    }
+  };
+
+  const handleDeleteLead = async (id: string) => {
+    if (!confirm("Сигурни ли сте, че искате да изтриете тази резервация от календара?")) return;
+
+    const updatedLeads = activeLeads.filter((ev) => ev.id !== id);
+    if (onUpdateLeads) {
+      onUpdateLeads(updatedLeads);
+    } else {
+      setInternalLeads(updatedLeads);
+    }
+    setShowModal(false);
+
+    try {
+      localStorage.setItem("poshtichka_cached_bookings", JSON.stringify(updatedLeads));
+    } catch {}
+
+    try {
+      await fetch("/api/admin/content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: "bookings", value: updatedLeads }),
       });
     } catch (err) {
       console.error(err);
@@ -448,27 +475,31 @@ export const CalendarView = () => {
 
                 {/* Day Events list */}
                 <div className="space-y-1.5 my-auto">
-                  {dayEvents.map((ev) => (
-                    <div
-                      key={ev.id}
-                      className="p-1.5 rounded-xl bg-white border border-[#00b4b6]/30 shadow-xs text-left"
-                    >
-                      <div className="font-salongbeach text-xs sm:text-sm font-bold text-[#182b2c] truncate">
-                        {ev.fullName}
+                  {dayEvents.map((ev) => {
+                    const price = calculateTotalPrice(ev.pricing);
+                    return (
+                      <div
+                        key={ev.id}
+                        className="p-1.5 rounded-xl bg-white border border-[#00b4b6]/30 shadow-xs text-left"
+                      >
+                        <div className="font-salongbeach text-xs sm:text-sm font-bold text-[#182b2c] truncate">
+                          {ev.fullName}
+                        </div>
+                        <div className="flex items-center justify-between text-[10px] text-gray-500 mt-0.5">
+                          <span className="truncate">{ev.city}</span>
+                          {price > 0 ? (
+                            <span className="font-bold text-emerald-600 font-salongbeach text-xs shrink-0">
+                              +{price} €
+                            </span>
+                          ) : (
+                            <span className="text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-md font-semibold shrink-0">
+                              Заета дата
+                            </span>
+                          )}
+                        </div>
                       </div>
-                      <div className="flex items-center justify-between text-[10px] text-gray-500 mt-0.5">
-                        {ev.price > 0 ? (
-                          <span className="font-bold text-emerald-600 font-salongbeach text-xs shrink-0">
-                            +{ev.price} €
-                          </span>
-                        ) : (
-                          <span className="text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-md font-semibold shrink-0">
-                            Заета дата
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
 
                   {!hasEvents && (
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity text-center py-2 text-[11px] text-[#00b4b6] font-semibold">
@@ -495,7 +526,7 @@ export const CalendarView = () => {
             <div className="px-6 py-4 border-b border-[#00b4b6]/20 flex items-center justify-between flex-shrink-0 bg-white z-10">
               <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6] flex items-center space-x-2">
                 <CalendarIcon className="w-6 h-6 text-[#00b4b6]" />
-                <span>{editingEvent ? "Редактиране на събитие" : "Добавяне на ново събитие"}</span>
+                <span>{editingLead ? "Редактиране на събитие & сума" : "Добавяне на ново събитие"}</span>
               </h3>
               <button
                 type="button"
@@ -541,15 +572,15 @@ export const CalendarView = () => {
 
                   <div className="space-y-1">
                     <label className="text-xs font-bold text-[#182b2c] uppercase tracking-wider">
-                      Сума / Приход (€) *
+                      Сума / Приход (€)
                     </label>
                     <input
                       type="number"
-                      required
                       min={0}
                       step={10}
                       value={formPrice}
                       onChange={(e) => setFormPrice(Number(e.target.value))}
+                      placeholder="0 €"
                       className="w-full px-3 py-2.5 rounded-xl border border-emerald-400 bg-emerald-50/40 text-emerald-800 font-salongbeach text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
                   </div>
@@ -564,6 +595,7 @@ export const CalendarView = () => {
                       step={10}
                       value={formDeposit}
                       onChange={(e) => setFormDeposit(Number(e.target.value))}
+                      placeholder="0 €"
                       className="w-full px-3 py-2.5 rounded-xl border border-[#00b4b6]/40 bg-[#00b4b6]/5 text-[#00b4b6] font-salongbeach text-base font-bold focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
                     />
                   </div>
@@ -679,14 +711,14 @@ export const CalendarView = () => {
 
             {/* Modal Footer */}
             <div className="px-6 py-4 bg-[#f9f6f0]/80 border-t border-[#00b4b6]/20 flex items-center justify-between flex-shrink-0">
-              {editingEvent ? (
+              {editingLead ? (
                 <button
                   type="button"
-                  onClick={() => handleDeleteEvent(editingEvent.id)}
+                  onClick={() => handleDeleteLead(editingLead.id)}
                   className="px-4 py-2 rounded-full bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all text-xs font-bold flex items-center space-x-1.5 cursor-pointer"
                 >
                   <Trash2 className="w-4 h-4" />
-                  <span>Изтрий</span>
+                  <span>Изтрий събитието</span>
                 </button>
               ) : (
                 <div />
