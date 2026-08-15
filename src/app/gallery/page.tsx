@@ -10,15 +10,13 @@ export const metadata = {
     "Разгледайте автентичната галерия от събития с Пощичка - интерактивна карта с вендинг машина и кадри от наши събития из цяла България.",
 };
 
-export const revalidate = 30;
+export const dynamic = "force-dynamic";
 
 export default async function GalleryPage() {
   const rawEvents = await readCloudOrFileData<EventLocation[]>("map-events", []);
   
-  // Clean out any legacy mock items
-  const cleanEvents = (rawEvents || []).filter(
-    (e) => !e.id.startsWith("MAP-0") || e.id.includes("1786")
-  );
+  // Pass all active events
+  const cleanEvents = (rawEvents || []);
 
   // Sort descending by date (newest first, oldest last)
   const sortedEvents = cleanEvents.sort((a, b) => {

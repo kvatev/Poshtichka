@@ -37,41 +37,13 @@ async function saveStoredEvents(events: EventLocation[]): Promise<void> {
   await writeCloudAndFileData("map-events", events);
 }
 
+export const dynamic = "force-dynamic";
+
 /**
  * GET: Fetch all map events
  */
 export async function GET() {
-  // First try native map_events table
-  try {
-    const supabase = await createClient();
-    const { data: dbEvents, error } = await supabase
-      .from("map_events")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (!error && dbEvents && dbEvents.length > 0) {
-      const formattedEvents: EventLocation[] = dbEvents.map((item) => ({
-        id: item.id,
-        eventName: item.event_name || "",
-        cityName: item.city_name,
-        venueName: item.venue_name || "",
-        eventType: item.event_type || "",
-        latitude: Number(item.latitude),
-        longitude: Number(item.longitude),
-        coverImage: item.cover_image || "",
-        galleryImages: Array.isArray(item.gallery_images) ? item.gallery_images : [],
-        description: item.description || "",
-        eventDate: item.event_date || "",
-        createdAt: item.created_at,
-        updatedAt: item.updated_at,
-      }));
-
-      await saveStoredEvents(formattedEvents);
-      return NextResponse.json({ events: formattedEvents, source: "database" });
-    }
-  } catch {}
-
-  // Cloud store priority
+  // Cloud store priority (Supabase popup_config row id=10 + local file)
   const currentEvents = await getStoredEvents();
   const sorted = [...currentEvents].sort((a, b) => {
     const parseDate = (d?: string, fallback?: string) => {
@@ -87,7 +59,7 @@ export async function GET() {
     };
     return parseDate(b.eventDate, b.createdAt) - parseDate(a.eventDate, a.createdAt);
   });
-  return NextResponse.json({ events: sorted, source: "cloud" });
+  return NextResponse.json({ events: sorted, success: true });
 }
 
 /**

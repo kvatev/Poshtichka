@@ -25,7 +25,7 @@ export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const markersRef = useRef<any[]>([]);
 
-  // Load from local cache immediately on mount if initialEvents was empty
+  // Load initialEvents or cached events
   useEffect(() => {
     if (initialEvents && initialEvents.length > 0) {
       setEvents(initialEvents);
@@ -33,26 +33,23 @@ export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
       try {
         localStorage.setItem("poshtichka_cached_events", JSON.stringify(initialEvents));
       } catch {}
-      return;
-    }
-
-    try {
-      const cached = localStorage.getItem("poshtichka_cached_events");
-      if (cached) {
-        const parsed = JSON.parse(cached);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          // Clean legacy mock IDs from local cache
-          const cleaned = parsed.filter((e: EventLocation) => !e.id.startsWith("MAP-0") || e.id.includes("1786"));
-          setEvents(cleaned);
-          setLoading(false);
+    } else {
+      try {
+        const cached = localStorage.getItem("poshtichka_cached_events");
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setEvents(parsed);
+            setLoading(false);
+          }
         }
-      }
-    } catch {}
+      } catch {}
+    }
   }, [initialEvents]);
 
-  // Fetch API locations
+  // Fetch live API locations on mount
   useEffect(() => {
-    fetch("/api/map-events")
+    fetch("/api/map-events", { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data && data.events && Array.isArray(data.events)) {
@@ -78,13 +75,13 @@ export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
     }
   }, [activeModalEvent]);
 
-  // Deduplicate and automatically sort events by date (newest first, oldest last/bottom)
+  // Deduplicate by ID and automatically sort events by date (newest first, oldest last/bottom)
   const uniqueEvents = useMemo(() => {
     const seen = new Set<string>();
     const filtered = events.filter((ev) => {
-      const key = `${(ev.eventName || "").trim()}_${(ev.cityName || "").trim()}_${(ev.venueName || "").trim()}`.toLowerCase();
-      if (seen.has(key)) return false;
-      seen.add(key);
+      if (!ev || !ev.id) return false;
+      if (seen.has(ev.id)) return false;
+      seen.add(ev.id);
       return true;
     });
 
