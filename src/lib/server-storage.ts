@@ -98,11 +98,6 @@ export async function readCloudOrFileData<T>(fileName: string, fallback: T): Pro
       if (Array.isArray(rows) && rows.length > 0 && rows[0].description) {
         const parsed = JSON.parse(rows[0].description);
         if (parsed !== null && parsed !== undefined) {
-          if (Array.isArray(parsed) && parsed.length === 0 && Array.isArray(fallback) && fallback.length > 0) {
-            // First time empty array in cloud -> seed initial fallback
-            await writeCloudAndFileData(fileName, fallback);
-            return fallback;
-          }
           writePersistentData(fileName, parsed);
           return parsed as T;
         }
@@ -112,12 +107,8 @@ export async function readCloudOrFileData<T>(fileName: string, fallback: T): Pro
     console.warn(`[CloudStorage] Read from Supabase notice for ${fileName}:`, err);
   }
 
-  const localData = readPersistentData(fileName, fallback);
-  // Auto-seed to cloud if missing in cloud
-  if (localData) {
-    writeCloudAndFileData(fileName, localData).catch(() => {});
-  }
-  return localData;
+  // Fallback to local persistent data without dangerously overwriting cloud
+  return readPersistentData(fileName, fallback);
 }
 
 /**
@@ -147,9 +138,14 @@ export async function writeCloudAndFileData<T>(fileName: string, data: T): Promi
       }),
       cache: "no-store",
     });
+
+    if (!res.ok) {
+      const errText = await res.text().catch(() => "");
+      console.error(`[CloudStorage] Failed writing ${fileName} to Supabase (${res.status}):`, errText);
+    }
     return res.ok;
   } catch (err) {
-    console.warn(`[CloudStorage] Error upserting ${fileName} to Supabase:`, err);
+    console.error(`[CloudStorage] Error upserting ${fileName} to Supabase:`, err);
     return false;
   }
 }

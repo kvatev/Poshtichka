@@ -59,7 +59,7 @@ const processFileToWebp = (file: File): Promise<string> => {
       const img = new window.Image();
       img.onload = () => {
         try {
-          const maxDim = 1280;
+          const maxDim = 960;
           let width = img.naturalWidth || img.width || 800;
           let height = img.naturalHeight || img.height || 600;
 
@@ -79,7 +79,7 @@ const processFileToWebp = (file: File): Promise<string> => {
           const ctx = canvas.getContext("2d");
           if (!ctx) return resolve(src);
           ctx.drawImage(img, 0, 0, width, height);
-          const webpDataUrl = canvas.toDataURL("image/webp", 0.82);
+          const webpDataUrl = canvas.toDataURL("image/webp", 0.75);
           resolve(webpDataUrl);
         } catch {
           resolve(src);
@@ -195,7 +195,7 @@ export const GalleryManager = () => {
       }
     } catch {}
 
-    fetch("/api/map-events")
+    fetch("/api/map-events", { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data && Array.isArray(data.events)) {

@@ -151,7 +151,7 @@ export async function POST(req: NextRequest) {
       revalidatePath("/");
     } catch {}
 
-    return NextResponse.json({ success: true, event: newEvent });
+    return NextResponse.json({ success: true, event: newEvent, events: updatedList });
   } catch (err: unknown) {
     console.error("Create event error:", err);
     const msg = err instanceof Error ? err.message : "Грешка при създаване на събитие.";
@@ -266,7 +266,7 @@ export async function PUT(req: NextRequest) {
     } catch {}
 
     const result = updatedEvent || updatedList.find((e) => e.id === id);
-    return NextResponse.json({ success: true, event: result });
+    return NextResponse.json({ success: true, event: result, events: updatedList });
   } catch (err: unknown) {
     console.error("Update event error:", err);
     const msg = err instanceof Error ? err.message : "Грешка при редакция на събитие.";
@@ -300,7 +300,7 @@ export async function DELETE(req: NextRequest) {
       revalidatePath("/");
     } catch {}
 
-    return NextResponse.json({ success: true, id });
+    return NextResponse.json({ success: true, id, events: updatedList });
   } catch (err: unknown) {
     console.error("Delete event error:", err);
     const msg = err instanceof Error ? err.message : "Грешка при изтриване на локацията.";
