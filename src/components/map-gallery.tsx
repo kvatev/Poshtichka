@@ -429,7 +429,7 @@ export const MapGallery = () => {
         <h2 className="font-salongbeach text-3xl sm:text-5xl font-bold uppercase tracking-wider text-[#182b2c]">
           {selectedCity}
         </h2>
-        <p className="font-sans text-xs sm:text-sm text-[#182b2c]/75 italic">
+        <p className="font-stampatello text-base sm:text-lg text-[#182b2c]/85 italic">
           {selectedCityEvents.length > 0
             ? `${selectedCityEvents.length} ${selectedCityEvents.length === 1 ? "гостуване" : "гостувания"} на тази локация`
             : "1 гостуване на тази локация"}
@@ -448,39 +448,35 @@ export const MapGallery = () => {
                     setActiveModalEvent(ev);
                     setActiveLightboxIndex(0);
                   }}
-                  className="relative group w-[300px] sm:w-[340px] md:w-[360px] h-[430px] sm:h-[480px] flex flex-col justify-between p-4 sm:p-5 hover:scale-[1.03] transition-all duration-300 cursor-pointer text-center mx-auto"
+                  className="relative group w-[300px] sm:w-[340px] md:w-[360px] bg-[#f9f6f0] border-2 border-[#182b2c]/80 rounded-[32px] sm:rounded-[36px] overflow-hidden shadow-xl hover:scale-[1.03] transition-all duration-300 cursor-pointer flex flex-col mx-auto"
                 >
-                  {/* Frame Graphic Overlay Asset 84@2x.png */}
-                  <div className="absolute inset-0 w-full h-full pointer-events-none z-10">
-                    <Image
-                      src={encodeURI("/media/Галерия/Asset 84@2x.png")}
-                      alt="Рамка"
-                      fill
-                      className="object-contain drop-shadow-lg"
-                      unoptimized
-                    />
+                  {/* Photo Container */}
+                  <div className="relative w-full h-[240px] sm:h-[270px] p-3 sm:p-3.5">
+                    <div className="relative w-full h-full rounded-[22px] overflow-hidden border border-[#182b2c]/10">
+                      <Image
+                        src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
+                        alt={ev.eventName || ev.cityName}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        unoptimized
+                      />
+                    </div>
                   </div>
 
-                  {/* Photo inside top frame */}
-                  <div className="relative w-full h-[62%] rounded-[24px] overflow-hidden z-0 mt-1">
-                    <Image
-                      src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
-                      alt={ev.eventName || ev.cityName}
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  </div>
-
-                  {/* Text Labels matching Screenshot 2 */}
-                  <div className="space-y-1 py-3 px-2 z-20 flex flex-col items-center justify-center">
-                    <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6] leading-snug">
-                      {ev.eventName || `Пощичка в ${ev.cityName}`}
+                  {/* Text Area - EXACT matching Screenshot 2 */}
+                  <div className="bg-[#f9f6f0] px-4 pt-1 pb-5 text-center flex flex-col items-center justify-center space-y-1">
+                    {/* Line 1: ГЕРИ И КРАСИ (SALongBeach font, bold, uppercase, teal color #00b4b6) */}
+                    <h3 className="font-salongbeach text-2xl sm:text-3xl font-bold uppercase tracking-wider text-[#00b4b6] leading-tight">
+                      {ev.eventName || `ПОЩИЧКА В ${ev.cityName.toUpperCase()}`}
                     </h3>
-                    <p className="font-sans text-xs sm:text-sm text-[#182b2c]/80 font-normal line-clamp-1">
-                      {ev.venueName || `Комплекс в ${ev.cityName}`}
+
+                    {/* Line 2: Комплекс Свети Тома (Stampatello font, dark gray #182b2c) */}
+                    <p className="font-stampatello text-lg sm:text-xl font-normal text-[#182b2c] leading-snug">
+                      {ev.venueName || `Локация в гр. ${ev.cityName}`}
                     </p>
-                    <p className="font-sans text-[11px] sm:text-xs text-[#00b4b6] font-medium">
+
+                    {/* Line 3: сватбено тържество (Stampatello font, teal color #00b4b6) */}
+                    <p className="font-stampatello text-sm sm:text-base font-normal text-[#00b4b6] leading-tight">
                       {ev.eventType || "сватбено тържество"}
                     </p>
                   </div>
@@ -515,7 +511,7 @@ export const MapGallery = () => {
           </h2>
         </div>
 
-        {/* 3-Column Grid matching Screenshot 2 proportional dimensions */}
+        {/* 3-Column Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 justify-items-center">
           {events.map((ev) => (
             <div
@@ -524,39 +520,35 @@ export const MapGallery = () => {
                 setActiveModalEvent(ev);
                 setActiveLightboxIndex(0);
               }}
-              className="relative group w-[300px] sm:w-[340px] md:w-[360px] h-[430px] sm:h-[480px] flex flex-col justify-between p-4 sm:p-5 hover:scale-[1.03] transition-all duration-300 cursor-pointer text-center"
+              className="relative group w-full max-w-[340px] sm:max-w-[360px] bg-[#f9f6f0] border-2 border-[#182b2c]/80 rounded-[32px] sm:rounded-[36px] overflow-hidden shadow-md hover:shadow-xl hover:scale-[1.03] transition-all duration-300 cursor-pointer flex flex-col text-center"
             >
-              {/* Frame Graphic Overlay Asset 84@2x.png */}
-              <div className="absolute inset-0 w-full h-full pointer-events-none z-10">
-                <Image
-                  src={encodeURI("/media/Галерия/Asset 84@2x.png")}
-                  alt="Рамка"
-                  fill
-                  className="object-contain drop-shadow-lg"
-                  unoptimized
-                />
+              {/* Photo Container */}
+              <div className="relative w-full h-[240px] sm:h-[270px] p-3 sm:p-3.5">
+                <div className="relative w-full h-full rounded-[22px] overflow-hidden border border-[#182b2c]/10">
+                  <Image
+                    src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
+                    alt={ev.eventName || ev.cityName}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    unoptimized
+                  />
+                </div>
               </div>
 
-              {/* Photo */}
-              <div className="relative w-full h-[62%] rounded-[24px] overflow-hidden z-0 mt-1">
-                <Image
-                  src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
-                  alt={ev.eventName || ev.cityName}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
-              </div>
-
-              {/* Text Labels */}
-              <div className="space-y-1 py-3 px-2 z-20 flex flex-col items-center justify-center">
-                <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-[#00b4b6] leading-snug">
-                  {ev.eventName || `Пощичка в ${ev.cityName}`}
+              {/* Text Area - EXACT matching Screenshot 2 */}
+              <div className="bg-[#f9f6f0] px-4 pt-1 pb-5 text-center flex flex-col items-center justify-center space-y-1">
+                {/* Line 1: Event Name (SALongBeach font, bold, uppercase, teal color #00b4b6) */}
+                <h3 className="font-salongbeach text-2xl sm:text-3xl font-bold uppercase tracking-wider text-[#00b4b6] leading-tight">
+                  {ev.eventName || `ПОЩИЧКА В ${ev.cityName.toUpperCase()}`}
                 </h3>
-                <p className="font-sans text-xs sm:text-sm text-[#182b2c]/80 font-normal line-clamp-1">
-                  {ev.venueName || `Събитие в ${ev.cityName}`}
+
+                {/* Line 2: Venue (Stampatello font, dark gray #182b2c) */}
+                <p className="font-stampatello text-lg sm:text-xl font-normal text-[#182b2c] leading-snug">
+                  {ev.venueName || `Локация в гр. ${ev.cityName}`}
                 </p>
-                <p className="font-sans text-[11px] sm:text-xs text-[#00b4b6] font-medium">
+
+                {/* Line 3: Event Type (Stampatello font, teal color #00b4b6) */}
+                <p className="font-stampatello text-sm sm:text-base font-normal text-[#00b4b6] leading-tight">
                   {ev.eventType || "сватбено тържество"}
                 </p>
               </div>
