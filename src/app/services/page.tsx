@@ -60,12 +60,26 @@ const initialServices: ServiceItem[] = [
 export default function ServicesPage() {
   const [services, setServices] = useState<ServiceItem[]>(initialServices);
 
+  // Load from local cache immediately on mount
   useEffect(() => {
+    try {
+      const cached = localStorage.getItem("poshtichka_cached_services");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setServices(parsed);
+        }
+      }
+    } catch {}
+
     fetch("/api/services")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data && Array.isArray(data.services) && data.services.length > 0) {
           setServices(data.services);
+          try {
+            localStorage.setItem("poshtichka_cached_services", JSON.stringify(data.services));
+          } catch {}
         }
       })
       .catch(() => {});

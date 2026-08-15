@@ -14,6 +14,23 @@ export default function ContactPage() {
   const [service, setService] = useState("vending-machine");
   const [message, setMessage] = useState("");
 
+  const [contactAddress, setContactAddress] = useState("Бургас, България");
+  const [contactEmail, setContactEmail] = useState("poshtichka@draskanitsi.com");
+  const [contactInstagram, setContactInstagram] = useState("@poshtichka");
+
+  React.useEffect(() => {
+    fetch("/api/content")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && data.general) {
+          if (data.general.address) setContactAddress(data.general.address);
+          if (data.general.email) setContactEmail(data.general.email);
+          if (data.general.instagram) setContactInstagram(data.general.instagram);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -39,7 +56,7 @@ export default function ContactPage() {
           email,
           eventDate: new Date().toISOString().split("T")[0],
           eventType: `Запитване за: ${selectedServiceLabel}`,
-          venueLocation: "Бургас",
+          venueLocation: contactAddress || "Бургас",
           guestCount: 0,
           preferredContact: "email",
           message: `Избрана услуга: ${selectedServiceLabel}\n\nСъобщение: ${message}`,
@@ -98,7 +115,7 @@ export default function ContactPage() {
                 ЛОКАЦИЯ
               </h3>
               <p className="font-stampatello text-lg sm:text-xl font-semibold text-[#00b4b6]">
-                Бургас, България
+                {contactAddress}
               </p>
             </motion.div>
 
@@ -117,10 +134,10 @@ export default function ContactPage() {
                 ИМЕЙЛ
               </h3>
               <a
-                href="mailto:poshtichka@draskanitsi.com"
+                href={`mailto:${contactEmail}`}
                 className="font-stampatello text-base sm:text-lg font-semibold text-[#00b4b6] hover:underline cursor-pointer break-all"
               >
-                poshtichka@draskanitsi.com
+                {contactEmail}
               </a>
             </motion.div>
 
@@ -139,12 +156,12 @@ export default function ContactPage() {
                 INSTAGRAM
               </h3>
               <a
-                href="https://www.instagram.com/poshtichka/"
+                href={`https://www.instagram.com/${contactInstagram.replace("@", "")}/`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-stampatello text-lg sm:text-xl font-semibold text-[#00b4b6] hover:underline cursor-pointer"
               >
-                @poshtichka
+                {contactInstagram.startsWith("@") ? contactInstagram : `@${contactInstagram}`}
               </a>
             </motion.div>
           </div>

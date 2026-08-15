@@ -47,11 +47,24 @@ export const TestimonialsSection = () => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>(defaultTestimonialItems);
 
   useEffect(() => {
+    try {
+      const cached = localStorage.getItem("poshtichka_cached_testimonials");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setTestimonials(parsed);
+        }
+      }
+    } catch {}
+
     fetch("/api/content")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data && Array.isArray(data.testimonials) && data.testimonials.length > 0) {
           setTestimonials(data.testimonials);
+          try {
+            localStorage.setItem("poshtichka_cached_testimonials", JSON.stringify(data.testimonials));
+          } catch {}
         }
       })
       .catch(() => {});

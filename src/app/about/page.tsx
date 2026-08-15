@@ -6,6 +6,35 @@ import Link from "next/link";
 import { PageWrapper } from "@/components/layout/page-wrapper";
 
 export default function AboutPage() {
+  const [aboutHeading, setAboutHeading] = React.useState("НИЕ НЕ ПЕЧАТАМЕ КАРТИЧКИ");
+  const [aboutSubheading, setAboutSubheading] = React.useState("НИЕ СЪЗДАВАМЕ СПОМЕНИ");
+  const [aboutBody, setAboutBody] = React.useState(
+    "Пощичка се роди с една ясна мисия: да превърне традиционния подарък за гости в интерактивно преживяване, което носи истинска радост."
+  );
+
+  React.useEffect(() => {
+    fetch("/api/content")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && data.website_content && Array.isArray(data.website_content)) {
+          const heroBlock = data.website_content.find((b: { sectionKey: string }) => b.sectionKey === "about_hero");
+          if (heroBlock) {
+            if (heroBlock.heading) {
+              const parts = heroBlock.heading.split(".");
+              if (parts.length >= 2) {
+                setAboutHeading(parts[0].trim());
+                setAboutSubheading(parts[1].trim());
+              } else {
+                setAboutHeading(heroBlock.heading);
+              }
+            }
+            if (heroBlock.body) setAboutBody(heroBlock.body);
+          }
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <PageWrapper>
       <div className="space-y-6 sm:space-y-12 pb-2 font-sans select-none bg-[#f9f6f0]">
@@ -24,13 +53,13 @@ export default function AboutPage() {
         {/* Section 2: Headline & Subtitle */}
         <section className="max-w-4xl mx-auto px-4 text-center space-y-4 pt-4">
           <h1 className="font-salongbeach text-3xl sm:text-5xl lg:text-6xl font-bold uppercase tracking-wider text-[#182b2c] leading-tight">
-            НИЕ НЕ ПЕЧАТАМЕ КАРТИЧКИ
+            {aboutHeading}
           </h1>
           <h2 className="font-salongbeach text-3xl sm:text-5xl lg:text-6xl font-bold uppercase tracking-wider text-[#00b4b6] leading-tight">
-            НИЕ СЪЗДАВАМЕ СПОМЕНИ
+            {aboutSubheading}
           </h2>
           <p className="font-sans text-sm sm:text-base lg:text-lg font-light text-[#182b2c]/85 max-w-2xl mx-auto italic leading-relaxed pt-1">
-            Пощичка се роди с една ясна мисия: да превърне традиционния подарък за гости в интерактивно преживяване, което носи истинска радост.
+            {aboutBody}
           </p>
         </section>
 

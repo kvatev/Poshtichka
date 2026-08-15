@@ -1,12 +1,46 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
 export const HeroSection = () => {
-  const heroImage = "/media/Main Page/Main Banner.webp";
+  const [heroImage, setHeroImage] = useState<string>("/media/Main Page/Main Banner.webp");
+  const [heroTitle, setHeroTitle] = useState<string>("Всеки гост си тръгва със спомен");
+  const [heroSubtitle, setHeroSubtitle] = useState<string>("Персонализирани подаръци, създадени по ваша идея!");
+  const [buttonText, setButtonText] = useState<string>("Разбери повече");
+  const [buttonUrl, setButtonUrl] = useState<string>("/about");
+
+  useEffect(() => {
+    // Read cache immediately
+    try {
+      const cached = localStorage.getItem("poshtichka_content_homepage_config");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed.heroTitleLine1) setHeroTitle(parsed.heroTitleLine1);
+        if (parsed.heroSubtitle) setHeroSubtitle(parsed.heroSubtitle);
+        if (parsed.heroButtonText) setButtonText(parsed.heroButtonText);
+        if (parsed.heroButtonUrl) setButtonUrl(parsed.heroButtonUrl);
+        if (parsed.heroBackgroundImage) setHeroImage(parsed.heroBackgroundImage);
+      }
+    } catch {}
+
+    // Fetch live content
+    fetch("/api/content")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && data.homepage) {
+          const hp = data.homepage;
+          if (hp.heroTitleLine1) setHeroTitle(hp.heroTitleLine1);
+          if (hp.heroSubtitle) setHeroSubtitle(hp.heroSubtitle);
+          if (hp.heroButtonText) setButtonText(hp.heroButtonText);
+          if (hp.heroButtonUrl) setButtonUrl(hp.heroButtonUrl);
+          if (hp.heroBackgroundImage) setHeroImage(hp.heroBackgroundImage);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <section className="relative w-full min-h-[75vh] sm:min-h-[85vh] flex items-center justify-center overflow-hidden bg-brand-dark py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
@@ -31,7 +65,7 @@ export const HeroSection = () => {
           transition={{ duration: 0.8 }}
           className="font-salongbeach text-[28px] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-wider uppercase leading-tight text-white whitespace-normal break-words max-w-4xl mx-auto drop-shadow-[0_4px_12px_rgba(0,0,0,0.7)]"
         >
-          Всеки гост си тръгва със спомен
+          {heroTitle}
         </motion.h1>
 
         <motion.p
@@ -40,7 +74,7 @@ export const HeroSection = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="font-sans text-base sm:text-xl md:text-2xl font-light text-white/90 max-w-2xl mx-auto leading-relaxed drop-shadow-md"
         >
-          Персонализирани подаръци, създадени по ваша идея!
+          {heroSubtitle}
         </motion.p>
 
         <motion.div
@@ -50,10 +84,10 @@ export const HeroSection = () => {
           className="pt-4 sm:pt-6 flex justify-center"
         >
           <Link
-            href="/about"
+            href={buttonUrl}
             className="inline-flex items-center justify-center px-9 py-3.5 rounded-full border-2 border-white bg-black/20 hover:bg-white hover:text-[#182b2c] backdrop-blur-md text-white font-stampatello text-lg sm:text-xl font-bold uppercase tracking-wider transition-all duration-300 shadow-xl group cursor-pointer"
           >
-            <span>Разбери повече</span>
+            <span>{buttonText}</span>
           </Link>
         </motion.div>
       </div>
