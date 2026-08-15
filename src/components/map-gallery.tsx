@@ -448,23 +448,21 @@ export const MapGallery = () => {
                     setActiveModalEvent(ev);
                     setActiveLightboxIndex(0);
                   }}
-                  className="relative group w-[300px] sm:w-[340px] md:w-[360px] bg-[#f9f6f0] border-2 border-[#182b2c]/80 rounded-[32px] sm:rounded-[36px] overflow-hidden shadow-xl hover:scale-[1.03] transition-all duration-300 cursor-pointer flex flex-col mx-auto"
+                  className="relative group w-[300px] sm:w-[340px] md:w-[360px] h-[440px] sm:h-[490px] rounded-[44px] sm:rounded-[48px] overflow-hidden shadow-xl hover:scale-[1.03] transition-all duration-300 cursor-pointer flex flex-col mx-auto bg-[#f9f6f0]"
                 >
-                  {/* Photo Container */}
-                  <div className="relative w-full h-[240px] sm:h-[270px] p-3 sm:p-3.5">
-                    <div className="relative w-full h-full rounded-[22px] overflow-hidden border border-[#182b2c]/10">
-                      <Image
-                        src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
-                        alt={ev.eventName || ev.cityName}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        unoptimized
-                      />
-                    </div>
+                  {/* Photo Container filling top ~68% seamlessly */}
+                  <div className="relative w-full h-[68%] overflow-hidden">
+                    <Image
+                      src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
+                      alt={ev.eventName || ev.cityName}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      unoptimized
+                    />
                   </div>
 
-                  {/* Text Area - EXACT matching Screenshot 2 */}
-                  <div className="bg-[#f9f6f0] px-4 pt-1 pb-5 text-center flex flex-col items-center justify-center space-y-1">
+                  {/* Text Area filling bottom ~32% with solid cream/white background */}
+                  <div className="relative w-full h-[32%] bg-[#f9f6f0] px-4 py-2.5 text-center flex flex-col items-center justify-center space-y-0.5 z-0">
                     {/* Line 1: ГЕРИ И КРАСИ (SALongBeach font, bold, uppercase, teal color #00b4b6) */}
                     <h3 className="font-salongbeach text-2xl sm:text-3xl font-bold uppercase tracking-wider text-[#00b4b6] leading-tight">
                       {ev.eventName || `ПОЩИЧКА В ${ev.cityName.toUpperCase()}`}
@@ -479,6 +477,17 @@ export const MapGallery = () => {
                     <p className="font-stampatello text-sm sm:text-base font-normal text-[#00b4b6] leading-tight">
                       {ev.eventType || "сватбено тържество"}
                     </p>
+                  </div>
+
+                  {/* Outer Frame Graphic Overlay Asset 84@2x.png */}
+                  <div className="absolute inset-0 w-full h-full pointer-events-none z-10">
+                    <Image
+                      src={encodeURI("/media/Галерия/Asset 84@2x.png")}
+                      alt="Рамка"
+                      fill
+                      className="object-fill"
+                      unoptimized
+                    />
                   </div>
                 </div>
               ))}
@@ -520,23 +529,21 @@ export const MapGallery = () => {
                 setActiveModalEvent(ev);
                 setActiveLightboxIndex(0);
               }}
-              className="relative group w-full max-w-[340px] sm:max-w-[360px] bg-[#f9f6f0] border-2 border-[#182b2c]/80 rounded-[32px] sm:rounded-[36px] overflow-hidden shadow-md hover:shadow-xl hover:scale-[1.03] transition-all duration-300 cursor-pointer flex flex-col text-center"
+              className="relative group w-full max-w-[340px] sm:max-w-[360px] h-[440px] sm:h-[490px] rounded-[44px] sm:rounded-[48px] overflow-hidden shadow-md hover:shadow-xl hover:scale-[1.03] transition-all duration-300 cursor-pointer flex flex-col mx-auto bg-[#f9f6f0] text-center"
             >
-              {/* Photo Container */}
-              <div className="relative w-full h-[240px] sm:h-[270px] p-3 sm:p-3.5">
-                <div className="relative w-full h-full rounded-[22px] overflow-hidden border border-[#182b2c]/10">
-                  <Image
-                    src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
-                    alt={ev.eventName || ev.cityName}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    unoptimized
-                  />
-                </div>
+              {/* Photo Container filling top ~68% seamlessly */}
+              <div className="relative w-full h-[68%] overflow-hidden">
+                <Image
+                  src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
+                  alt={ev.eventName || ev.cityName}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  unoptimized
+                />
               </div>
 
-              {/* Text Area - EXACT matching Screenshot 2 */}
-              <div className="bg-[#f9f6f0] px-4 pt-1 pb-5 text-center flex flex-col items-center justify-center space-y-1">
+              {/* Text Area filling bottom ~32% with solid cream/white background */}
+              <div className="relative w-full h-[32%] bg-[#f9f6f0] px-4 py-2.5 text-center flex flex-col items-center justify-center space-y-0.5 z-0">
                 {/* Line 1: Event Name (SALongBeach font, bold, uppercase, teal color #00b4b6) */}
                 <h3 className="font-salongbeach text-2xl sm:text-3xl font-bold uppercase tracking-wider text-[#00b4b6] leading-tight">
                   {ev.eventName || `ПОЩИЧКА В ${ev.cityName.toUpperCase()}`}
@@ -551,6 +558,17 @@ export const MapGallery = () => {
                 <p className="font-stampatello text-sm sm:text-base font-normal text-[#00b4b6] leading-tight">
                   {ev.eventType || "сватбено тържество"}
                 </p>
+              </div>
+
+              {/* Outer Frame Graphic Overlay Asset 84@2x.png */}
+              <div className="absolute inset-0 w-full h-full pointer-events-none z-10">
+                <Image
+                  src={encodeURI("/media/Галерия/Asset 84@2x.png")}
+                  alt="Рамка"
+                  fill
+                  className="object-fill"
+                  unoptimized
+                />
               </div>
             </div>
           ))}
