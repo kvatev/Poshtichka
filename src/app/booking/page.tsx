@@ -341,13 +341,13 @@ function BookingFormContent() {
 
               {/* 1. Вид събитие */}
               <div className="space-y-2 text-center max-w-md mx-auto">
-                <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                <label className="flex items-end justify-center min-h-[32px] text-center text-sm sm:text-base font-sans font-medium text-[#182b2c]">
                   Вид събитие *
                 </label>
                 <div className="relative">
                   <select
                     {...register("eventType")}
-                    className="w-full px-6 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center appearance-none focus:outline-none focus:ring-2 focus:ring-[#00b4b6] cursor-pointer shadow-sm"
+                    className="w-full h-[52px] px-6 py-3 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center appearance-none focus:outline-none focus:ring-2 focus:ring-[#00b4b6] cursor-pointer shadow-sm box-border"
                   >
                     <option value="сватба">Сватбено тържество</option>
                     <option value="кръщене">Кръщене</option>
@@ -366,24 +366,24 @@ function BookingFormContent() {
                       type="text"
                       {...register("customEventType")}
                       placeholder="Опишете вида на събитието..."
-                      className="w-full px-6 py-3 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6]"
+                      className="w-full h-[52px] px-6 py-3 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm box-border"
                     />
                   </div>
                 )}
               </div>
 
-              {/* 2. Имена, Дата, Телефон (3-Column Grid) */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+              {/* 2. Имена, Дата, Телефон (3-Column Grid with Perfect Baseline Alignment) */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end text-center">
                 {/* Имена */}
-                <div className="space-y-2">
-                  <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                <div className="flex flex-col justify-between h-full space-y-2">
+                  <label className="flex items-end justify-center min-h-[44px] text-center text-sm sm:text-base font-sans font-medium text-[#182b2c] leading-snug">
                     {isWedding ? "Имена на двамата младоженци *" : "Име и фамилия *"}
                   </label>
                   <input
                     type="text"
                     {...register("fullName")}
                     placeholder={isWedding ? "Мария и Иван" : "Иван Иванов"}
-                    className="w-full px-5 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm"
+                    className="w-full h-[52px] px-5 py-3 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm box-border"
                   />
                   {errors.fullName && (
                     <p className="text-xs text-red-500 font-sans mt-1">
@@ -393,14 +393,15 @@ function BookingFormContent() {
                 </div>
 
                 {/* Дата */}
-                <div className="space-y-2">
-                  <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                <div className="flex flex-col justify-between h-full space-y-2">
+                  <label className="flex items-end justify-center min-h-[44px] text-center text-sm sm:text-base font-sans font-medium text-[#182b2c] leading-snug">
                     Дата *
                   </label>
                   <input
                     type="date"
                     {...register("eventDate")}
-                    className="w-full px-5 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm"
+                    className="w-full h-[52px] px-5 py-3 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm box-border cursor-pointer appearance-none"
+                    style={{ minHeight: "52px" }}
                   />
                   {errors.eventDate && (
                     <p className="text-xs text-red-500 font-sans mt-1">
@@ -410,15 +411,15 @@ function BookingFormContent() {
                 </div>
 
                 {/* Телефон */}
-                <div className="space-y-2">
-                  <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                <div className="flex flex-col justify-between h-full space-y-2">
+                  <label className="flex items-end justify-center min-h-[44px] text-center text-sm sm:text-base font-sans font-medium text-[#182b2c] leading-snug">
                     Телефон *
                   </label>
                   <input
                     type="tel"
                     {...register("phone")}
                     placeholder="+359 99 999 999"
-                    className="w-full px-5 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm"
+                    className="w-full h-[52px] px-5 py-3 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm box-border"
                   />
                   {errors.phone && (
                     <p className="text-xs text-red-500 font-sans mt-1">
@@ -428,18 +429,18 @@ function BookingFormContent() {
                 </div>
               </div>
 
-              {/* 3. Имейл, Брой гости, Точна локация (3-Column Grid) */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+              {/* 3. Имейл, Брой гости, Точна локация (3-Column Grid with Perfect Baseline Alignment) */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end text-center">
                 {/* Имейл */}
-                <div className="space-y-2">
-                  <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                <div className="flex flex-col justify-between h-full space-y-2">
+                  <label className="flex items-end justify-center min-h-[44px] text-center text-sm sm:text-base font-sans font-medium text-[#182b2c] leading-snug">
                     Имейл *
                   </label>
                   <input
                     type="email"
                     {...register("email")}
                     placeholder="ivanivanov@gmail.com"
-                    className="w-full px-5 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm"
+                    className="w-full h-[52px] px-5 py-3 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm box-border"
                   />
                   {errors.email && (
                     <p className="text-xs text-red-500 font-sans mt-1">
@@ -449,15 +450,15 @@ function BookingFormContent() {
                 </div>
 
                 {/* Брой гости */}
-                <div className="space-y-2">
-                  <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                <div className="flex flex-col justify-between h-full space-y-2">
+                  <label className="flex items-end justify-center min-h-[44px] text-center text-sm sm:text-base font-sans font-medium text-[#182b2c] leading-snug">
                     Брой гости *
                   </label>
                   <input
                     type="number"
                     {...register("guestCount")}
                     placeholder="100"
-                    className="w-full px-5 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm"
+                    className="w-full h-[52px] px-5 py-3 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm box-border"
                   />
                   {errors.guestCount && (
                     <p className="text-xs text-red-500 font-sans mt-1">
@@ -467,15 +468,15 @@ function BookingFormContent() {
                 </div>
 
                 {/* Точна локация */}
-                <div className="space-y-2">
-                  <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                <div className="flex flex-col justify-between h-full space-y-2">
+                  <label className="flex items-end justify-center min-h-[44px] text-center text-sm sm:text-base font-sans font-medium text-[#182b2c] leading-snug">
                     Локация на събитието *
                   </label>
                   <input
                     type="text"
                     {...register("venueLocation")}
                     placeholder="напр. Бургас, Ресторант Морски Бриз"
-                    className="w-full px-5 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm"
+                    className="w-full h-[52px] px-5 py-3 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm box-border"
                   />
                   {errors.venueLocation && (
                     <p className="text-xs text-red-500 font-sans mt-1">
@@ -533,7 +534,7 @@ function BookingFormContent() {
                   <div className="relative">
                     <select
                       {...register("preferredContact")}
-                      className="w-full px-6 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center appearance-none focus:outline-none focus:ring-2 focus:ring-[#00b4b6] cursor-pointer shadow-sm"
+                      className="w-full h-[52px] px-6 py-3 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center appearance-none focus:outline-none focus:ring-2 focus:ring-[#00b4b6] cursor-pointer shadow-sm box-border"
                     >
                       <option value="viber">Viber</option>
                       <option value="instagram">Instagram</option>
@@ -562,7 +563,7 @@ function BookingFormContent() {
                         type="text"
                         {...register("instagramHandle")}
                         placeholder="напр. @poshtichka"
-                        className="w-full px-5 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm"
+                        className="w-full h-[52px] px-5 py-3 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm box-border"
                       />
                       {errors.instagramHandle && (
                         <p className="text-xs text-red-500 font-sans mt-1">
