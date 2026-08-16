@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   AlertTriangle,
   ArrowRight,
@@ -29,18 +29,34 @@ const paperKeepsakeOptions = [
   { id: "ДРУГО", label: "ДРУГО" },
 ];
 
-const bookingSchema = z.object({
-  eventType: z.enum(["сватба", "кръщене", "юбилей", "друго"]),
-  customEventType: z.string().optional(),
-  eventDate: z.string().min(1, { message: "Моля, изберете дата на събитието" }),
-  fullName: z.string().min(2, { message: "Моля, въведете имена" }),
-  phone: z.string().min(6, { message: "Моля, въведете валиден телефонен номер" }),
-  email: z.string().email({ message: "Моля, въведете валиден имейл адрес" }),
-  paperKeepsakes: z.array(z.string()).min(1, { message: "Моля, изберете поне един вид хартиен носител" }),
-  guestCount: z.coerce.number().min(1, { message: "Моля, въведете брой гости" }),
-  venueLocation: z.string().min(2, { message: "Моля, въведете точна локация на събитието" }),
-  preferredContact: z.enum(["viber", "instagram", "email"]),
-});
+const bookingSchema = z
+  .object({
+    eventType: z.enum(["сватба", "кръщене", "юбилей", "друго"]),
+    customEventType: z.string().optional(),
+    eventDate: z.string().min(1, { message: "Моля, изберете дата на събитието" }),
+    fullName: z.string().min(2, { message: "Моля, въведете имена" }),
+    phone: z.string().min(6, { message: "Моля, въведете валиден телефонен номер" }),
+    email: z.string().email({ message: "Моля, въведете валиден имейл адрес" }),
+    paperKeepsakes: z
+      .array(z.string())
+      .min(1, { message: "Моля, изберете поне един вид хартиен носител" }),
+    guestCount: z.coerce.number().min(1, { message: "Моля, въведете брой гости" }),
+    venueLocation: z.string().min(2, { message: "Моля, въведете точна локация на събитието" }),
+    preferredContact: z.enum(["viber", "instagram", "email"]),
+    instagramHandle: z.string().optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.preferredContact === "instagram") {
+        return Boolean(data.instagramHandle && data.instagramHandle.trim().length > 0);
+      }
+      return true;
+    },
+    {
+      message: "Моля, въведете Вашето Instagram потребителско име",
+      path: ["instagramHandle"],
+    }
+  );
 
 type BookingFormData = z.infer<typeof bookingSchema>;
 
@@ -96,6 +112,7 @@ function BookingFormContent() {
       eventType: "сватба",
       paperKeepsakes: ["КАРТИЧКА"],
       preferredContact: "viber",
+      instagramHandle: "",
       guestCount: 100,
     },
   });
@@ -103,6 +120,7 @@ function BookingFormContent() {
   const selectedDate = watch("eventDate");
   const selectedEventType = watch("eventType");
   const selectedKeepsakes = watch("paperKeepsakes") || [];
+  const selectedContactChannel = watch("preferredContact");
 
   useEffect(() => {
     fetch("/api/calendar")
@@ -147,6 +165,7 @@ function BookingFormContent() {
       eventType: "сватба",
       paperKeepsakes: ["КАРТИЧКА"],
       preferredContact: "viber",
+      instagramHandle: "",
       guestCount: 100,
       fullName: "",
       phone: "",
@@ -189,6 +208,7 @@ function BookingFormContent() {
       location: data.venueLocation,
       paperTypes: data.paperKeepsakes,
       preferredChannel: data.preferredContact,
+      instagramHandle: data.instagramHandle,
     };
 
     try {
@@ -483,7 +503,9 @@ function BookingFormContent() {
                       >
                         <div
                           className={`w-6 h-6 rounded-lg border-2 border-[#00b4b6] flex items-center justify-center transition-all duration-200 ${
-                            isChecked ? "bg-[#00b4b6] text-white shadow-sm" : "bg-white group-hover:border-[#008b8d]"
+                            isChecked
+                              ? "bg-[#00b4b6] text-white shadow-sm"
+                              : "bg-white group-hover:border-[#008b8d]"
                           }`}
                         >
                           {isChecked && <Check className="w-4 h-4 stroke-[3]" />}
@@ -503,23 +525,53 @@ function BookingFormContent() {
               </div>
 
               {/* 5. Предпочитан начин за комуникация */}
-              <div className="space-y-2 text-center max-w-md mx-auto pt-2">
-                <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
-                  Предпочитан начин за комуникация *
-                </label>
-                <div className="relative">
-                  <select
-                    {...register("preferredContact")}
-                    className="w-full px-6 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center appearance-none focus:outline-none focus:ring-2 focus:ring-[#00b4b6] cursor-pointer shadow-sm"
-                  >
-                    <option value="viber">Viber</option>
-                    <option value="instagram">Instagram</option>
-                    <option value="email">Имейл</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-5 flex items-center text-[#00b4b6]">
-                    ▼
+              <div className="space-y-4 text-center max-w-md mx-auto pt-2">
+                <div className="space-y-2">
+                  <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                    Предпочитан начин за комуникация *
+                  </label>
+                  <div className="relative">
+                    <select
+                      {...register("preferredContact")}
+                      className="w-full px-6 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center appearance-none focus:outline-none focus:ring-2 focus:ring-[#00b4b6] cursor-pointer shadow-sm"
+                    >
+                      <option value="viber">Viber</option>
+                      <option value="instagram">Instagram</option>
+                      <option value="email">Имейл</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-5 flex items-center text-[#00b4b6]">
+                      ▼
+                    </div>
                   </div>
                 </div>
+
+                {/* Conditional Instagram Handle Input */}
+                <AnimatePresence>
+                  {selectedContactChannel === "instagram" && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0, y: -6 }}
+                      animate={{ opacity: 1, height: "auto", y: 0 }}
+                      exit={{ opacity: 0, height: 0, y: -6 }}
+                      transition={{ duration: 0.25 }}
+                      className="space-y-2 overflow-hidden text-center pt-1"
+                    >
+                      <label className="block text-sm sm:text-base font-sans font-medium text-[#182b2c]">
+                        Instagram потребителско име *
+                      </label>
+                      <input
+                        type="text"
+                        {...register("instagramHandle")}
+                        placeholder="напр. @poshtichka"
+                        className="w-full px-5 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white text-[#182b2c] font-sans text-sm sm:text-base text-center focus:outline-none focus:ring-2 focus:ring-[#00b4b6] shadow-sm"
+                      />
+                      {errors.instagramHandle && (
+                        <p className="text-xs text-red-500 font-sans mt-1">
+                          {errors.instagramHandle.message}
+                        </p>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Submit Button */}

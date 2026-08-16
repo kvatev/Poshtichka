@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
       paperKeepsakes,
       preferredChannel,
       preferredContact,
+      instagramHandle,
     } = body;
 
     const clientNames = (names || fullName || "").trim();
@@ -32,6 +33,7 @@ export async function POST(req: NextRequest) {
     const rawPapers = paperTypes || paperKeepsakes || [];
     const clientPaperTypes = Array.isArray(rawPapers) ? rawPapers : [String(rawPapers)];
     const clientChannel = (preferredChannel || preferredContact || "viber").trim();
+    const clientInstagramHandle = instagramHandle ? String(instagramHandle).trim() : undefined;
 
     // Validation
     if (!clientNames) {
@@ -69,6 +71,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (clientChannel.toLowerCase() === "instagram" && !clientInstagramHandle) {
+      return NextResponse.json(
+        { success: false, error: "Моля, въведете Вашето Instagram потребителско име." },
+        { status: 400 }
+      );
+    }
+
     const nowIso = new Date().toISOString();
 
     // 1. Dispatch rich HTML email via Zoho Nodemailer SMTP
@@ -82,6 +91,7 @@ export async function POST(req: NextRequest) {
       location: clientLocation,
       paperTypes: clientPaperTypes,
       preferredChannel: clientChannel,
+      instagramHandle: clientInstagramHandle,
     });
 
     // 2. Safe CRM Registration in Supabase (Zero local filesystem disk writes)
@@ -95,7 +105,9 @@ export async function POST(req: NextRequest) {
       venueLocation: clientLocation,
       guestCount: clientGuests,
       preferredContact: clientChannel,
-      message: `Попълнена АНКЕТА:\n• Формати: ${clientPaperTypes.join(", ")}\n• Предпочитан контакт: ${clientChannel}`,
+      message: `Попълнена АНКЕТА:\n• Формати: ${clientPaperTypes.join(", ")}\n• Предпочитан контакт: ${clientChannel}${
+        clientInstagramHandle ? ` (@${clientInstagramHandle.replace(/^@+/, "")})` : ""
+      }`,
       status: "pending",
       createdAt: nowIso.split("T")[0],
     };

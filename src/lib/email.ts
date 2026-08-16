@@ -34,6 +34,7 @@ export interface SurveyEmailPayload {
   location: string;
   paperTypes: string[];
   preferredChannel: string;
+  instagramHandle?: string;
   timestamp?: string;
 }
 
@@ -341,6 +342,8 @@ export function generateSurveyEmailHtml(payload: SurveyEmailPayload): string {
           .join(" ")
       : `<span style="color:#5b6968; font-style:italic;">Не е посочен конкретен носител</span>`;
 
+  const cleanHandle = payload.instagramHandle ? payload.instagramHandle.trim().replace(/^@+/, "") : "";
+
   return `
 <!DOCTYPE html>
 <html lang="bg">
@@ -496,7 +499,14 @@ export function generateSurveyEmailHtml(payload: SurveyEmailPayload): string {
           <div>
             <span class="channel-badge">${channelLabel}</span>
           </div>
-          <div style="font-size: 15px; color: #182b2c; margin-top: 6px;">
+          <div style="font-size: 15px; color: #182b2c; margin-top: 8px; line-height: 1.6;">
+            ${
+              payload.preferredChannel?.toLowerCase() === "instagram" && cleanHandle
+                ? `<div style="margin-bottom: 8px; font-size: 16px;">
+                    📷 <strong>Instagram:</strong> <a href="https://instagram.com/${encodeURIComponent(cleanHandle)}" target="_blank" style="color: #e1306c; font-weight: 800; text-decoration: underline;">@${escapeHtml(cleanHandle)}</a>
+                   </div>`
+                : ""
+            }
             Свържете се с клиента по <strong>${channelLabel}</strong> на:
             ${
               payload.phone
@@ -562,6 +572,20 @@ export function generateSurveyEmailHtml(payload: SurveyEmailPayload): string {
                 <a href="mailto:${escapeHtml(payload.email)}">${escapeHtml(payload.email)}</a>
               </td>
             </tr>
+            ${
+              cleanHandle
+                ? `
+            <tr>
+              <td class="info-label">📷 Instagram:</td>
+              <td class="info-value">
+                <a href="https://instagram.com/${encodeURIComponent(cleanHandle)}" target="_blank" style="color: #e1306c; font-weight: 700; text-decoration: underline;">
+                  @${escapeHtml(cleanHandle)}
+                </a>
+              </td>
+            </tr>
+            `
+                : ""
+            }
           </table>
         </div>
 
@@ -734,7 +758,7 @@ export async function sendSurveyEmail(payload: SurveyEmailPayload): Promise<{
 Нова попълнена анкета от сайта poshtichka.eu:
 
 ⭐ Предпочитана комуникация: ${payload.preferredChannel}
-Клиент / Младоженци: ${payload.names}
+${payload.instagramHandle ? `📷 Instagram: @${payload.instagramHandle.replace(/^@+/, "")}\n` : ""}Клиент / Младоженци: ${payload.names}
 Телефон: ${payload.phone}
 Имейл: ${payload.email}
 
