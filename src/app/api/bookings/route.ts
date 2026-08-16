@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { readCloudOrFileData, writeCloudAndFileData } from "@/lib/server-storage";
+import { sendBookingEmail } from "@/lib/email";
 
 export interface BookingRecord {
   id: string;
@@ -78,6 +79,23 @@ export async function POST(request: Request) {
 
     const updated = [newRecord, ...current];
     await writeCloudAndFileData("bookings", updated);
+
+    // Send instant email notification via Zoho SMTP
+    try {
+      await sendBookingEmail({
+        fullName: newRecord.fullName,
+        email: newRecord.email,
+        phone: newRecord.phone,
+        eventDate: newRecord.eventDate,
+        eventType: newRecord.eventType,
+        venueLocation: newRecord.venueLocation,
+        guestCount: newRecord.guestCount,
+        message: newRecord.message,
+        preferredContact: newRecord.preferredContact,
+      });
+    } catch (emailErr) {
+      console.error("[Bookings API] Email dispatch warning:", emailErr);
+    }
 
     return NextResponse.json({
       success: true,
