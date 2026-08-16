@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Save, CheckCircle2, Phone, Mail, MapPin, Instagram, Facebook, Clock, ShieldCheck, UserPlus, Lock, Key } from "lucide-react";
+import { Save, CheckCircle2, Mail, MapPin, Instagram, Facebook, Clock, ShieldCheck, UserPlus, Lock, Key } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { GeneralSettings, defaultGeneralSettings } from "@/lib/content-store";
@@ -136,19 +136,6 @@ export const SettingsManager = () => {
             </h3>
 
             <div className="space-y-3">
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-brand-dark flex items-center space-x-1.5">
-                  <Phone className="w-3.5 h-3.5 text-brand-accent" />
-                  <span>Телефонен номер</span>
-                </label>
-                <input
-                  type="text"
-                  value={settings.phone}
-                  onChange={(e) => setSettings({ ...settings, phone: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:outline-none focus:ring-2 focus:ring-brand-accent font-bold"
-                />
-              </div>
-
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-brand-dark flex items-center space-x-1.5">
                   <Mail className="w-3.5 h-3.5 text-brand-accent" />
