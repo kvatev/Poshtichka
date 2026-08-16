@@ -227,8 +227,15 @@ function BookingFormContent() {
             animate={{ opacity: 1, scale: 1 }}
             className="bg-white rounded-[40px] p-10 sm:p-16 border-2 border-[#00b4b6] text-center space-y-6 shadow-2xl"
           >
-            <div className="w-20 h-20 rounded-full bg-[#00b4b6]/10 text-[#00b4b6] mx-auto flex items-center justify-center">
-              <CheckCircle2 className="w-10 h-10 text-[#00b4b6]" />
+            <div className="relative w-48 h-18 sm:w-60 sm:h-22 mx-auto flex items-center justify-center">
+              <Image
+                src={encodeURI("/media/logos/Logo.png")}
+                alt="Пощичка"
+                width={240}
+                height={90}
+                className="w-auto h-14 sm:h-18 object-contain drop-shadow-xs"
+                unoptimized
+              />
             </div>
             <h2 className="font-salongbeach text-3xl sm:text-4xl font-bold uppercase text-[#00b4b6]">
               Благодарим Ви за запитването!

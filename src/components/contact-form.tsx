@@ -229,8 +229,15 @@ export function ContactForm({ initialServices = [], initialGeneral }: ContactFor
               exit={{ opacity: 0, scale: 0.95 }}
               className="text-center py-10 space-y-6"
             >
-              <div className="w-20 h-20 rounded-full bg-[#00b4b6]/10 text-[#00b4b6] mx-auto flex items-center justify-center border-2 border-[#00b4b6]">
-                <CheckCircle2 className="w-12 h-12 text-[#00b4b6]" />
+              <div className="relative w-48 h-18 sm:w-60 sm:h-22 mx-auto flex items-center justify-center">
+                <Image
+                  src={encodeURI("/media/logos/Logo.png")}
+                  alt="Пощичка"
+                  width={240}
+                  height={90}
+                  className="w-auto h-14 sm:h-18 object-contain drop-shadow-xs"
+                  unoptimized
+                />
               </div>
               <div className="space-y-2">
                 <h3 className="font-salongbeach text-3xl sm:text-4xl font-bold uppercase text-[#00b4b6] tracking-wide">
