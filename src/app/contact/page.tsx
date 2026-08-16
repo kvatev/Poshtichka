@@ -23,9 +23,9 @@ export default async function ContactPage() {
   );
 
   const initialGeneral = {
-    address: rawContent?.general?.address || "Бургас, България",
-    email: rawContent?.general?.email || "poshtichka@draskanitsi.com",
-    instagram: rawContent?.general?.instagram || "@poshtichka",
+    address: rawContent?.general?.address || rawContent?.general_settings?.address || "Бургас, България",
+    email: rawContent?.general?.email || rawContent?.general_settings?.email || "info@poshtichka.eu",
+    instagram: rawContent?.general?.instagram || rawContent?.general_settings?.instagram || "@poshtichka",
   };
 
   return (

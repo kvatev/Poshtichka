@@ -43,7 +43,7 @@ export function ContactForm({ initialServices = [], initialGeneral }: ContactFor
   const [message, setMessage] = useState("");
 
   const [contactAddress, setContactAddress] = useState(initialGeneral?.address || "Бургас, България");
-  const [contactEmail, setContactEmail] = useState(initialGeneral?.email || "poshtichka@draskanitsi.com");
+  const [contactEmail, setContactEmail] = useState(initialGeneral?.email || "info@poshtichka.eu");
   const [contactInstagram, setContactInstagram] = useState(initialGeneral?.instagram || "@poshtichka");
 
   useEffect(() => {
