@@ -24,6 +24,19 @@ export interface BookingEmailPayload {
   preferredContact?: string;
 }
 
+export interface SurveyEmailPayload {
+  eventType: string;
+  names: string;
+  eventDate: string;
+  phone: string;
+  email: string;
+  guestCount: number | string;
+  location: string;
+  paperTypes: string[];
+  preferredChannel: string;
+  timestamp?: string;
+}
+
 /**
  * Get Nodemailer Transporter configured for Zoho SMTP
  */
@@ -291,6 +304,299 @@ export function generateContactEmailHtml({
 }
 
 /**
+ * Generates an elegant, responsive HTML email template for "АНКЕТА" (Event Questionnaire Form)
+ */
+export function generateSurveyEmailHtml(payload: SurveyEmailPayload): string {
+  const formattedTime =
+    payload.timestamp ||
+    new Intl.DateTimeFormat("bg-BG", {
+      dateStyle: "full",
+      timeStyle: "short",
+      timeZone: "Europe/Sofia",
+    }).format(new Date());
+
+  const channelBadgeColor =
+    payload.preferredChannel?.toLowerCase() === "viber"
+      ? "#7360f2"
+      : payload.preferredChannel?.toLowerCase() === "instagram"
+      ? "#e1306c"
+      : "#00b4b6";
+
+  const channelLabel =
+    payload.preferredChannel?.toLowerCase() === "viber"
+      ? "📱 Viber"
+      : payload.preferredChannel?.toLowerCase() === "instagram"
+      ? "📷 Instagram"
+      : "✉️ Имейл";
+
+  const paperTagsHtml =
+    Array.isArray(payload.paperTypes) && payload.paperTypes.length > 0
+      ? payload.paperTypes
+          .map(
+            (p) =>
+              `<span style="display:inline-block; background-color:#e0f7f7; color:#007a7c; font-weight:700; font-size:13px; padding:6px 12px; border-radius:20px; margin:4px 4px 4px 0; border:1px solid #b2ecec;">✓ ${escapeHtml(
+                p.toUpperCase()
+              )}</span>`
+          )
+          .join(" ")
+      : `<span style="color:#5b6968; font-style:italic;">Не е посочен конкретен носител</span>`;
+
+  return `
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Нова АНКЕТА за събитие | Пощичка</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f4efe6;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #182b2c;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrapper {
+      width: 100%;
+      table-layout: fixed;
+      background-color: #f4efe6;
+      padding: 30px 10px;
+    }
+    .main-card {
+      max-width: 620px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid #e2ded7;
+      box-shadow: 0 6px 24px rgba(24, 43, 44, 0.08);
+    }
+    .header-banner {
+      background-color: #00b4b6;
+      padding: 34px 24px;
+      text-align: center;
+      color: #ffffff;
+    }
+    .header-banner h1 {
+      margin: 0 0 6px 0;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      line-height: 1.2;
+    }
+    .header-banner p {
+      margin: 0;
+      font-size: 15px;
+      opacity: 0.95;
+    }
+    .content-body {
+      padding: 30px 24px;
+    }
+    /* Highlight Channel Box */
+    .channel-box {
+      background-color: #fdfbf7;
+      border: 2px solid ${channelBadgeColor};
+      border-radius: 16px;
+      padding: 18px 20px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .channel-badge {
+      display: inline-block;
+      background-color: ${channelBadgeColor};
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 6px 14px;
+      border-radius: 50px;
+      margin-bottom: 8px;
+    }
+    .section-heading {
+      font-size: 16px;
+      font-weight: 800;
+      color: #182b2c;
+      margin: 22px 0 10px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+    }
+    .info-card {
+      background-color: #f9f6f0;
+      border: 1px solid #e8e2d8;
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .info-table td {
+      padding: 8px 0;
+      vertical-align: top;
+      font-size: 15px;
+    }
+    .info-label {
+      width: 40%;
+      color: #5b6968;
+      font-weight: 600;
+    }
+    .info-value {
+      width: 60%;
+      color: #182b2c;
+      font-weight: 700;
+    }
+    .info-value a {
+      color: #00b4b6;
+      text-decoration: underline;
+    }
+    .cta-button {
+      display: inline-block;
+      background-color: #00b4b6;
+      color: #ffffff !important;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 15px;
+      padding: 14px 28px;
+      border-radius: 50px;
+      box-shadow: 0 4px 12px rgba(0, 180, 182, 0.3);
+    }
+    .footer-bar {
+      background-color: #182b2c;
+      padding: 22px 24px;
+      text-align: center;
+      color: #a4b3b2;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .footer-bar a {
+      color: #00b4b6;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="main-card">
+      <!-- Header Banner -->
+      <div class="header-banner">
+        <h1>ПОЩИЧКА • АНКЕТА</h1>
+        <p>Нова попълнена анкета от сайта poshtichka.eu</p>
+      </div>
+
+      <!-- Content Body -->
+      <div class="content-body">
+        <!-- Highlight Preferred Contact Box -->
+        <div class="channel-box">
+          <div style="font-size: 13px; font-weight: 700; color: #5b6968; text-transform: uppercase; margin-bottom: 6px;">
+            ⭐ Предпочитан начин за комуникация:
+          </div>
+          <div>
+            <span class="channel-badge">${channelLabel}</span>
+          </div>
+          <div style="font-size: 15px; color: #182b2c; margin-top: 6px;">
+            Свържете се с клиента по <strong>${channelLabel}</strong> на:
+            ${
+              payload.phone
+                ? `<a href="tel:${escapeHtml(payload.phone)}" style="color:#00b4b6; font-weight:700; margin-left:4px;">${escapeHtml(
+                    payload.phone
+                  )}</a>`
+                : ""
+            }
+            ${
+              payload.email
+                ? ` или <a href="mailto:${escapeHtml(payload.email)}" style="color:#00b4b6; font-weight:700;">${escapeHtml(
+                    payload.email
+                  )}</a>`
+                : ""
+            }
+          </div>
+        </div>
+
+        <!-- Section: Детайли за събитието -->
+        <div class="section-heading">🎉 Детайли за събитието</div>
+        <div class="info-card">
+          <table class="info-table">
+            <tr>
+              <td class="info-label">Вид събитие:</td>
+              <td class="info-value" style="color: #00b4b6;">${escapeHtml(payload.eventType)}</td>
+            </tr>
+            <tr>
+              <td class="info-label">📅 Дата на събитието:</td>
+              <td class="info-value">${escapeHtml(payload.eventDate)}</td>
+            </tr>
+            <tr>
+              <td class="info-label">📍 Локация / Зала:</td>
+              <td class="info-value">${escapeHtml(payload.location)}</td>
+            </tr>
+            <tr>
+              <td class="info-label">👥 Брой гости:</td>
+              <td class="info-value">${escapeHtml(String(payload.guestCount))} души</td>
+            </tr>
+            <tr>
+              <td class="info-label">🕒 Изпратено на:</td>
+              <td class="info-value" style="font-weight: normal; color: #4a5756;">${escapeHtml(formattedTime)}</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Section: Контактна информация -->
+        <div class="section-heading">👤 Контактна информация</div>
+        <div class="info-card">
+          <table class="info-table">
+            <tr>
+              <td class="info-label">Имена:</td>
+              <td class="info-value">${escapeHtml(payload.names)}</td>
+            </tr>
+            <tr>
+              <td class="info-label">📞 Телефон:</td>
+              <td class="info-value">
+                <a href="tel:${escapeHtml(payload.phone)}">${escapeHtml(payload.phone)}</a>
+              </td>
+            </tr>
+            <tr>
+              <td class="info-label">✉️ Имейл адрес:</td>
+              <td class="info-value">
+                <a href="mailto:${escapeHtml(payload.email)}">${escapeHtml(payload.email)}</a>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Section: Избрани формати / Носители -->
+        <div class="section-heading">🎁 Избрани видове хартиен носител</div>
+        <div class="info-card">
+          <div style="line-height: 1.8;">
+            ${paperTagsHtml}
+          </div>
+        </div>
+
+        <!-- Reply Button -->
+        <div style="text-align: center; margin-top: 28px;">
+          <a href="mailto:${escapeHtml(payload.email)}?subject=${encodeURIComponent(
+    `Re: Вашата анкета за събитие на ${payload.eventDate} - Пощичка`
+  )}" class="cta-button">
+            ОТГОВОРИ НА КЛИЕНТА
+          </a>
+        </div>
+      </div>
+
+      <!-- Footer Bar -->
+      <div class="footer-bar">
+        Този имейл е генериран автоматично от попълнена Анкета на
+        <a href="https://poshtichka.eu" target="_blank">poshtichka.eu</a>.<br>
+        CRM & Booking Dispatcher • <a href="https://poshtichka.eu/admin" target="_blank">Към Админ панела</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+  `.trim();
+}
+
+/**
  * Generates an HTML email for Full Event Bookings & Calculator Inquiries
  */
 export function generateBookingEmailHtml(payload: BookingEmailPayload): string {
@@ -394,7 +700,9 @@ export function generateBookingEmailHtml(payload: BookingEmailPayload): string {
         }
 
         <div style="text-align: center; margin-top: 25px;">
-          <a href="mailto:${escapeHtml(payload.email)}?subject=${encodeURIComponent(`Потвърждение на резервация за ${payload.eventDate} - Пощичка`)}" style="display: inline-block; background-color: #00b4b6; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 14px; padding: 12px 24px; border-radius: 50px;">
+          <a href="mailto:${escapeHtml(payload.email)}?subject=${encodeURIComponent(
+    `Потвърждение на резервация за ${payload.eventDate} - Пощичка`
+  )}" style="display: inline-block; background-color: #00b4b6; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 14px; padding: 12px 24px; border-radius: 50px;">
             ОТГОВОРИ НА КЛИЕНТА
           </a>
         </div>
@@ -407,6 +715,79 @@ export function generateBookingEmailHtml(payload: BookingEmailPayload): string {
 </body>
 </html>
   `.trim();
+}
+
+/**
+ * Sends Survey / Questionnaire Email to info@poshtichka.eu
+ */
+export async function sendSurveyEmail(payload: SurveyEmailPayload): Promise<{
+  success: boolean;
+  messageId?: string;
+  provider?: string;
+  error?: string;
+}> {
+  const fromAddress = "Пощичка <no-reply@poshtichka.eu>";
+  const toAddress = process.env.CONTACT_RECIPIENT_EMAIL || "info@poshtichka.eu";
+  const subject = `📋 Нова АНКЕТА за събитие: ${payload.names} (${payload.eventDate})`;
+  const htmlContent = generateSurveyEmailHtml(payload);
+  const plainText = `
+Нова попълнена анкета от сайта poshtichka.eu:
+
+⭐ Предпочитана комуникация: ${payload.preferredChannel}
+Клиент / Младоженци: ${payload.names}
+Телефон: ${payload.phone}
+Имейл: ${payload.email}
+
+Детайли за събитието:
+Вид събитие: ${payload.eventType}
+Дата: ${payload.eventDate}
+Локация: ${payload.location}
+Брой гости: ${payload.guestCount}
+
+Избрани хартиени носители:
+${Array.isArray(payload.paperTypes) ? payload.paperTypes.join(", ") : payload.paperTypes}
+  `.trim();
+
+  // 1. Try Zoho / SMTP Transporter
+  try {
+    const transporter = getTransporter();
+    const info = await transporter.sendMail({
+      from: fromAddress,
+      to: toAddress,
+      replyTo: payload.email,
+      subject: subject,
+      text: plainText,
+      html: htmlContent,
+    });
+
+    console.log("[Survey Email] Sent successfully via Zoho SMTP. MessageId:", info.messageId);
+    return { success: true, messageId: info.messageId, provider: "zoho_smtp" };
+  } catch (smtpErr: any) {
+    console.error("[Survey Email] Zoho SMTP send error:", smtpErr?.message);
+
+    // 2. Fallback to Resend if configured
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (resendApiKey) {
+      try {
+        const resend = new Resend(resendApiKey);
+        const res = await resend.emails.send({
+          from: fromAddress,
+          to: [toAddress],
+          replyTo: payload.email,
+          subject: subject,
+          html: htmlContent,
+        });
+
+        if (!res.error) {
+          return { success: true, messageId: res.data?.id, provider: "resend" };
+        }
+      } catch (resendErr) {
+        console.error("[Survey Email] Resend fallback error:", resendErr);
+      }
+    }
+
+    return { success: false, error: smtpErr?.message || "Грешка при изпращане на имейл." };
+  }
 }
 
 /**

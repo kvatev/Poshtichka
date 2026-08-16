@@ -8,24 +8,25 @@ import * as z from "zod";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
-  CheckCircle2,
   AlertTriangle,
   ArrowRight,
   ShieldAlert,
   Check,
+  Loader2,
+  RotateCcw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageWrapper } from "@/components/layout/page-wrapper";
 import { PageHeaderBanner } from "@/components/layout/page-header-banner";
 
 const paperKeepsakeOptions = [
-  { id: "марка", label: "МАРКА" },
-  { id: "картичка", label: "КАРТИЧКА" },
-  { id: "стикер", label: "СТИКЕР" },
-  { id: "татуировка", label: "ТАТУИРОВКА" },
-  { id: "карти-с-предизвикателства", label: "ПРЕДИЗВИКАТЕЛСТВА" },
-  { id: "благодарствени-картички", label: "БЛАГОДАРСТВЕНИ КАРТИЧКИ" },
-  { id: "друго", label: "ДРУГО" },
+  { id: "МАРКА", label: "МАРКА" },
+  { id: "КАРТИЧКА", label: "КАРТИЧКА" },
+  { id: "СТИКЕР", label: "СТИКЕР" },
+  { id: "ТАТУИРОВКА", label: "ТАТУИРОВКА" },
+  { id: "ПРЕДИЗВИКАТЕЛСТВА", label: "ПРЕДИЗВИКАТЕЛСТВА" },
+  { id: "БЛАГОДАРСТВЕНИ КАРТИЧКИ", label: "БЛАГОДАРСТВЕНИ КАРТИЧКИ" },
+  { id: "ДРУГО", label: "ДРУГО" },
 ];
 
 const bookingSchema = z.object({
@@ -38,7 +39,7 @@ const bookingSchema = z.object({
   paperKeepsakes: z.array(z.string()).min(1, { message: "Моля, изберете поне един вид хартиен носител" }),
   guestCount: z.coerce.number().min(1, { message: "Моля, въведете брой гости" }),
   venueLocation: z.string().min(2, { message: "Моля, въведете точна локация на събитието" }),
-  preferredContact: z.enum(["instagram", "email", "viber"]),
+  preferredContact: z.enum(["viber", "instagram", "email"]),
 });
 
 type BookingFormData = z.infer<typeof bookingSchema>;
@@ -86,13 +87,14 @@ function BookingFormContent() {
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm<BookingFormData>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
       eventDate: queryDate,
       eventType: "сватба",
-      paperKeepsakes: ["картичка"],
+      paperKeepsakes: ["КАРТИЧКА"],
       preferredContact: "viber",
       guestCount: 100,
     },
@@ -139,6 +141,22 @@ function BookingFormContent() {
     setValue("paperKeepsakes", Array.from(current), { shouldValidate: true });
   };
 
+  const handleResetForm = () => {
+    reset({
+      eventDate: "",
+      eventType: "сватба",
+      paperKeepsakes: ["КАРТИЧКА"],
+      preferredContact: "viber",
+      guestCount: 100,
+      fullName: "",
+      phone: "",
+      email: "",
+      venueLocation: "",
+    });
+    setSubmitted(false);
+    setErrorMessage("");
+  };
+
   const onSubmit = async (data: BookingFormData) => {
     if (bookedDates.has(data.eventDate)) {
       setErrorMessage(
@@ -162,19 +180,19 @@ function BookingFormContent() {
         : "Друго";
 
     const payload = {
-      fullName: data.fullName,
+      eventType: finalEventType,
+      names: data.fullName,
+      eventDate: data.eventDate,
       phone: data.phone,
       email: data.email,
-      eventDate: data.eventDate,
-      eventType: finalEventType,
-      venueLocation: data.venueLocation,
       guestCount: data.guestCount,
-      preferredContact: data.preferredContact,
-      message: `Вид хартиен носител: ${data.paperKeepsakes.join(", ")}`,
+      location: data.venueLocation,
+      paperTypes: data.paperKeepsakes,
+      preferredChannel: data.preferredContact,
     };
 
     try {
-      const response = await fetch("/api/bookings", {
+      const response = await fetch("/api/survey", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -193,7 +211,7 @@ function BookingFormContent() {
       if (err instanceof Error) {
         setErrorMessage(err.message);
       } else {
-        setErrorMessage("Възникна непредвидена грешка.");
+        setErrorMessage("Възникна непредвидена грешка при изпращането.");
       }
     } finally {
       setLoading(false);
@@ -223,7 +241,7 @@ function BookingFormContent() {
       <section className="max-w-4xl mx-auto px-4 sm:px-8">
         {submitted ? (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="bg-white rounded-[40px] p-10 sm:p-16 border-2 border-[#00b4b6] text-center space-y-6 shadow-2xl"
           >
@@ -241,8 +259,18 @@ function BookingFormContent() {
               Благодарим Ви за запитването!
             </h2>
             <p className="text-[#182b2c] font-sans text-base max-w-lg mx-auto leading-relaxed">
-              Получихме Вашата анкета. Нашият екип ще се свърже с Вас по предпочитания от Вас начин в най-кратки срокове.
+              Получихме Вашата анкета. Изпратихме потвърждение на посочения от Вас имейл и нашият екип ще се свърже с Вас по предпочитания от Вас начин в най-кратки срокове.
             </p>
+            <div className="pt-4">
+              <button
+                type="button"
+                onClick={handleResetForm}
+                className="inline-flex items-center space-x-2 bg-[#182b2c] hover:bg-[#00b4b6] text-white font-sans text-sm font-semibold px-6 py-3 rounded-full transition-all duration-200 cursor-pointer shadow-md hover:scale-105 active:scale-95"
+              >
+                <RotateCcw className="w-4 h-4" />
+                <span>Попълни нова анкета</span>
+              </button>
+            </div>
           </motion.div>
         ) : (
           <div className="bg-[#f9f6f0] rounded-[40px] border-2 border-[#2d3a37]/80 p-6 sm:p-12 shadow-2xl space-y-8">
@@ -499,9 +527,16 @@ function BookingFormContent() {
                 <button
                   type="submit"
                   disabled={loading || Boolean(availabilityWarning)}
-                  className="w-full max-w-md bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider py-4 rounded-full shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 cursor-pointer"
+                  className="w-full max-w-md bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider py-4 rounded-full shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 cursor-pointer flex items-center justify-center space-x-2"
                 >
-                  <span>{loading ? "ИЗПРАЩАНЕ..." : "ИЗПРАТИ ЗАПИТВАНЕ"}</span>
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-6 h-6 animate-spin" />
+                      <span>ИЗПРАЩАНЕ...</span>
+                    </>
+                  ) : (
+                    <span>ИЗПРАТИ ЗАПИТВАНЕ</span>
+                  )}
                 </button>
               </div>
             </form>
