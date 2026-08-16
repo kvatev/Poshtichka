@@ -227,13 +227,13 @@ function BookingFormContent() {
             animate={{ opacity: 1, scale: 1 }}
             className="bg-white rounded-[40px] p-10 sm:p-16 border-2 border-[#00b4b6] text-center space-y-6 shadow-2xl"
           >
-            <div className="relative w-48 h-18 sm:w-60 sm:h-22 mx-auto flex items-center justify-center">
+            <div className="relative w-24 h-24 sm:w-28 sm:h-28 mx-auto flex items-center justify-center">
               <Image
-                src={encodeURI("/media/logos/Logo.png")}
+                src={encodeURI("/icons/Asset 101@2x.png")}
                 alt="Пощичка"
-                width={240}
-                height={90}
-                className="w-auto h-14 sm:h-18 object-contain drop-shadow-xs"
+                width={112}
+                height={112}
+                className="w-20 h-20 sm:w-24 sm:h-24 object-contain"
                 unoptimized
               />
             </div>
