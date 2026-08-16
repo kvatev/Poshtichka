@@ -103,9 +103,24 @@ export const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Bar: Copyright */}
-        <div className="border-t border-white/20 pt-6 text-center text-xs sm:text-sm text-white/80 font-sans">
+        {/* Bottom Bar: Copyright & Legal */}
+        <div className="border-t border-white/20 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-white/80 font-sans">
           <p>© {new Date().getFullYear()} Пощичка. Всички права запазени.</p>
+          <div className="flex items-center space-x-3 text-xs sm:text-sm">
+            <Link
+              href="/privacy-policy"
+              className="text-white/85 hover:text-white hover:underline transition-colors duration-200"
+            >
+              Политика за поверителност
+            </Link>
+            <span className="text-white/40">•</span>
+            <Link
+              href="/terms"
+              className="text-white/85 hover:text-white hover:underline transition-colors duration-200"
+            >
+              Общи условия
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

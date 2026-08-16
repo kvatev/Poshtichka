@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, Suspense } from "react";
+import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -575,8 +576,8 @@ function BookingFormContent() {
                 </AnimatePresence>
               </div>
 
-              {/* Submit Button */}
-              <div className="pt-6 flex justify-center">
+              {/* Submit Button & GDPR Note */}
+              <div className="pt-6 flex flex-col items-center justify-center space-y-3">
                 <button
                   type="submit"
                   disabled={loading || Boolean(availabilityWarning)}
@@ -591,6 +592,13 @@ function BookingFormContent() {
                     <span>ИЗПРАТИ ЗАПИТВАНЕ</span>
                   )}
                 </button>
+                <p className="text-center text-xs text-[#5b6968] font-sans max-w-md">
+                  С изпращането на формата се съгласявате с обработката на личните Ви данни съгласно нашата{" "}
+                  <Link href="/privacy-policy" className="text-[#00b4b6] hover:underline font-medium">
+                    Политика за поверителност
+                  </Link>
+                  .
+                </p>
               </div>
             </form>
           </div>

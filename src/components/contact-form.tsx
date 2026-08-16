@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { CheckCircle2, AlertCircle, Loader2, RotateCcw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -350,8 +351,8 @@ export function ContactForm({ initialServices = [], initialGeneral }: ContactFor
                 />
               </div>
 
-              {/* Submit Button */}
-              <div className="pt-2">
+              {/* Submit Button & GDPR Note */}
+              <div className="pt-2 space-y-3">
                 <button
                   type="submit"
                   disabled={loading}
@@ -366,6 +367,13 @@ export function ContactForm({ initialServices = [], initialGeneral }: ContactFor
                     <span>ИЗПРАТИ</span>
                   )}
                 </button>
+                <p className="text-center text-xs text-[#5b6968] font-sans">
+                  С изпращането на формата се съгласявате с обработката на личните Ви данни съгласно нашата{" "}
+                  <Link href="/privacy-policy" className="text-[#00b4b6] hover:underline font-medium">
+                    Политика за поверителност
+                  </Link>
+                  .
+                </p>
               </div>
             </form>
           )}
