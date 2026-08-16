@@ -25,7 +25,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Пощичка | Всеки гост си тръгва със спомен",
+  title: "Пощичка | Вендинг машина за събития",
   description:
     "Пощичка е бутикова вендинг машина за събития в България. Всеки гост си тръгва с персонализиран спомен, създаден на живо по време на Вашата сватба, корпоративно събитие или празник.",
   keywords: [
@@ -61,18 +61,18 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: "Пощичка | Всеки гост си тръгва със спомен",
+    title: "Пощичка | Вендинг машина за събития",
     description: "Персонализирани спомени, създадени на живо по време на Вашето събитие.",
-    url: "https://poshtichka.bg",
+    url: "https://poshtichka.eu",
     siteName: "Пощичка",
     locale: "bg_BG",
     type: "website",
     images: [
       {
-        url: "https://poshtichka.bg/media/Main Page/hero-bg.png",
+        url: "https://poshtichka.eu/media/Main Page/hero-bg.png",
         width: 1200,
         height: 630,
-        alt: "Пощичка - Интерактивно преживяване",
+        alt: "Пощичка - Вендинг машина за събития",
       },
     ],
   },
