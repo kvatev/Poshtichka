@@ -196,7 +196,7 @@ export const SeoManager = () => {
 
           <div className="space-y-2 bg-gray-50 p-4 rounded-2xl border border-gray-200">
             <span className="text-xs text-emerald-700 font-sans block truncate">
-              https://poshtichka.bg/{activeTab === "home" ? "" : activeTab}
+              https://www.poshtichka.eu/{activeTab === "home" ? "" : activeTab}
             </span>
             <h4 className="text-blue-700 text-sm font-medium hover:underline cursor-pointer line-clamp-1">
               {currentPageConfig.title}

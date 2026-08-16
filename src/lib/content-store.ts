@@ -134,9 +134,9 @@ export const defaultGeneralSettings: GeneralSettings = {
   email: "info@poshtichka.eu",
   address: "гр. Бургас, България",
   googleMapsUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d93967.58550130985!2d27.4046182!3d42.5047805!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40a6926514757c91%3A0x400a01269af5e70!2sBurgas!5e0!3m2!1sen!2sbg!4v1700000000000!5m2!1sen!2sbg",
-  instagramUrl: "https://instagram.com/poshtichka.bg",
-  facebookUrl: "https://facebook.com/poshtichka.bg",
-  tiktokUrl: "https://tiktok.com/@poshtichka.bg",
+  instagramUrl: "https://instagram.com/poshtichka",
+  facebookUrl: "https://facebook.com/poshtichka",
+  tiktokUrl: "https://tiktok.com/@poshtichka",
   businessHours: "Пон - Нед: 09:00 - 20:00 ч.",
 };
 

@@ -25,6 +25,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.poshtichka.eu"),
   title: "Пощичка | Вендинг машина за събития",
   description:
     "Пощичка е бутикова вендинг машина за събития в България. Всеки гост си тръгва с персонализиран спомен, създаден на живо по време на Вашата сватба, корпоративно събитие или празник.",
@@ -63,13 +64,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Пощичка | Вендинг машина за събития",
     description: "Персонализирани спомени, създадени на живо по време на Вашето събитие.",
-    url: "https://poshtichka.eu",
+    url: "https://www.poshtichka.eu",
     siteName: "Пощичка",
     locale: "bg_BG",
     type: "website",
     images: [
       {
-        url: "https://poshtichka.eu/media/Main Page/hero-bg.png",
+        url: "https://www.poshtichka.eu/media/Main Page/hero-bg.png",
         width: 1200,
         height: 630,
         alt: "Пощичка - Вендинг машина за събития",
@@ -87,11 +88,11 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "Пощичка",
-    "image": "https://poshtichka.bg/media/logos/Logo.png",
+    "image": "https://www.poshtichka.eu/icons/Asset 101@2x.png",
     "description": "Интерактивно преживяване и персонализирани спомени за сватби и корпоративни събития.",
     "address": {
       "@type": "PostalAddress",
-      "addressLocality": "Burgas",
+      "addressLocality": "Бургас",
       "addressCountry": "BG"
     },
     "geo": {
@@ -99,8 +100,8 @@ export default function RootLayout({
       "latitude": 42.5048,
       "longitude": 27.4626
     },
-    "url": "https://poshtichka.bg",
-    "telephone": "+359888000000",
+    "url": "https://www.poshtichka.eu",
+    "email": "info@poshtichka.eu",
     "priceRange": "300€ - 500€"
   };
 

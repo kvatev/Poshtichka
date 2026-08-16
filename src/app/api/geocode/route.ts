@@ -56,7 +56,7 @@ export async function GET(req: NextRequest) {
         const photonUrl = `https://photon.komoot.io/api/?q=${encodeURIComponent(cleanQ)}&limit=15`;
         const photonRes = await fetch(photonUrl, {
           headers: {
-            "User-Agent": "PoshtichkaWeb/2.0 (contact@poshtichka.bg)",
+            "User-Agent": "PoshtichkaWeb/2.0 (info@poshtichka.eu)",
             "Accept": "application/json",
           },
           next: { revalidate: 3600 },
@@ -129,7 +129,7 @@ export async function GET(req: NextRequest) {
 
           const nomRes = await fetch(nominatimUrl, {
             headers: {
-              "User-Agent": "PoshtichkaPlatform/2.0 (team@poshtichka.bg)",
+              "User-Agent": "PoshtichkaPlatform/2.0 (info@poshtichka.eu)",
               "Accept-Language": "bg,en",
             },
             next: { revalidate: 3600 },
@@ -168,7 +168,7 @@ export async function GET(req: NextRequest) {
         const photonRevUrl = `https://photon.komoot.io/reverse?lat=${numLat}&lon=${numLng}`;
         const photonRevRes = await fetch(photonRevUrl, {
           headers: {
-            "User-Agent": "PoshtichkaWeb/2.0 (contact@poshtichka.bg)",
+            "User-Agent": "PoshtichkaWeb/2.0 (info@poshtichka.eu)",
             "Accept": "application/json",
           },
           next: { revalidate: 3600 },
@@ -207,10 +207,10 @@ export async function GET(req: NextRequest) {
       try {
         const nomRevUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${numLat}&lon=${numLng}&accept-language=bg`;
         const nomRevRes = await fetch(nomRevUrl, {
-          headers: {
-            "User-Agent": "PoshtichkaPlatform/2.0 (team@poshtichka.bg)",
-            "Accept-Language": "bg,en",
-          },
+            headers: {
+              "User-Agent": "PoshtichkaPlatform/2.0 (info@poshtichka.eu)",
+              "Accept-Language": "bg,en",
+            },
           next: { revalidate: 3600 },
         });
 

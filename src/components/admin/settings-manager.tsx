@@ -297,7 +297,7 @@ export const SettingsManager = () => {
                   required
                   value={newAdminEmail}
                   onChange={(e) => setNewAdminEmail(e.target.value)}
-                  placeholder="admin2@poshtichka.bg"
+                  placeholder="admin2@poshtichka.eu"
                   className="w-full px-3.5 py-2 rounded-xl border border-brand-primary/30 text-sm text-brand-dark bg-brand-bg/50 focus:ring-2 focus:ring-brand-accent"
                 />
               </div>
