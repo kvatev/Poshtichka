@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { PwaInstaller } from "@/components/pwa-installer";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // Google fonts used for production build stability; can be swapped with localFont SALongBeach.otf
 const displayFont = Playfair_Display({
@@ -123,6 +124,7 @@ export default function RootLayout({
       <body className="font-sans antialiased min-h-screen bg-brand-cream text-brand-dark selection:bg-brand-[#00b4b6] selection:text-white">
         {children}
         <PwaInstaller />
+        <SpeedInsights />
       </body>
     </html>
   );
