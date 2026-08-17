@@ -44,7 +44,6 @@ export type AdminTab =
   | "testimonials"
   | "faq"
   | "pricing"
-  | "seo"
   | "settings";
 
 interface AdminSidebarProps {
@@ -62,11 +61,10 @@ export const adminNavItems: { id: AdminTab; label: string; icon: React.ElementTy
   { id: "services", label: "Услуги & Описание", icon: Sparkles, section: "Управление" },
   { id: "homepage", label: "Начална Страница", icon: HomeIcon },
   { id: "content", label: "Текстове & Съдържание", icon: FileText },
-  { id: "gallery", label: "Галерия", icon: ImageIcon },
+  { id: "gallery", label: "Галерия & Медия", icon: ImageIcon },
   { id: "testimonials", label: "Отзиви", icon: MessageSquareQuote },
   { id: "faq", label: "ЧЗВ", icon: HelpCircle },
   { id: "pricing", label: "Цени & Калкулатор", icon: Tag },
-  { id: "seo", label: "SEO & Метатегове", icon: Search, section: "Маркетинг" },
   { id: "settings", label: "Общи Настройки", icon: Settings, section: "Система" },
 ];
 

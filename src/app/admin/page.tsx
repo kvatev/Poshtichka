@@ -16,7 +16,6 @@ import { PricingManager } from "@/components/admin/pricing-manager";
 import { SettingsManager } from "@/components/admin/settings-manager";
 import { WebsiteContentManager } from "@/components/admin/website-content-manager";
 import { HomepageEditor } from "@/components/admin/homepage-editor";
-import { SeoManager } from "@/components/admin/seo-manager";
 import { BookingDetailModal } from "@/components/admin/booking-detail-modal";
 import {
   CrmLead,
@@ -315,7 +314,6 @@ export default function AdminDashboardPage() {
           {activeTab === "testimonials" && <TestimonialsManager />}
           {activeTab === "faq" && <FAQManager />}
           {activeTab === "pricing" && <PricingManager />}
-          {activeTab === "seo" && <SeoManager />}
           {activeTab === "settings" && <SettingsManager />}
         </main>
       </div>
