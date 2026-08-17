@@ -113,8 +113,8 @@ export const FinanceManager = ({ leads, onUpdateLead, onDeleteLead }: FinanceMan
         </div>
       </div>
 
-      {/* Metric Cards Grid: Net Revenue, Gross Revenue, Fuel Costs, Deposits, Remaining */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
+      {/* Metric Cards Grid: Net Revenue, Gross Revenue, Fuel Costs, Remaining */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {/* Card 1: Чист Приход (Без гориво) */}
         <Card className="p-5 bg-emerald-50/80 border-2 border-emerald-300 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
@@ -145,17 +145,7 @@ export const FinanceManager = ({ leads, onUpdateLead, onDeleteLead }: FinanceMan
           <p className="text-[10px] text-blue-800 font-medium">Фирмен разход за транспорт и гориво</p>
         </Card>
 
-        {/* Card 4: Постъпили Капарота */}
-        <Card className="p-5 bg-[#00b4b6]/5 border border-[#00b4b6]/30 shadow-xs space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[#008b8d] uppercase tracking-wider">Постъпили Капарота</span>
-            <span className="text-xs">💳</span>
-          </div>
-          <div className="font-serif text-2xl sm:text-3xl font-bold text-[#00b4b6]">{totalDepositsPaid.toFixed(2)} €</div>
-          <p className="text-[10px] text-[#008b8d] font-medium">Потвърдени получени депозити</p>
-        </Card>
-
-        {/* Card 5: Оставащи Плащания */}
+        {/* Card 4: Оставащи Плащания */}
         <Card className="p-5 bg-amber-50 border border-amber-200 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-amber-950 uppercase tracking-wider">Оставащи Плащания</span>
