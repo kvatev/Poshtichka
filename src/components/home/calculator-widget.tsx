@@ -121,19 +121,28 @@ export const CalculatorWidget = () => {
             {/* Slider 1: Guests (Exact 4 Steps: 70, 100, 150, 150+) */}
             <div className="space-y-2 pt-2">
               <div className="flex items-center justify-center space-x-2">
-                <h3 className="font-display text-lg sm:text-xl font-bold uppercase tracking-wider text-[#00b4b6]">
+                <label
+                  htmlFor="guest-slider"
+                  className="font-display text-lg sm:text-xl font-bold uppercase tracking-wider text-[#00b4b6] cursor-pointer"
+                >
                   БРОЙ ГОСТИ: {isLargeEvent ? "150+ (ГОЛЯМО СЪБИТИЕ)" : `${numericGuests} ГОСТИ`}
-                </h3>
+                </label>
               </div>
 
               <div className="relative px-2">
                 <input
+                  id="guest-slider"
                   type="range"
                   min={0}
                   max={3}
                   step={1}
                   value={stepIndex}
                   onChange={(e) => setStepIndex(Number(e.target.value))}
+                  aria-label="Избор на брой гости за събитието"
+                  aria-valuemin={0}
+                  aria-valuemax={3}
+                  aria-valuenow={stepIndex}
+                  aria-valuetext={isLargeEvent ? "150+ гости (Голямо събитие)" : `${numericGuests} гости`}
                   className="w-full h-2.5 bg-[#cdeef0] rounded-lg appearance-none cursor-pointer accent-[#00b4b6]"
                 />
                 <div className="flex justify-between text-xs sm:text-sm font-semibold text-[#2d3a37]/70 mt-1.5 px-1">
@@ -184,17 +193,26 @@ export const CalculatorWidget = () => {
 
             {/* Slider 2: Distance from Burgas (min=50, max=450, step=10) */}
             <div className="space-y-2 pt-2">
-              <h3 className="font-display text-lg sm:text-xl font-bold uppercase tracking-wider text-[#00b4b6]">
+              <label
+                htmlFor="distance-slider"
+                className="font-display text-lg sm:text-xl font-bold uppercase tracking-wider text-[#00b4b6] block cursor-pointer"
+              >
                 ЛОКАЦИЯ ОТ ГРАД БУРГАС: {isFarLocation ? "НАД 450 КМ (ПО ЗАПИТВАНЕ)" : `${distance} КМ (${distance * 2} КМ ДВУПОСОЧНО)`}
-              </h3>
+              </label>
               <div className="relative px-2">
                 <input
+                  id="distance-slider"
                   type="range"
                   min={50}
                   max={450}
                   step={10}
                   value={distance}
                   onChange={(e) => setDistance(Number(e.target.value))}
+                  aria-label="Избор на разстояние в километри от Бургас"
+                  aria-valuemin={50}
+                  aria-valuemax={450}
+                  aria-valuenow={distance}
+                  aria-valuetext={isFarLocation ? "Над 450 км (По запитване)" : `${distance} километра от Бургас`}
                   className="w-full h-2.5 bg-[#cdeef0] rounded-lg appearance-none cursor-pointer accent-[#00b4b6]"
                 />
                 <div className="flex justify-between text-xs sm:text-sm font-semibold text-[#2d3a37]/70 mt-1.5 px-1">
@@ -230,11 +248,18 @@ export const CalculatorWidget = () => {
 
             {/* Custom Checkbox: Add Initials (+designPrice EUR) */}
             <div className="space-y-1 pt-1 flex flex-col items-center">
-              <h3 className="font-display text-base sm:text-lg font-bold uppercase tracking-wider text-[#00b4b6]">
+              <label
+                htmlFor="initials-toggle-btn"
+                className="font-display text-base sm:text-lg font-bold uppercase tracking-wider text-[#00b4b6] cursor-pointer"
+              >
                 ДОБАВЯНЕ НА ИНИЦИАЛИ (+{pricing.designPrice} €)
-              </h3>
+              </label>
               <button
+                id="initials-toggle-btn"
                 type="button"
+                role="checkbox"
+                aria-checked={addInitials}
+                aria-label={`Добавяне на персонализиран дизайн и инициали (+${pricing.designPrice} €)`}
                 onClick={() => setAddInitials(!addInitials)}
                 className={`w-5 h-5 rounded-md border-2 transition-all flex items-center justify-center cursor-pointer ${
                   addInitials

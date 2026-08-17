@@ -572,6 +572,7 @@ export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
                               <button
                                 key={idx}
                                 onClick={() => setActiveLightboxIndex(idx)}
+                                aria-label={`Преглед на снимка ${idx + 1}`}
                                 className={`relative h-20 sm:h-24 rounded-2xl overflow-hidden border-2 transition-all cursor-pointer ${
                                   activeLightboxIndex === idx
                                     ? "border-[#00b4b6] scale-105 shadow-md"

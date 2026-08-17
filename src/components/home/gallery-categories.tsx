@@ -41,6 +41,7 @@ export const GalleryCategories = () => {
             >
               <Link
                 href="/gallery"
+                aria-label={`Разгледай галерия за ${category.title}`}
                 className="group block w-full relative flex justify-center items-center cursor-pointer"
               >
                 <div className="relative w-full aspect-[4/5] flex justify-center items-center">
