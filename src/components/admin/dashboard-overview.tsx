@@ -112,7 +112,7 @@ export const DashboardOverview = ({
         {stats.map((st, i) => {
           const Icon = st.icon;
           return (
-            <Card key={i} className="p-6 space-y-4 shadow-xs border border-brand-primary/20 bg-white">
+            <Card key={i} className="p-6 space-y-4 shadow-xs border border-brand-primary/20 bg-white min-h-[140px] flex flex-col justify-between">
               <div className="flex justify-between items-start">
                 <span className="text-xs uppercase tracking-wider font-semibold text-brand-muted">
                   {st.title}
@@ -137,7 +137,7 @@ export const DashboardOverview = ({
       {/* Main Grid: Latest Leads + Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Latest Inquiries Table */}
-        <Card className="lg:col-span-2 p-6 space-y-6 shadow-xs border border-brand-primary/20 bg-white">
+        <Card className="lg:col-span-2 p-6 space-y-6 shadow-xs border border-brand-primary/20 bg-white min-h-[420px]">
           <div className="flex justify-between items-center pb-4 border-b border-brand-secondary">
             <div>
               <h3 className="font-serif text-lg font-bold text-brand-dark">

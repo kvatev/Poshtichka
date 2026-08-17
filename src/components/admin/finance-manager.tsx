@@ -116,7 +116,7 @@ export const FinanceManager = ({ leads, onUpdateLead, onDeleteLead }: FinanceMan
       {/* Metric Cards Grid: Net Revenue, Gross Revenue, Fuel Costs, Remaining */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {/* Card 1: Чист Приход (Без гориво) */}
-        <Card className="p-5 bg-emerald-50/80 border-2 border-emerald-300 shadow-xs space-y-2">
+        <Card className="p-5 bg-emerald-50/80 border-2 border-emerald-300 shadow-xs space-y-2 min-h-[140px] flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-emerald-950 uppercase tracking-wider">Чист Приход (Без Гориво)</span>
             <span className="text-xs">✨</span>
@@ -126,7 +126,7 @@ export const FinanceManager = ({ leads, onUpdateLead, onDeleteLead }: FinanceMan
         </Card>
 
         {/* Card 2: Общ Брутен Приход (С гориво) */}
-        <Card className="p-5 bg-white border border-brand-primary/20 shadow-xs space-y-2">
+        <Card className="p-5 bg-white border border-brand-primary/20 shadow-xs space-y-2 min-h-[140px] flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-brand-muted uppercase tracking-wider">Общ Приход (С Гориво)</span>
             <span className="text-xs">🏷️</span>
@@ -136,7 +136,7 @@ export const FinanceManager = ({ leads, onUpdateLead, onDeleteLead }: FinanceMan
         </Card>
 
         {/* Card 3: Разход за Транспорт / Гориво */}
-        <Card className="p-5 bg-blue-50/70 border border-blue-200 shadow-xs space-y-2">
+        <Card className="p-5 bg-blue-50/70 border border-blue-200 shadow-xs space-y-2 min-h-[140px] flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-blue-950 uppercase tracking-wider">Разход за Гориво & Път</span>
             <span className="text-xs">⛽</span>
@@ -146,7 +146,7 @@ export const FinanceManager = ({ leads, onUpdateLead, onDeleteLead }: FinanceMan
         </Card>
 
         {/* Card 4: Оставащи Плащания */}
-        <Card className="p-5 bg-amber-50 border border-amber-200 shadow-xs space-y-2">
+        <Card className="p-5 bg-amber-50 border border-amber-200 shadow-xs space-y-2 min-h-[140px] flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-amber-950 uppercase tracking-wider">Оставащи Плащания</span>
             <span className="text-xs">⏳</span>
@@ -157,7 +157,7 @@ export const FinanceManager = ({ leads, onUpdateLead, onDeleteLead }: FinanceMan
       </div>
 
       {/* Finance Table */}
-      <Card className="p-0 overflow-hidden shadow-xs border border-brand-primary/20 bg-white">
+      <Card className="p-0 overflow-hidden shadow-xs border border-brand-primary/20 bg-white min-h-[420px]">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs font-sans">
             <thead className="bg-brand-secondary/40 border-b border-brand-primary/20 text-brand-dark uppercase tracking-wider font-semibold">

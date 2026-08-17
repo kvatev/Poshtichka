@@ -347,14 +347,15 @@ export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
                         setActiveModalEvent(ev);
                         setActiveLightboxIndex(0);
                       }}
-                      className="relative group w-[300px] sm:w-[340px] md:w-[360px] h-[430px] sm:h-[480px] border-[2.5px] border-[#182b2c] rounded-[40px] sm:rounded-[46px] overflow-hidden shadow-xl hover:scale-[1.03] transition-all duration-300 cursor-pointer flex flex-col mx-auto bg-[#f9f6f0]"
+                      className="relative group w-[300px] sm:w-[340px] md:w-[360px] h-[430px] sm:h-[480px] min-h-[430px] sm:min-h-[480px] border-[2.5px] border-[#182b2c] rounded-[40px] sm:rounded-[46px] overflow-hidden shadow-xl hover:scale-[1.03] transition-all duration-300 cursor-pointer flex flex-col mx-auto bg-[#f9f6f0]"
                     >
-                      {/* Photo Container filling top ~68% seamlessly */}
-                      <div className="relative w-full h-[68%] overflow-hidden">
+                      {/* Photo Container filling top ~68% seamlessly with reserved background */}
+                      <div className="relative w-full h-[68%] overflow-hidden bg-neutral-200/60">
                         <Image
                           src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
                           alt={ev.eventName || ev.cityName}
                           fill
+                          sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 360px"
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
                           style={{
                             objectPosition:
@@ -367,19 +368,19 @@ export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
                       </div>
 
                       {/* Text Area filling bottom ~32% with solid cream/white background */}
-                      <div className="relative w-full h-[32%] bg-[#f9f6f0] px-4 py-2.5 text-center flex flex-col items-center justify-center space-y-0.5 z-0">
-                        {/* Line 1: ГЕРИ И КРАСИ (SALongBeach font, bold, uppercase, teal color #00b4b6) */}
-                        <h3 className="font-salongbeach text-2xl sm:text-3xl font-bold uppercase tracking-wider text-[#00b4b6] leading-tight">
+                      <div className="relative w-full h-[32%] min-h-[135px] bg-[#f9f6f0] px-4 py-2.5 text-center flex flex-col items-center justify-center space-y-0.5 z-0">
+                        {/* Line 1: Event Name (SALongBeach font, bold, uppercase, teal color #00b4b6) */}
+                        <h3 className="font-salongbeach text-2xl sm:text-3xl font-bold uppercase tracking-wider text-[#00b4b6] leading-tight line-clamp-1">
                           {ev.eventName || `ПОЩИЧКА В ${ev.cityName.toUpperCase()}`}
                         </h3>
 
-                        {/* Line 2: Комплекс Свети Тома (Stampatello font, dark gray #182b2c) */}
-                        <p className="font-stampatello text-lg sm:text-xl font-normal text-[#182b2c] leading-snug">
+                        {/* Line 2: Venue (Stampatello font, dark gray #182b2c) */}
+                        <p className="font-stampatello text-lg sm:text-xl font-normal text-[#182b2c] leading-snug line-clamp-1">
                           {ev.venueName || `Локация в гр. ${ev.cityName}`}
                         </p>
 
-                        {/* Line 3: сватбено тържество (Stampatello font, teal color #00b4b6) */}
-                        <p className="font-stampatello text-sm sm:text-base font-normal text-[#00b4b6] leading-tight">
+                        {/* Line 3: Event Type (Stampatello font, teal color #00b4b6) */}
+                        <p className="font-stampatello text-sm sm:text-base font-normal text-[#00b4b6] leading-tight line-clamp-1">
                           {ev.eventType || "сватбено тържество"}
                         </p>
                       </div>
@@ -417,53 +418,71 @@ export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
         </div>
 
         {/* 3-Column Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 justify-items-center">
-          {uniqueEvents.map((ev) => (
-            <div
-              key={ev.id}
-              onClick={() => {
-                setActiveModalEvent(ev);
-                setActiveLightboxIndex(0);
-              }}
-              className="relative group w-full max-w-[340px] sm:max-w-[360px] h-[430px] sm:h-[480px] border-[2.5px] border-[#182b2c] rounded-[40px] sm:rounded-[46px] overflow-hidden shadow-md hover:shadow-xl hover:scale-[1.03] transition-all duration-300 cursor-pointer flex flex-col mx-auto bg-[#f9f6f0] text-center"
-            >
-              {/* Photo Container filling top ~68% seamlessly */}
-              <div className="relative w-full h-[68%] overflow-hidden">
-                <Image
-                  src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
-                  alt={ev.eventName || ev.cityName}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  style={{
-                    objectPosition:
-                      (ev.imagePositions && (ev.imagePositions[ev.coverImage || ""] || ev.imagePositions["0"])) ||
-                      ev.coverImagePosition ||
-                      "center",
-                  }}
-                  unoptimized
-                />
+        {loading && uniqueEvents.length === 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 justify-items-center">
+            {[1, 2, 3, 4, 5, 6].map((n) => (
+              <div
+                key={n}
+                className="w-full max-w-[340px] sm:max-w-[360px] h-[430px] sm:h-[480px] min-h-[430px] sm:min-h-[480px] border-[2.5px] border-[#182b2c]/20 rounded-[40px] sm:rounded-[46px] overflow-hidden bg-neutral-100 animate-pulse flex flex-col mx-auto"
+              >
+                <div className="w-full h-[68%] bg-neutral-200/80" />
+                <div className="w-full h-[32%] bg-[#f9f6f0] p-4 flex flex-col items-center justify-center space-y-2">
+                  <div className="w-3/4 h-6 bg-neutral-200 rounded-lg" />
+                  <div className="w-1/2 h-4 bg-neutral-200/70 rounded-md" />
+                </div>
               </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 justify-items-center">
+            {uniqueEvents.map((ev) => (
+              <div
+                key={ev.id}
+                onClick={() => {
+                  setActiveModalEvent(ev);
+                  setActiveLightboxIndex(0);
+                }}
+                className="relative group w-full max-w-[340px] sm:max-w-[360px] h-[430px] sm:h-[480px] min-h-[430px] sm:min-h-[480px] border-[2.5px] border-[#182b2c] rounded-[40px] sm:rounded-[46px] overflow-hidden shadow-md hover:shadow-xl hover:scale-[1.03] transition-all duration-300 cursor-pointer flex flex-col mx-auto bg-[#f9f6f0] text-center"
+              >
+                {/* Photo Container filling top ~68% seamlessly with reserved background */}
+                <div className="relative w-full h-[68%] overflow-hidden bg-neutral-200/60">
+                  <Image
+                    src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
+                    alt={ev.eventName || ev.cityName}
+                    fill
+                    sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 360px"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    style={{
+                      objectPosition:
+                        (ev.imagePositions && (ev.imagePositions[ev.coverImage || ""] || ev.imagePositions["0"])) ||
+                        ev.coverImagePosition ||
+                        "center",
+                    }}
+                    unoptimized
+                  />
+                </div>
 
-              {/* Text Area filling bottom ~32% with solid cream/white background */}
-              <div className="relative w-full h-[32%] bg-[#f9f6f0] px-4 py-2.5 text-center flex flex-col items-center justify-center space-y-0.5 z-0">
-                {/* Line 1: Event Name (SALongBeach font, bold, uppercase, teal color #00b4b6) */}
-                <h3 className="font-salongbeach text-2xl sm:text-3xl font-bold uppercase tracking-wider text-[#00b4b6] leading-tight">
-                  {ev.eventName || `ПОЩИЧКА В ${ev.cityName.toUpperCase()}`}
-                </h3>
+                {/* Text Area filling bottom ~32% with solid cream/white background */}
+                <div className="relative w-full h-[32%] min-h-[135px] bg-[#f9f6f0] px-4 py-2.5 text-center flex flex-col items-center justify-center space-y-0.5 z-0">
+                  {/* Line 1: Event Name (SALongBeach font, bold, uppercase, teal color #00b4b6) */}
+                  <h3 className="font-salongbeach text-2xl sm:text-3xl font-bold uppercase tracking-wider text-[#00b4b6] leading-tight line-clamp-1">
+                    {ev.eventName || `ПОЩИЧКА В ${ev.cityName.toUpperCase()}`}
+                  </h3>
 
-                {/* Line 2: Venue (Stampatello font, dark gray #182b2c) */}
-                <p className="font-stampatello text-lg sm:text-xl font-normal text-[#182b2c] leading-snug">
-                  {ev.venueName || `Локация в гр. ${ev.cityName}`}
-                </p>
+                  {/* Line 2: Venue (Stampatello font, dark gray #182b2c) */}
+                  <p className="font-stampatello text-lg sm:text-xl font-normal text-[#182b2c] leading-snug line-clamp-1">
+                    {ev.venueName || `Локация в гр. ${ev.cityName}`}
+                  </p>
 
-                {/* Line 3: Event Type (Stampatello font, teal color #00b4b6) */}
-                <p className="font-stampatello text-sm sm:text-base font-normal text-[#00b4b6] leading-tight">
-                  {ev.eventType || "сватбено тържество"}
-                </p>
+                  {/* Line 3: Event Type (Stampatello font, teal color #00b4b6) */}
+                  <p className="font-stampatello text-sm sm:text-base font-normal text-[#00b4b6] leading-tight line-clamp-1">
+                    {ev.eventType || "сватбено тържество"}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 7. Lightbox Overlay Modal matching Screenshot 2 layout rendered via React Portal directly on document.body to fill 100% full screen */}

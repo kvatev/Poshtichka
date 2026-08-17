@@ -230,12 +230,61 @@ export default function AdminDashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-brand-bg flex items-center justify-center font-sans">
-        <div className="text-center space-y-3">
-          <div className="w-10 h-10 border-4 border-brand-accent border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-xs text-brand-dark/70 uppercase tracking-widest font-semibold">
-            Зареждане на Poshtichka CRM...
-          </p>
+      <div className="min-h-screen bg-brand-bg/60 flex text-brand-dark font-sans animate-pulse">
+        {/* Sidebar Skeleton */}
+        <aside className="w-64 bg-white border-r border-brand-primary/20 hidden md:flex flex-col justify-between p-4 space-y-6">
+          <div className="space-y-6">
+            <div className="h-10 w-36 bg-neutral-200/80 rounded-2xl mx-auto" />
+            <div className="space-y-2 pt-4">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                <div key={i} className="h-9 w-full bg-neutral-100 rounded-xl" />
+              ))}
+            </div>
+          </div>
+          <div className="h-10 w-full bg-neutral-100 rounded-xl" />
+        </aside>
+
+        {/* Main Content Skeleton */}
+        <div className="flex-1 flex flex-col min-w-0">
+          {/* Header Skeleton */}
+          <header className="h-16 bg-white/95 border-b border-brand-primary/20 px-6 sm:px-8 flex items-center justify-between">
+            <div className="h-6 w-40 bg-neutral-200/80 rounded-lg" />
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 rounded-full bg-neutral-100" />
+              <div className="w-8 h-8 rounded-full bg-neutral-100" />
+              <div className="h-8 w-24 bg-neutral-100 rounded-full" />
+            </div>
+          </header>
+
+          {/* Body Skeleton */}
+          <main className="p-6 sm:p-8 flex-1 max-w-7xl w-full mx-auto space-y-6">
+            {/* Top Welcome Bar Skeleton */}
+            <div className="h-24 bg-white rounded-3xl border border-brand-primary/20 p-6 flex items-center justify-between" />
+
+            {/* 4 Metric Cards Skeleton */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div
+                  key={i}
+                  className="h-[140px] min-h-[140px] bg-white rounded-3xl border border-brand-primary/20 p-6 space-y-3"
+                >
+                  <div className="h-4 w-24 bg-neutral-200/70 rounded-md" />
+                  <div className="h-8 w-16 bg-neutral-200 rounded-lg" />
+                  <div className="h-3 w-32 bg-neutral-100 rounded-md" />
+                </div>
+              ))}
+            </div>
+
+            {/* Main Content Area Skeleton */}
+            <div className="h-[420px] min-h-[420px] bg-white rounded-3xl border border-brand-primary/20 p-6 space-y-4">
+              <div className="h-6 w-48 bg-neutral-200/80 rounded-lg" />
+              <div className="space-y-3 pt-2">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="h-16 w-full bg-neutral-50 rounded-2xl border border-brand-primary/10" />
+                ))}
+              </div>
+            </div>
+          </main>
         </div>
       </div>
     );
