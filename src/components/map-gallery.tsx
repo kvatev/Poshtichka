@@ -499,9 +499,18 @@ export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
               onClick={() => setActiveModalEvent(null)}
             >
               <div
-                className="relative max-w-5xl w-full bg-[#f9f6f0] rounded-[36px] overflow-hidden shadow-2xl border border-white/60 flex flex-col md:flex-row text-left font-sans max-h-[90vh] md:max-h-[85vh] my-auto"
+                className="relative max-w-5xl w-full bg-[#f9f6f0] rounded-[32px] sm:rounded-[36px] overflow-y-auto md:overflow-hidden shadow-2xl border border-white/60 flex flex-col md:flex-row text-left font-sans max-h-[90vh] md:max-h-[85vh] my-auto overscroll-contain"
                 onClick={(e) => e.stopPropagation()}
               >
+                {/* Pinned Close Button: Always visible & static at top-right during mobile/desktop scroll */}
+                <button
+                  onClick={() => setActiveModalEvent(null)}
+                  className="fixed top-5 right-5 sm:top-6 sm:right-6 md:absolute md:top-4 md:right-4 z-[1000000] flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full border-2 border-[#00b4b6] bg-white/95 text-[#00b4b6] hover:bg-[#00b4b6] hover:text-white shadow-xl backdrop-blur-md transition-all active:scale-95 cursor-pointer"
+                  aria-label="Затвори"
+                >
+                  <X className="h-5 w-5 stroke-[2.5]" />
+                </button>
+
                 {/* Left Side: Main Large Image */}
                 <div className="w-full md:w-1/2 relative min-h-[300px] sm:min-h-[380px] md:min-h-[480px]">
                   {(() => {
@@ -527,16 +536,7 @@ export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
                 </div>
 
                 {/* Right Side: Info Content matching Screenshot 2 */}
-                <div className="w-full md:w-1/2 p-6 sm:p-8 flex flex-col justify-between space-y-6 overflow-y-auto relative">
-                  {/* Close Button in cyan circle ring */}
-                  <button
-                    onClick={() => setActiveModalEvent(null)}
-                    className="absolute top-4 right-4 w-9 h-9 rounded-full border-2 border-[#00b4b6] text-[#00b4b6] hover:bg-[#00b4b6] hover:text-white transition-all flex items-center justify-center cursor-pointer shadow-xs z-10"
-                    aria-label="Затвори"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-
+                <div className="w-full md:w-1/2 p-6 sm:p-8 flex flex-col justify-between space-y-6 md:overflow-y-auto relative">
                   <div className="space-y-4 pr-6">
                     {/* Category / Type Tag */}
                     <span className="text-[#00b4b6] font-semibold text-xs uppercase tracking-wider block">
