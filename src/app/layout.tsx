@@ -121,6 +121,12 @@ export default function RootLayout({
         <link rel="icon" href="/icons/icon-192x192.png" type="image/png" sizes="192x192" />
         <link rel="shortcut icon" href="/icons/icon-192x192.png" type="image/png" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" sizes="192x192" />
+        <link
+          rel="preload"
+          as="image"
+          href={encodeURI("/media/Main Page/Main Banner.webp")}
+          fetchPriority="high"
+        />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
