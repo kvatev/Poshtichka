@@ -193,13 +193,13 @@ export default function PublicCalendarPage() {
                 ))}
               </div>
 
-              <div className="grid grid-cols-7 gap-2">
+              <div className="grid grid-cols-7 gap-1.5 sm:gap-2.5">
                 {calendarGrid.map((dayNum, idx) => {
                   if (dayNum === null) {
                     return (
                       <div
                         key={`empty-${idx}`}
-                        className="h-24 sm:h-28 rounded-2xl bg-white/40 border border-transparent opacity-30"
+                        className="h-16 sm:h-20 md:h-24 rounded-2xl bg-white/40 border border-transparent opacity-30"
                       />
                     );
                   }
@@ -213,53 +213,50 @@ export default function PublicCalendarPage() {
                   return (
                     <motion.button
                       key={`day-${dayNum}`}
-                      whileHover={isAvailable ? { scale: 1.03 } : {}}
-                      whileTap={isAvailable ? { scale: 0.97 } : {}}
+                      whileHover={isAvailable ? { scale: 1.05 } : {}}
+                      whileTap={isAvailable ? { scale: 0.95 } : {}}
                       onClick={() => handleSelectDate(dateStr, isAvailable)}
                       disabled={!isAvailable}
-                      className={`h-24 sm:h-28 rounded-2xl p-2 sm:p-3 border text-left flex flex-col justify-between transition-all relative ${
+                      aria-label={`${dayNum} ${monthNamesBg[currentMonth]} ${currentYear} - ${
                         isBooked
-                          ? "bg-red-50/80 border-red-300 text-red-900 cursor-not-allowed"
+                          ? "Заета дата"
+                          : isPast
+                          ? "Изминала дата"
+                          : "Свободна дата за резервация"
+                      }`}
+                      className={`h-16 sm:h-20 md:h-24 rounded-2xl p-1.5 sm:p-2.5 border flex flex-col items-center justify-between transition-all relative ${
+                        isBooked
+                          ? "bg-red-50/80 border-red-200 text-red-900 cursor-not-allowed"
                           : isPast
                           ? "bg-gray-100/70 border-gray-200 text-gray-400 cursor-not-allowed opacity-60"
                           : isToday
                           ? "bg-white border-2 border-[#00b4b6] text-emerald-950 shadow-md ring-2 ring-[#00b4b6]/40 cursor-pointer"
-                          : "bg-white hover:bg-emerald-50/80 border-2 border-[#00b4b6]/40 text-emerald-950 shadow-xs cursor-pointer"
+                          : "bg-white hover:bg-emerald-50/80 border-2 border-[#00b4b6]/30 text-emerald-950 shadow-xs cursor-pointer hover:border-[#00b4b6]"
                       }`}
                     >
-                      <div className="flex items-center justify-between">
-                        <span
-                          className={`text-sm sm:text-base font-bold rounded-full w-7 h-7 flex items-center justify-center ${
-                            isToday
-                              ? "bg-[#00b4b6] text-white"
-                              : isBooked
-                              ? "text-red-700 font-bold"
-                              : "text-[#182b2c]"
-                          }`}
-                        >
-                          {dayNum}
-                        </span>
+                      {/* Top: Date Number */}
+                      <span
+                        className={`text-xs sm:text-sm md:text-base font-bold rounded-full w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center ${
+                          isToday
+                            ? "bg-[#00b4b6] text-white shadow-xs"
+                            : isBooked
+                            ? "text-red-700 font-bold"
+                            : isPast
+                            ? "text-gray-400 font-medium"
+                            : "text-[#182b2c]"
+                        }`}
+                      >
+                        {dayNum}
+                      </span>
 
+                      {/* Bottom: Status Icon Centered */}
+                      <div className="flex items-center justify-center pb-0.5">
                         {isBooked ? (
-                          <XCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                          <XCircle className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-red-500 flex-shrink-0" />
                         ) : isPast ? (
-                          <Clock className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                          <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400/80 flex-shrink-0" />
                         ) : (
-                          <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                        )}
-                      </div>
-
-                      <div className="text-[10px] sm:text-xs font-semibold truncate">
-                        {isBooked ? (
-                          <span className="text-red-700 bg-red-100 px-2 py-0.5 rounded-full inline-block">
-                            Заета
-                          </span>
-                        ) : isPast ? (
-                          <span className="text-gray-400">Изминала</span>
-                        ) : (
-                          <span className="text-emerald-700 font-bold bg-emerald-100 px-2 py-0.5 rounded-full inline-block group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                            Свободна →
-                          </span>
+                          <CheckCircle2 className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-emerald-600 flex-shrink-0 group-hover:scale-110 transition-transform" />
                         )}
                       </div>
                     </motion.button>
