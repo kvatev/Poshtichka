@@ -52,19 +52,28 @@ export const BannerManager = () => {
     setBanners((prev) => prev.filter((b) => b.id !== id));
   };
 
+  const [saveError, setSaveError] = useState<string | null>(null);
+
   const handleSave = async () => {
     setSaving(true);
     setSaved(false);
+    setSaveError(null);
     try {
-      await fetch("/api/admin/content", {
+      const res = await fetch("/api/admin/content", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ key: "banners", value: banners }),
       });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Грешка при запис.");
+      }
       setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
-    } catch (err) {
+      setTimeout(() => setSaved(false), 4000);
+    } catch (err: any) {
       console.error("Save banners error:", err);
+      setSaveError(err?.message || "Грешка при запис.");
+      setTimeout(() => setSaveError(null), 5000);
     } finally {
       setSaving(false);
     }
@@ -84,6 +93,11 @@ export const BannerManager = () => {
         </div>
 
         <div className="flex items-center space-x-3">
+          {saveError && (
+            <span className="text-xs font-semibold text-red-600 bg-red-50 border border-red-200 px-3 py-1.5 rounded-xl">
+              {saveError}
+            </span>
+          )}
           <Button
             variant="outline"
             size="md"
@@ -104,7 +118,7 @@ export const BannerManager = () => {
             {saved ? (
               <>
                 <Check className="w-4 h-4 text-emerald-400" />
-                <span>Запазено!</span>
+                <span>Запазено в Supabase!</span>
               </>
             ) : (
               <>

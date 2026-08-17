@@ -65,22 +65,31 @@ export const FAQManager = () => {
       .catch(() => {});
   }, []);
 
+  const [saveError, setSaveError] = useState<string | null>(null);
+
   const persistFaqs = async (faqList: FAQItem[]) => {
     setSaving(true);
     setSaved(false);
+    setSaveError(null);
     try {
       if (typeof window !== "undefined") {
         localStorage.setItem("poshtichka_content_faq_items", JSON.stringify(faqList));
       }
-      await fetch("/api/admin/content", {
+      const res = await fetch("/api/admin/content", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ key: "faq_items", value: faqList }),
       });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Грешка при запис.");
+      }
       setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
-    } catch (err) {
+      setTimeout(() => setSaved(false), 4000);
+    } catch (err: any) {
       console.error("Save FAQs error:", err);
+      setSaveError(err?.message || "Грешка при запис.");
+      setTimeout(() => setSaveError(null), 5000);
     } finally {
       setSaving(false);
     }
@@ -156,6 +165,11 @@ export const FAQManager = () => {
         </div>
 
         <div className="flex items-center space-x-3">
+          {saveError && (
+            <span className="text-xs font-semibold text-red-600 bg-red-50 border border-red-200 px-3 py-1.5 rounded-xl">
+              {saveError}
+            </span>
+          )}
           <Button
             variant="outline"
             size="sm"
@@ -176,7 +190,7 @@ export const FAQManager = () => {
             {saved ? (
               <>
                 <Check className="w-4 h-4 text-emerald-400" />
-                <span>Запазено!</span>
+                <span>Запазено в Supabase!</span>
               </>
             ) : (
               <>

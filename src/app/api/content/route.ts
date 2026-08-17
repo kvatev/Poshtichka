@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 import {
   defaultGeneralSettings,
   defaultSeoSettings,
@@ -8,7 +7,7 @@ import {
   defaultTestimonials,
   defaultFaqs,
 } from "@/lib/content-store";
-import { readCloudOrFileData, writeCloudAndFileData } from "@/lib/server-storage";
+import { readCloudOrFileData } from "@/lib/server-storage";
 
 declare global {
   // eslint-disable-next-line no-var
@@ -34,15 +33,15 @@ export async function GET() {
   );
   globalThis.__POSHTICHKA_STORE__ = store;
 
-  let general = store.general_settings || defaultGeneralSettings;
-  let seo = store.seo_settings || defaultSeoSettings;
-  let homepage = store.homepage_config
+  const general = store.general_settings || defaultGeneralSettings;
+  const seo = store.seo_settings || defaultSeoSettings;
+  const homepage = store.homepage_config
     ? { ...defaultHomepageConfig, ...store.homepage_config }
     : defaultHomepageConfig;
-  let banners = store.banners || defaultBanners;
-  let testimonials = store.testimonials || defaultTestimonials;
-  let faq = store.faq_items || defaultFaqs;
-  let pricing_settings = store.pricing_settings || {
+  const banners = store.banners || defaultBanners;
+  const testimonials = store.testimonials || defaultTestimonials;
+  const faq = store.faq_items || defaultFaqs;
+  const pricing_settings = store.pricing_settings || {
     price70: "330",
     price100: "350",
     price150: "380",
@@ -51,23 +50,6 @@ export async function GET() {
     freeDistance: "50",
     ratePerKm: "0.23",
   };
-
-  try {
-    const supabase = await createClient();
-    const { data: settingsData } = await supabase.from("settings").select("*");
-
-    if (settingsData && settingsData.length > 0) {
-      settingsData.forEach((item) => {
-        if (item.key === "general_settings") general = { ...general, ...item.value };
-        if (item.key === "seo_settings") seo = { ...seo, ...item.value };
-        if (item.key === "homepage_config") homepage = { ...homepage, ...item.value };
-        if (item.key === "banners") banners = item.value;
-        if (item.key === "testimonials") testimonials = item.value;
-        if (item.key === "faq_items") faq = item.value;
-        if (item.key === "pricing_settings") pricing_settings = { ...pricing_settings, ...item.value };
-      });
-    }
-  } catch {}
 
   return NextResponse.json(
     {

@@ -124,24 +124,31 @@ export const TestimonialsManager = () => {
     persistTestimonials(updatedList);
   };
 
+  const [saveError, setSaveError] = useState<string | null>(null);
+
   const persistTestimonials = async (updatedList: TestimonialItem[]) => {
     setSaving(true);
     setSaved(false);
+    setSaveError(null);
     try {
       const res = await fetch("/api/admin/content", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ key: "testimonials", value: updatedList }),
       });
-      if (res.ok) {
-        setSaved(true);
-        try {
-          localStorage.setItem("poshtichka_cached_testimonials", JSON.stringify(updatedList));
-        } catch {}
-        setTimeout(() => setSaved(false), 3000);
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Грешка при запис.");
       }
-    } catch (err) {
+      setSaved(true);
+      try {
+        localStorage.setItem("poshtichka_cached_testimonials", JSON.stringify(updatedList));
+      } catch {}
+      setTimeout(() => setSaved(false), 4000);
+    } catch (err: any) {
       console.error("Save testimonials error:", err);
+      setSaveError(err?.message || "Грешка при запис на отзивите.");
+      setTimeout(() => setSaveError(null), 5000);
     } finally {
       setSaving(false);
     }
@@ -162,6 +169,12 @@ export const TestimonialsManager = () => {
         </div>
 
         <div className="flex items-center space-x-3">
+          {saveError && (
+            <span className="text-xs font-semibold text-red-600 bg-red-50 border border-red-200 px-3 py-1.5 rounded-xl">
+              {saveError}
+            </span>
+          )}
+
           <Button
             onClick={openAddModal}
             className="bg-[#00b4b6] hover:bg-[#008b8d] text-white font-salongbeach text-base font-bold uppercase tracking-wider px-5 py-2.5 rounded-full flex items-center space-x-2 shadow-md cursor-pointer"
@@ -173,7 +186,7 @@ export const TestimonialsManager = () => {
           {saved && (
             <span className="text-xs font-bold text-emerald-600 flex items-center space-x-1">
               <Check className="w-4 h-4" />
-              <span>Запазено!</span>
+              <span>Запазено в Supabase!</span>
             </span>
           )}
         </div>

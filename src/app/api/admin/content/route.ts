@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
 import { readCloudOrFileData, writeCloudAndFileData } from "@/lib/server-storage";
 import {
   defaultGeneralSettings,
@@ -27,50 +26,62 @@ const defaultContentStore: Record<string, any> = {
 
 export async function POST(request: Request) {
   try {
-    const { key, value } = await request.json();
+    const body = await request.json();
+    const { key, value } = body;
 
     if (!key || value === undefined) {
       return NextResponse.json(
-        { error: "Невалидни данни." },
+        { success: false, error: "Невалидни данни за настройките." },
         { status: 400 }
       );
     }
 
+    // 1. Read existing content store from Supabase
     const currentStore = await readCloudOrFileData<Record<string, any>>(
       "content-store",
       defaultContentStore
     );
+
+    // 2. Update the specific key
     currentStore[key] = value;
     globalThis.__POSHTICHKA_STORE__ = currentStore;
 
-    // Persist permanently to Supabase cloud + disk
-    await writeCloudAndFileData("content-store", currentStore);
+    // 3. Persist permanently to Supabase cloud (Row ID 1062)
+    const success = await writeCloudAndFileData("content-store", currentStore);
 
-    try {
-      const supabase = await createClient();
-      await supabase
-        .from("settings")
-        .upsert({ key, value, updated_at: new Date().toISOString() });
-    } catch {}
+    // Also persist specific key if mapped
+    await writeCloudAndFileData(key.replace(/_/g, "-"), value);
 
-    // Purge Next.js cache so the public website updates instantly
+    if (!success) {
+      console.warn(`[AdminContent] Supabase persistence returned warning for ${key}`);
+    }
+
+    // 4. Purge Next.js cache so the public website updates instantly
     try {
       revalidatePath("/", "layout");
-      revalidatePath("/faq");
+      revalidatePath("/");
       revalidatePath("/about");
+      revalidatePath("/services");
+      revalidatePath("/gallery");
+      revalidatePath("/calendar");
+      revalidatePath("/faq");
       revalidatePath("/contact");
-    } catch {}
+      revalidatePath("/booking");
+      revalidatePath("/privacy-policy");
+      revalidatePath("/terms");
+    } catch (revalErr) {
+      console.warn("[AdminContent] Cache revalidation notice:", revalErr);
+    }
 
     return NextResponse.json({
       success: true,
-      message: "Настройките бяха запазени успешно и перманентно!",
-      key,
-      value,
+      data: { key, value },
+      message: "Настройките бяха запазени успешно и перманентно в базата данни!",
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Admin content save error:", err);
     return NextResponse.json(
-      { error: "Грешка при запазване на настройките." },
+      { success: false, error: err?.message || "Грешка при запазване на настройките." },
       { status: 500 }
     );
   }

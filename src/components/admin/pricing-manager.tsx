@@ -40,10 +40,13 @@ export const PricingManager = () => {
       .catch(() => {});
   }, []);
 
+  const [saveError, setSaveError] = useState<string | null>(null);
+
   const handleSavePricing = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setSaving(true);
     setSavedSuccess(false);
+    setSaveError(null);
 
     const priceNum = Number(rentalPrice) || 350;
     const payload = {
@@ -60,15 +63,23 @@ export const PricingManager = () => {
       if (typeof window !== "undefined") {
         localStorage.setItem("poshtichka_content_pricing_settings", JSON.stringify(payload));
       }
-      await fetch("/api/admin/content", {
+      const res = await fetch("/api/admin/content", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ key: "pricing_settings", value: payload }),
       });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Грешка при запис.");
+      }
+
       setSavedSuccess(true);
-      setTimeout(() => setSavedSuccess(false), 3000);
-    } catch (err) {
+      setTimeout(() => setSavedSuccess(false), 4000);
+    } catch (err: any) {
       console.error("Save pricing error:", err);
+      setSaveError(err?.message || "Грешка при запис на цените.");
+      setTimeout(() => setSaveError(null), 5000);
     } finally {
       setSaving(false);
     }
@@ -87,25 +98,32 @@ export const PricingManager = () => {
           </p>
         </div>
 
-        <Button
-          variant="primary"
-          size="md"
-          onClick={() => handleSavePricing()}
-          disabled={saving}
-          className="flex items-center space-x-2 shrink-0 cursor-pointer shadow-md hover:shadow-lg transition-all"
-        >
-          {savedSuccess ? (
-            <>
-              <Check className="w-4 h-4 text-emerald-400" />
-              <span>Запазено!</span>
-            </>
-          ) : (
-            <>
-              <Save className="w-4 h-4" />
-              <span>{saving ? "Запазване..." : "Запази промените"}</span>
-            </>
+        <div className="flex items-center space-x-3">
+          {saveError && (
+            <span className="text-xs font-semibold text-red-600 bg-red-50 border border-red-200 px-3 py-1.5 rounded-xl">
+              {saveError}
+            </span>
           )}
-        </Button>
+          <Button
+            variant="primary"
+            size="md"
+            onClick={() => handleSavePricing()}
+            disabled={saving}
+            className="flex items-center space-x-2 shrink-0 cursor-pointer shadow-md hover:shadow-lg transition-all"
+          >
+            {savedSuccess ? (
+              <>
+                <Check className="w-4 h-4 text-emerald-400" />
+                <span>Запазено в Supabase!</span>
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4" />
+                <span>{saving ? "Запазване..." : "Запази промените"}</span>
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       <form onSubmit={handleSavePricing} className="space-y-8">

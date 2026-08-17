@@ -127,3 +127,21 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "Error updating booking status" }, { status: 500 });
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const { id } = await request.json();
+    if (!id) {
+      return NextResponse.json({ error: "Missing id" }, { status: 400 });
+    }
+
+    const current = await readCloudOrFileData<BookingRecord[]>("bookings", []);
+    const updated = current.filter((b) => b.id !== id);
+    await writeCloudAndFileData("bookings", updated);
+
+    return NextResponse.json({ success: true, message: "Booking removed successfully" });
+  } catch (err) {
+    return NextResponse.json({ error: "Error deleting booking" }, { status: 500 });
+  }
+}
+

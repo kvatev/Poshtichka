@@ -33,21 +33,32 @@ export const SettingsManager = () => {
       .catch(() => {});
   }, []);
 
+  const [saveError, setSaveError] = useState<string | null>(null);
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
     setSaved(false);
+    setSaveError(null);
 
     try {
-      await fetch("/api/admin/content", {
+      const res = await fetch("/api/admin/content", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ key: "general_settings", value: settings }),
       });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Възникна грешка при запис.");
+      }
+
       setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
-    } catch (err) {
+      setTimeout(() => setSaved(false), 4000);
+    } catch (err: any) {
       console.error("Save settings error:", err);
+      setSaveError(err?.message || "Грешка при комуникация със сървъра.");
+      setTimeout(() => setSaveError(null), 5000);
     } finally {
       setSaving(false);
     }
@@ -121,7 +132,12 @@ export const SettingsManager = () => {
         {saved && (
           <div className="flex items-center space-x-2 text-xs font-semibold text-emerald-700 bg-emerald-100 px-4 py-2 rounded-xl">
             <CheckCircle2 className="w-4 h-4" />
-            <span>Настройките бяха запазени!</span>
+            <span>Настройките бяха запазени в Supabase!</span>
+          </div>
+        )}
+        {saveError && (
+          <div className="flex items-center space-x-2 text-xs font-semibold text-red-700 bg-red-100 px-4 py-2 rounded-xl">
+            <span>{saveError}</span>
           </div>
         )}
       </div>
