@@ -92,12 +92,15 @@ function BookingFormContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const queryDate = searchParams?.get("date") || "";
+  const queryGuests = searchParams?.get("guests") || "";
 
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [bookedDates, setBookedDates] = useState<Set<string>>(initialBookedDates);
   const [availabilityWarning, setAvailabilityWarning] = useState<string | null>(null);
+
+  const parsedInitialGuests = queryGuests === "150+" ? 150 : Number(queryGuests) || 100;
 
   const {
     register,
@@ -114,7 +117,7 @@ function BookingFormContent() {
       paperKeepsakes: ["КАРТИЧКА"],
       preferredContact: "viber",
       instagramHandle: "",
-      guestCount: 100,
+      guestCount: parsedInitialGuests,
     },
   });
 
@@ -138,7 +141,10 @@ function BookingFormContent() {
     if (queryDate) {
       setValue("eventDate", queryDate);
     }
-  }, [queryDate, setValue]);
+    if (queryGuests) {
+      setValue("guestCount", queryGuests === "150+" ? 150 : Number(queryGuests) || 100);
+    }
+  }, [queryDate, queryGuests, setValue]);
 
   useEffect(() => {
     if (selectedDate && bookedDates.has(selectedDate)) {

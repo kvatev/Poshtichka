@@ -82,7 +82,7 @@ export const CalculatorWidget = () => {
   const chargeableDistance = Math.max(0, twoWayDistance - freeThresholdTwoWay);
   const travelCost = chargeableDistance * pricing.ratePerKm;
 
-  // DYNAMIC GUEST BASE PRICING:
+  // DYNAMIC GUEST BASE PRICING FOR 70, 100, 150:
   const getGuestBasePrice = (idx: number): number => {
     if (idx === 0) return pricing.price70;
     if (idx === 1) return pricing.price100;
@@ -92,7 +92,7 @@ export const CalculatorWidget = () => {
   const basePrice = getGuestBasePrice(stepIndex);
   const initialsCost = addInitials ? pricing.designPrice : 0;
 
-  // SINGLE EXACT TOTAL PRICE: Base Price + Add-ons + Travel Cost
+  // TOTAL PRICE: Base Price + Add-ons + Travel Cost
   const totalPrice = Math.round(basePrice + travelCost + initialsCost);
 
   return (
@@ -106,7 +106,7 @@ export const CalculatorWidget = () => {
           transition={{ duration: 0.6 }}
           className="bg-white rounded-[32px] border-2 border-[#2d3a37]/80 overflow-hidden shadow-2xl"
         >
-          {/* Top Form Section - Compact Padding & Spacing */}
+          {/* Top Form Section */}
           <div className="p-5 sm:p-8 md:p-9 space-y-5 sm:space-y-6 text-center">
             {/* Title & Subtitle */}
             <div className="space-y-1">
@@ -173,16 +173,16 @@ export const CalculatorWidget = () => {
                 >
                   <div className="flex items-center space-x-2 text-[#00b4b6] font-bold font-display text-sm sm:text-base">
                     <Sparkles className="w-4 h-4" />
-                    <span>Индивидуална оферта за над 150 гости!</span>
+                    <span>По договаряне за над 150 гости</span>
                   </div>
                   <p className="text-xs text-[#2d3a37]/90 italic">
-                    За събития с над 150 гости изготвяме преференциални пакети с допълнителен екип и индивидуални условия.
+                    За големи събития над 150 гости цената се определя индивидуално според продължителността и екипа.
                   </p>
                 </motion.div>
               )}
             </div>
 
-            {/* Slider 2: Distance from Burgas (min=50, max=450, step=10, 5 linear labels) */}
+            {/* Slider 2: Distance from Burgas (min=50, max=450, step=10) */}
             <div className="space-y-2 pt-2">
               <h3 className="font-display text-lg sm:text-xl font-bold uppercase tracking-wider text-[#00b4b6]">
                 ЛОКАЦИЯ ОТ ГРАД БУРГАС: {isFarLocation ? "НАД 450 КМ (ПО ЗАПИТВАНЕ)" : `${distance} КМ (${distance * 2} КМ ДВУПОСОЧНО)`}
@@ -228,7 +228,7 @@ export const CalculatorWidget = () => {
               )}
             </div>
 
-            {/* Custom Checkbox: Add Initials (+designPrice EUR) - Centered & 2x Smaller */}
+            {/* Custom Checkbox: Add Initials (+designPrice EUR) */}
             <div className="space-y-1 pt-1 flex flex-col items-center">
               <h3 className="font-display text-base sm:text-lg font-bold uppercase tracking-wider text-[#00b4b6]">
                 ДОБАВЯНЕ НА ИНИЦИАЛИ (+{pricing.designPrice} €)
@@ -246,7 +246,7 @@ export const CalculatorWidget = () => {
               </button>
             </div>
 
-            {/* CTA Button without icon element */}
+            {/* CTA Button */}
             <div className="pt-1">
               <Link
                 href={`/booking?guests=${isLargeEvent ? "150+" : numericGuests}&distance=${isFarLocation ? "450+" : distance}&initials=${addInitials}`}
@@ -257,23 +257,32 @@ export const CalculatorWidget = () => {
             </div>
           </div>
 
-          {/* Dark Bottom Box: Result Price - Compact Padding */}
+          {/* Dark Bottom Box: Result Price */}
           <div className="bg-[#2d3a37] text-white px-6 py-4 sm:py-5 text-center space-y-1.5">
             <p className="font-sans text-sm sm:text-base font-light text-white/90">
-              {needsInquiry ? "Специална такса за вашето събитие:" : "Крайна цена:"}
+              {isLargeEvent
+                ? "Цена за вашето събитие:"
+                : isFarLocation
+                ? "Специална такса за локацията:"
+                : "Крайна цена:"}
             </p>
 
-            {needsInquiry ? (
+            {isLargeEvent ? (
+              <div className="space-y-1">
+                <div className="font-display text-3xl sm:text-4xl font-bold tracking-wider text-[#00b4b6]">
+                  ПО ДОГОВАРЯНЕ
+                </div>
+                <p className="text-xs text-white/90 font-light max-w-lg mx-auto leading-relaxed">
+                  Свържете се с нас за персонална оферта за големи събития.
+                </p>
+              </div>
+            ) : isFarLocation ? (
               <div className="space-y-1">
                 <div className="font-display text-3xl sm:text-4xl font-bold tracking-wider text-[#00b4b6]">
                   ПО ЗАПИТВАНЕ
                 </div>
                 <p className="text-xs text-white/90 font-light max-w-lg mx-auto leading-relaxed">
-                  {isLargeEvent && isFarLocation
-                    ? "За събития с над 150 гости и дестинации над 450 км изготвяме персонална оферта. Изпратете запитване за преференциални условия!"
-                    : isLargeEvent
-                    ? "За събития с над 150 гости изготвяме персонална оферта с преференциални условия."
-                    : "За отдалечени дестинации над 450 км изготвяме персонална оферта с транспорт и логистика."}
+                  За отдалечени дестинации над 450 км изготвяме персонална оферта с транспорт и логистика.
                 </p>
               </div>
             ) : (
