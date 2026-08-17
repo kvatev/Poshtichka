@@ -8,6 +8,9 @@ export const metadata = {
   title: "Галерия от изминали събития | Пощичка",
   description:
     "Разгледайте автентичната галерия от събития с Пощичка - интерактивна карта с вендинг машина и кадри от наши събития из цяла България.",
+  alternates: {
+    canonical: "/gallery",
+  },
 };
 
 export const revalidate = 60;

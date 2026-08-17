@@ -7,6 +7,9 @@ export const metadata = {
   title: "Политика за поверителност | Пощичка",
   description:
     "Политика за защита на личните данни съгласно Общия регламент за защита на данните (GDPR) на Пощичка.",
+  alternates: {
+    canonical: "/privacy-policy",
+  },
 };
 
 export default function PrivacyPolicyPage() {

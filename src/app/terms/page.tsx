@@ -4,6 +4,9 @@ import { PageWrapper } from "@/components/layout/page-wrapper";
 export const metadata = {
   title: "Общи условия | Пощичка",
   description: "Условия за наемане и ползване на услугите на Пощичка.",
+  alternates: {
+    canonical: "/terms",
+  },
 };
 
 export default function TermsPage() {

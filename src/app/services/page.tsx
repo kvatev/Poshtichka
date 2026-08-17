@@ -12,6 +12,9 @@ export const metadata = {
   title: "Услуги | Пощичка",
   description:
     "Разгледайте нашите първокласни услуги за събития - персонализирани спомени, ретро вендинг машина, автентични печати и интерактивни изживявания.",
+  alternates: {
+    canonical: "/services",
+  },
 };
 
 export const revalidate = 60;

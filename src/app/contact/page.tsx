@@ -9,6 +9,9 @@ export const metadata = {
   title: "Контакти | Пощичка",
   description:
     "Свържете се с екипа на Пощичка за въпроси, резервации или персонални оферти за Вашето събитие.",
+  alternates: {
+    canonical: "/contact",
+  },
 };
 
 export const revalidate = 60;
