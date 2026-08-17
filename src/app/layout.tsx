@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { PwaInstaller } from "@/components/pwa-installer";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 
 // Native Next.js font optimization for instant loading with zero FOUT/flicker
 const saLongBeach = localFont({
@@ -127,6 +128,7 @@ export default function RootLayout({
         {children}
         <PwaInstaller />
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
