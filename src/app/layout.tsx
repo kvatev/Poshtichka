@@ -1,20 +1,22 @@
 import type { Metadata, Viewport } from "next";
-import { Playfair_Display, Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { PwaInstaller } from "@/components/pwa-installer";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-// Google fonts used for production build stability; can be swapped with localFont SALongBeach.otf
-const displayFont = Playfair_Display({
-  subsets: ["latin", "cyrillic"],
-  variable: "--font-display",
+// Native Next.js font optimization for instant loading with zero FOUT/flicker
+const saLongBeach = localFont({
+  src: "../../public/fonts/SALongBeach.woff",
+  variable: "--font-salongbeach",
   display: "swap",
+  preload: true,
 });
 
-const inter = Inter({
-  subsets: ["latin", "cyrillic"],
-  variable: "--font-sans",
+const stampatelloFaceto = localFont({
+  src: "../../public/fonts/stampatello-faceto.regular.woff",
+  variable: "--font-stampatello",
   display: "swap",
+  preload: true,
 });
 
 export const viewport: Viewport = {
@@ -107,7 +109,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="bg" className={`${displayFont.variable} ${inter.variable}`}>
+    <html lang="bg" className={`${saLongBeach.variable} ${stampatelloFaceto.variable}`}>
       <head>
         <link rel="icon" href={encodeURI("/icons/Asset 101@2x.png?v=poshtichka_101")} type="image/png" sizes="any" />
         <link rel="shortcut icon" href={encodeURI("/icons/Asset 101@2x.png?v=poshtichka_101")} type="image/png" />

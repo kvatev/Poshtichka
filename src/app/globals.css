@@ -2,28 +2,12 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-@font-face {
-  font-family: 'StampatelloFaceto';
-  src: url('/fonts/stampatello-faceto.regular.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'SALongBeach';
-  src: url('/fonts/SALongBeach.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
 @layer base {
   html {
     scroll-behavior: smooth;
     background-color: #f9f6f0;
     color: #182b2c;
-    font-family: 'StampatelloFaceto', sans-serif;
+    font-family: var(--font-stampatello), "StampatelloFaceto", sans-serif;
   }
 
   body {
@@ -31,27 +15,26 @@
     background-color: #f9f6f0;
     color: #182b2c;
     line-height: 1.6;
-    font-family: 'StampatelloFaceto', sans-serif;
+    font-family: var(--font-stampatello), "StampatelloFaceto", sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Headlines & Titles use SALongBeach font */
+  /* Headlines & Titles use SALongBeach brand font */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'SALongBeach', serif, sans-serif;
+    font-family: var(--font-salongbeach), "SALongBeach", serif, sans-serif;
     letter-spacing: 0.02em;
   }
 }
 
-.font-stampatello {
-  font-family: 'StampatelloFaceto', sans-serif;
-}
-
-.font-salongbeach, .font-display, .font-serif {
-  font-family: 'SALongBeach', serif, sans-serif;
-}
-
+.font-stampatello,
 .font-sans {
-  font-family: 'StampatelloFaceto', sans-serif;
+  font-family: var(--font-stampatello), "StampatelloFaceto", sans-serif;
+}
+
+.font-salongbeach,
+.font-display,
+.font-serif {
+  font-family: var(--font-salongbeach), "SALongBeach", serif, sans-serif;
 }
 
 /* Glassmorphism utility */
