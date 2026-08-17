@@ -182,9 +182,9 @@ export const defaultSeoSettings: SeoSettings = {
 };
 
 export const defaultHomepageConfig: HomepageConfig = {
-  heroTitleLine1: "Всеки гост си тръгва със спомен",
+  heroTitleLine1: "ВЕНДИНГ МАШИНА ЗА СВАТБИ И СЪБИТИЯ",
   heroTitleHighlight: "",
-  heroSubtitle: "Персонализирани подаръци, създадени по ваша идея!",
+  heroSubtitle: "Превръщаме традиционните подаръци за гости в незабравимо забавление!",
   primaryCtaText: "Разбери повече",
   secondaryCtaText: "Разгледайте галерията",
   heroImageUrl: "/media/Main Page/Main Banner.webp",

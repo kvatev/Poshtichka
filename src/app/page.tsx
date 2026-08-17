@@ -12,18 +12,40 @@ import { GalleryCategories } from "@/components/home/gallery-categories";
 import { FinalCTA } from "@/components/home/final-cta";
 import { TestimonialsSection } from "@/components/home/testimonials-section";
 import { Footer } from "@/components/home/footer";
+import { readCloudOrFileData } from "@/lib/server-storage";
+import { defaultHomepageConfig, HomepageConfig } from "@/lib/content-store";
 
-export default function HomePage() {
+export const revalidate = 60;
+
+export default async function HomePage() {
+  const store = await readCloudOrFileData<Record<string, any>>("content-store", {});
+  const directConfig = await readCloudOrFileData<Record<string, any>>("homepage-config", {});
+
+  const homepageConfig: HomepageConfig = {
+    ...defaultHomepageConfig,
+    ...(store?.homepage_config || {}),
+    ...(directConfig || {}),
+  };
+
   return (
     <main className="min-h-screen bg-brand-cream text-brand-dark flex flex-col justify-between selection:bg-[#00b4b6] selection:text-white">
       {/* 1. Top Bar */}
-      <TopBar />
+      <TopBar
+        phrases={homepageConfig.topBarPhrases}
+        speedSeconds={homepageConfig.topBarSpeedSeconds}
+      />
 
       {/* 2. Header */}
       <Header />
 
       {/* 3. Hero Section */}
-      <HeroSection />
+      <HeroSection
+        title={homepageConfig.heroTitleLine1}
+        subtitle={homepageConfig.heroSubtitle}
+        buttonText={homepageConfig.primaryCtaText}
+        buttonUrl="/about"
+        imageUrl={homepageConfig.heroImageUrl}
+      />
 
       {/* 4. Features Section (Marka, Kartichka, Stiker, Tatuirovka) */}
       <FeaturesSection />
