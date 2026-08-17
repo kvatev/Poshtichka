@@ -18,8 +18,10 @@ import { defaultHomepageConfig, HomepageConfig } from "@/lib/content-store";
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const store = await readCloudOrFileData<Record<string, any>>("content-store", {});
-  const directConfig = await readCloudOrFileData<Record<string, any>>("homepage-config", {});
+  const [store, directConfig] = await Promise.all([
+    readCloudOrFileData<Record<string, any>>("content-store", {}),
+    readCloudOrFileData<Record<string, any>>("homepage-config", {}),
+  ]);
 
   const homepageConfig: HomepageConfig = {
     ...defaultHomepageConfig,
