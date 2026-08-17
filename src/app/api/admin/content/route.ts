@@ -5,7 +5,6 @@ import {
   defaultGeneralSettings,
   defaultSeoSettings,
   defaultHomepageConfig,
-  defaultBanners,
   defaultTestimonials,
   defaultFaqs,
 } from "@/lib/content-store";
@@ -19,7 +18,6 @@ const defaultContentStore: Record<string, any> = {
   general_settings: defaultGeneralSettings,
   seo_settings: defaultSeoSettings,
   homepage_config: defaultHomepageConfig,
-  banners: defaultBanners,
   testimonials: defaultTestimonials,
   faq_items: defaultFaqs,
 };

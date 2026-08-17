@@ -34,7 +34,6 @@ const KEY_ID_MAP: Record<string, number> = {
   pricing: 110,
   products: 120,
   media: 130,
-  banners: 140,
   seo: 150,
   "content-store": 1062,
 };

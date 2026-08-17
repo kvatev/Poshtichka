@@ -62,16 +62,6 @@ export interface WebsiteSectionText {
   ctaLink?: string;
 }
 
-export interface PromoBanner {
-  id: string;
-  type: "top" | "homepage" | "seasonal" | "announcement";
-  message: string;
-  buttonText?: string;
-  buttonLink?: string;
-  enabled: boolean;
-  theme: "gold" | "dark" | "emerald" | "rose";
-}
-
 export interface MediaFileItem {
   id: string;
   url: string;
@@ -215,19 +205,6 @@ export const defaultHomepageConfig: HomepageConfig = {
   ],
   topBarSpeedSeconds: 35,
 };
-
-
-export const defaultBanners: PromoBanner[] = [
-  {
-    id: "ban-01",
-    type: "top",
-    message: "✨ Приемат се резервации за сезон 2026/2027! Първите 50 км транспорт от Бургас са безплатни.",
-    buttonText: "Провери заетост",
-    buttonLink: "/calendar",
-    enabled: true,
-    theme: "gold",
-  },
-];
 
 export interface FAQItem {
   id: string;

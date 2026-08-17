@@ -3,7 +3,6 @@ import {
   defaultGeneralSettings,
   defaultSeoSettings,
   defaultHomepageConfig,
-  defaultBanners,
   defaultTestimonials,
   defaultFaqs,
 } from "@/lib/content-store";
@@ -18,7 +17,6 @@ const defaultContentStore: Record<string, any> = {
   general_settings: defaultGeneralSettings,
   seo_settings: defaultSeoSettings,
   homepage_config: defaultHomepageConfig,
-  banners: defaultBanners,
   testimonials: defaultTestimonials,
   faq_items: defaultFaqs,
 };
@@ -38,7 +36,6 @@ export async function GET() {
   const homepage = store.homepage_config
     ? { ...defaultHomepageConfig, ...store.homepage_config }
     : defaultHomepageConfig;
-  const banners = store.banners || defaultBanners;
   const testimonials = store.testimonials || defaultTestimonials;
   const faq = store.faq_items || defaultFaqs;
   const pricing_settings = store.pricing_settings || {
@@ -56,7 +53,6 @@ export async function GET() {
       general,
       seo,
       homepage,
-      banners,
       testimonials,
       faq,
       pricing_settings,
