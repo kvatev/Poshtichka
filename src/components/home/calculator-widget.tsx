@@ -229,19 +229,19 @@ export const CalculatorWidget = () => {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="p-3 rounded-2xl bg-[#00b4b6]/10 border border-[#00b4b6]/30 text-[#2d3a37] text-xs sm:text-sm space-y-1 flex flex-col items-center"
+                  className="p-3 rounded-2xl bg-[#00b4b6]/10 border border-[#00b4b6]/30 text-[#2d3a37] text-xs sm:text-sm space-y-1 flex flex-col items-center mt-3"
                 >
                   <div className="flex items-center space-x-2 text-[#00b4b6] font-bold font-display text-sm sm:text-base">
                     <Sparkles className="w-4 h-4" />
                     <span>Индивидуална оферта за над 450 км!</span>
                   </div>
-                  <p className="text-xs text-[#2d3a37]/90 italic">
+                  <p className="text-xs text-[#2d3a37]/90 italic text-center">
                     За отдалечени дестинации над 450 км изготвяме специална оферта с включени нощувки и логистика.
                   </p>
                 </motion.div>
               ) : (
-                <p className="text-xs text-[#00b4b6] font-medium italic pt-0.5">
-                  *Първите {pricing.freeDistance} км от Бургас са напълно безплатни, след което се начисляват по {pricing.ratePerKm} €/км.
+                <p className="text-xs sm:text-sm text-[#00b4b6] font-medium italic text-center leading-relaxed mt-3 sm:mt-4 px-2">
+                  *Първите {pricing.freeDistance} км от Бургас са безплатни. Транспортът се начислява двупосочно ({distance * 2} км общо) по {pricing.ratePerKm} €/км за платеното разстояние.
                 </p>
               )}
             </div>
