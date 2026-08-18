@@ -283,7 +283,7 @@ export const CalculatorWidget = () => {
           </div>
 
           {/* Dark Bottom Box: Result Price */}
-          <div className="bg-[#2d3a37] text-white px-6 py-4 sm:py-5 text-center space-y-1.5">
+          <div className="bg-[#2d3a37] text-white px-6 py-5 sm:py-6 text-center space-y-1">
             <p className="font-sans text-sm sm:text-base font-light text-white/90">
               {isLargeEvent
                 ? "Цена за вашето събитие:"
@@ -311,14 +311,9 @@ export const CalculatorWidget = () => {
                 </p>
               </div>
             ) : (
-              <>
-                <div className="font-display text-3xl sm:text-5xl font-bold tracking-wider text-white">
-                  {totalPrice} €
-                </div>
-                <p className="text-xs text-white/70 font-light max-w-lg mx-auto leading-relaxed">
-                  * Включва транспорт до {pricing.freeDistance} км от Бургас. Крайната оферта се потвърждава след връзка с нас.
-                </p>
-              </>
+              <div className="font-display text-3xl sm:text-5xl font-bold tracking-wider text-white">
+                {totalPrice} €
+              </div>
             )}
           </div>
         </motion.div>
