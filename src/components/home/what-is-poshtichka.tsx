@@ -103,10 +103,10 @@ export const WhatIsPoshtichka = () => {
           className="relative max-w-sm sm:max-w-md md:max-w-lg mx-auto flex items-center justify-center py-4 px-8 sm:px-12"
         >
           {/* Scaled Machine Container: Fits entirely within viewport */}
-          <div className="relative w-auto h-[380px] sm:h-[440px] md:h-[500px] aspect-[741/2060] flex items-center justify-center">
+          <div className="relative w-auto h-[380px] sm:h-[440px] md:h-[500px] aspect-[740/2134] flex items-center justify-center">
             <Image
-              src="/media/Main Page/Asset 102@2x.webp"
-              alt="Ретро вендинг машина Пощичка – интерактивна атракция за сватбени подаръци"
+              src="/media/Main Page/Asset 114@2x.webp"
+              alt="Илюстрация на машина Пощичка със сърце от драсканици"
               fill
               priority
               draggable={false}
