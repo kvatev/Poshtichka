@@ -55,14 +55,21 @@ export function calculateEventEstimate(options: {
 }
 
 /**
+ * Strips leading and trailing quotes (standard, Bulgarian „ “, or typographic quotes « » " ')
+ * so that quotes are cleanly stored as plain text without baked-in quotation symbols.
+ */
+export function sanitizeTestimonialQuote(text: string): string {
+  if (!text) return "";
+  return text.trim().replace(/^["'„«“]+|["'»”]+$/g, "").trim();
+}
+
+/**
  * Automatically cleans and formats testimonial quote text with standard Bulgarian quotation marks „...“.
  * Strips existing quotes first to avoid duplicate wrapping.
  */
 export function formatTestimonialQuote(text: string): string {
   if (!text) return "";
-  // Strip leading and trailing quotes (standard, Bulgarian „ “, or typographic quotes « » " ')
-  const cleanText = text.trim().replace(/^["'„«“]+|["'»”]+$/g, "").trim();
+  const cleanText = sanitizeTestimonialQuote(text);
   if (!cleanText) return "";
-  // Wrap cleanly with Bulgarian quotes
   return `„${cleanText}“`;
 }

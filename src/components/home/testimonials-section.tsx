@@ -1,51 +1,45 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
-import Image from "next/image";
-import { Star, MessageSquareQuote } from "lucide-react";
-import { formatTestimonialQuote } from "@/lib/utils";
+import React, { useEffect, useState, useMemo } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import AutoScroll from "embla-carousel-auto-scroll";
+import { TestimonialCard, TestimonialData } from "@/components/home/testimonial-card";
 
-interface Testimonial {
-  id: string;
-  name: string;
-  role?: string;
-  quote?: string;
-  rating?: number;
-  image?: string;
-}
-
-const defaultTestimonialItems: Testimonial[] = [
+const defaultTestimonialItems: TestimonialData[] = [
   {
     id: "1",
     name: "НИКОЛ и ДАНИЕЛ",
+    quote: "За нас беше изключително удоволствие да бъде част от нашият ден! Благодарим от сърце!",
     image: "/media/Main Page/testimonial-nikol-daniel.png",
   },
   {
     id: "2",
     name: "МАЯ и НИКО",
+    quote: "Още веднъж да ви благодарим за всичко и че бяхте част от нашия празник, беше прекрасно и гостите много харесаха картичките!",
     image: "/media/Main Page/testimonial-maya-niko.png",
   },
   {
     id: "3",
     name: "РАЛИЦА и ЖЕЛЬО",
+    quote: "Всички бяха много изненадани и много са се забавлявали с вендинг машината, татуировките определено са били хит. Много благодаря!",
     image: "/media/Main Page/testimonial-ralica-zhelyo.png",
   },
   {
     id: "4",
     name: "КРИСИ и ВИКТОР",
+    quote: "Гери, много ти благодаря отново! Всичко беше прекрасно! Гостите толкова се зарадваха, не можем да си представим! Наистина много се радвам! Просто уникален подарък остана за гостите толкова съм впечатлена.",
     image: "/media/Main Page/testimonial-krisi-viktor.png",
   },
   {
     id: "5",
     name: "МАРИНА и ИВАН",
+    quote: "Искам пак да ви благодаря, бяхте прекрасни и хората се изкефиха супер много! И без това съм емоционален тези дни, от постовете ви пак се разплаках. Много се радваме, че ви намерихме. С удоволствие ви препоръчвам на всички!",
     image: "/media/Main Page/testimonial-marina-ivan.png",
   },
 ];
 
 export const TestimonialsSection = () => {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [isHoveredOrTouched, setIsHoveredOrTouched] = useState(false);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>(defaultTestimonialItems);
+  const [testimonials, setTestimonials] = useState<TestimonialData[]>(defaultTestimonialItems);
 
   useEffect(() => {
     try {
@@ -71,44 +65,32 @@ export const TestimonialsSection = () => {
       .catch(() => {});
   }, []);
 
-  // Duplicate items 4x for seamless infinite scrolling
-  const marqueeItems = [
-    ...testimonials,
-    ...testimonials,
-    ...testimonials,
-    ...testimonials,
-  ];
+  // Ensure enough items for a seamless infinite loop across large screens
+  const displayItems = useMemo(() => {
+    if (testimonials.length === 0) return [];
+    if (testimonials.length < 10) {
+      return [...testimonials, ...testimonials, ...testimonials];
+    }
+    return [...testimonials, ...testimonials];
+  }, [testimonials]);
 
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    let animationFrameId: number;
-    let lastTime: number | null = null;
-
-    const scrollSpeed = 0.8; // Pixels per frame for smooth continuous movement
-
-    const step = (time: number) => {
-      if (lastTime !== null && !isHoveredOrTouched) {
-        if (container) {
-          container.scrollLeft += scrollSpeed;
-
-          // Seamless infinite loop reset
-          if (container.scrollLeft >= container.scrollWidth / 2) {
-            container.scrollLeft -= container.scrollWidth / 4;
-          }
-        }
-      }
-      lastTime = time;
-      animationFrameId = requestAnimationFrame(step);
-    };
-
-    animationFrameId = requestAnimationFrame(step);
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [isHoveredOrTouched, testimonials]);
+  // Embla Carousel with native gesture swipe, mouse drag, and smooth infinite auto-scroll
+  const [emblaRef] = useEmblaCarousel(
+    {
+      loop: true,
+      dragFree: true,
+      align: "start",
+      containScroll: false,
+    },
+    [
+      AutoScroll({
+        speed: 0.9,
+        stopOnInteraction: false,
+        stopOnMouseEnter: true,
+        playOnInit: true,
+      }),
+    ]
+  );
 
   return (
     <section className="py-16 sm:py-24 bg-brand-cream relative overflow-hidden w-full select-none">
@@ -119,58 +101,18 @@ export const TestimonialsSection = () => {
         </h2>
       </div>
 
-      {/* Scrollable Container with Auto-Scroll & Native Drag/Swipe */}
+      {/* Embla Carousel Viewport with Native Mouse Drag & Touch Swipe */}
       <div
-        ref={scrollContainerRef}
-        onMouseEnter={() => setIsHoveredOrTouched(true)}
-        onMouseLeave={() => setIsHoveredOrTouched(false)}
-        onTouchStart={() => setIsHoveredOrTouched(true)}
-        onTouchEnd={() => setIsHoveredOrTouched(false)}
-        className="w-full overflow-x-auto flex space-x-6 sm:space-x-8 px-4 sm:px-8 py-4 cursor-grab active:cursor-grabbing scrollbar-none select-none items-stretch"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        ref={emblaRef}
+        className="w-full overflow-hidden cursor-grab active:cursor-grabbing select-none"
       >
-        {marqueeItems.map((item, idx) => (
-          <div
-            key={`${item.id}-${idx}`}
-            className="w-[290px] sm:w-[360px] md:w-[410px] shrink-0 relative flex flex-col items-center justify-between p-7 sm:p-9 transition-transform duration-300 hover:scale-[1.02] select-none min-h-[460px] sm:min-h-[520px]"
-          >
-            {/* Hand-drawn Frame Asset 92@2x.png */}
-            <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
-              <Image
-                src={encodeURI("/media/Отзиви/Asset 92@2x.png")}
-                alt=""
-                aria-hidden="true"
-                fill
-                className="object-fill drop-shadow-xs"
-                unoptimized
-              />
+        <div className="flex touch-pan-y gap-6 sm:gap-8 px-4 sm:px-8 py-4">
+          {displayItems.map((item, idx) => (
+            <div key={`${item.id}-${idx}`} className="flex-[0_0_auto] min-w-0">
+              <TestimonialCard testimonial={item} />
             </div>
-
-            {/* Inner Content matching exact design */}
-            <div className="relative z-10 w-full h-full flex flex-col items-center justify-between space-y-4 text-center my-auto">
-              {/* Client / Couple Name */}
-              <h3 className="font-salongbeach text-2xl sm:text-3xl md:text-4xl font-bold uppercase tracking-wider text-[#182b2c] pt-2">
-                {item.name}
-              </h3>
-
-              {/* Review Quote Text in Stampatello */}
-              <p className="font-stampatello text-base sm:text-lg md:text-xl text-[#182b2c]/90 leading-relaxed font-normal px-2 sm:px-4 my-auto">
-                {formatTestimonialQuote(item.quote || "Благодарим от сърце за прекрасното изживяване!")}
-              </p>
-
-              {/* Hand-drawn Teal Heart Hands Asset 93@2x.png */}
-              <div className="relative w-28 sm:w-36 md:w-40 h-20 sm:h-24 shrink-0 flex items-center justify-center pb-2">
-                <Image
-                  src={encodeURI("/media/Отзиви/Asset 93@2x.png")}
-                  alt="Илюстрация на ръце държащи сърце от драсканици"
-                  fill
-                  className="object-contain pointer-events-none"
-                  unoptimized
-                />
-              </div>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );

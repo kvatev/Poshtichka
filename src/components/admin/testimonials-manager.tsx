@@ -17,7 +17,7 @@ import {
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TestimonialItem, defaultTestimonials } from "@/lib/content-store";
-import { formatTestimonialQuote } from "@/lib/utils";
+import { formatTestimonialQuote, sanitizeTestimonialQuote } from "@/lib/utils";
 
 export const TestimonialsManager = () => {
   const [items, setItems] = useState<TestimonialItem[]>(defaultTestimonials);
@@ -62,7 +62,7 @@ export const TestimonialsManager = () => {
   const openEditModal = (item: TestimonialItem) => {
     setEditingItem(item);
     setName(item.name || "");
-    setQuote(item.quote || "");
+    setQuote(sanitizeTestimonialQuote(item.quote || ""));
     setErrorMsg("");
     setShowModal(true);
   };
@@ -92,7 +92,8 @@ export const TestimonialsManager = () => {
 
     const updatedList = [...items];
 
-    const formattedQuote = formatTestimonialQuote(quote.trim());
+    // Sanitize quotes on save so database stays clean plain text
+    const cleanQuote = sanitizeTestimonialQuote(quote.trim());
 
     if (editingItem) {
       // Edit existing
@@ -101,7 +102,7 @@ export const TestimonialsManager = () => {
         updatedList[idx] = {
           ...editingItem,
           name: name.trim().toUpperCase(),
-          quote: formattedQuote,
+          quote: cleanQuote,
         };
       }
     } else {
@@ -109,7 +110,7 @@ export const TestimonialsManager = () => {
       const newItem: TestimonialItem = {
         id: `TST-${Date.now()}`,
         name: name.trim().toUpperCase(),
-        quote: formattedQuote,
+        quote: cleanQuote,
         rating: 5,
       };
       updatedList.unshift(newItem);
@@ -350,6 +351,9 @@ export const TestimonialsManager = () => {
                       placeholder="Въведете думите и впечатленията на клиента..."
                       className="w-full px-4 py-3 rounded-xl border border-[#00b4b6]/30 text-[#182b2c] text-base focus:outline-none focus:ring-2 focus:ring-[#00b4b6] font-stampatello leading-relaxed resize-none"
                     />
+                    <p className="text-[11px] text-gray-500 font-sans italic">
+                      💡 Въведете чист текст – българските кавички („...“) се добавят автоматично при визуализация.
+                    </p>
                   </div>
                 </form>
               </div>
