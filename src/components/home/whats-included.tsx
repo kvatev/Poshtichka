@@ -79,9 +79,9 @@ export const WhatsIncluded = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="flex flex-col items-center text-center group w-full space-y-4"
+              className="flex flex-col items-center text-center group w-full space-y-3 sm:space-y-4"
             >
-              {/* Scalable Icon Container */}
+              {/* Scalable Icon Container without drop shadow */}
               <div className="relative w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-32 lg:h-32 xl:w-36 xl:h-36 flex items-center justify-center flex-shrink-0">
                 <Image
                   src={item.icon}
@@ -89,12 +89,12 @@ export const WhatsIncluded = () => {
                   width={item.width}
                   height={item.height}
                   draggable={false}
-                  className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300 drop-shadow-md select-none pointer-events-none"
+                  className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300 select-none pointer-events-none"
                 />
               </div>
 
-              {/* Crisp Live Typography */}
-              <p className="font-sans text-xs sm:text-sm md:text-[13px] lg:text-sm font-medium text-white/95 leading-relaxed max-w-[210px] mx-auto text-balance">
+              {/* Crisp Semantic Live Typography (~20% larger on mobile) */}
+              <p className="font-stampatello text-base sm:text-lg md:text-base lg:text-lg font-normal text-white leading-snug sm:leading-normal max-w-[230px] sm:max-w-[260px] mx-auto text-balance mt-2 sm:mt-3">
                 {item.text}
               </p>
             </motion.div>
