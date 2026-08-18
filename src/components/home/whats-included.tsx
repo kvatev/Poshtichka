@@ -46,8 +46,8 @@ const includedItems: IncludedItem[] = [
 
 export const WhatsIncluded = () => {
   return (
-    <section className="w-full bg-[#00a89d] text-white py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden select-none border-t border-white/20">
-      <div className="max-w-7xl mx-auto space-y-10 sm:space-y-14">
+    <section className="relative w-full bg-[url('/media/teal-accent-bg.webp')] bg-cover bg-center text-white py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden select-none border-t border-white/20">
+      <div className="max-w-7xl mx-auto space-y-10 sm:space-y-14 relative z-10">
         {/* Section Heading */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
