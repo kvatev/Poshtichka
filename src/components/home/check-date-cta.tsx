@@ -7,22 +7,22 @@ import { motion } from "framer-motion";
 
 export const CheckDateCTA = () => {
   return (
-    <section className="w-full bg-[#00b4b6] text-white pt-5 sm:pt-7 md:pt-8 lg:pt-10 pb-0 sm:pb-7 md:pb-8 lg:pb-10 px-4 sm:px-8 lg:px-12 relative overflow-hidden select-none border-t border-white/20">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 lg:gap-10">
+    <section className="w-full bg-[#00b4b6] text-white py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-12 relative overflow-hidden select-none border-t border-white/20">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 lg:gap-12">
         {/* Left Side: Bird Stamp Asset (Visible on Mobile & Desktop) */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="flex-shrink-0 flex items-center justify-center"
+          className="flex-shrink-0 flex items-center justify-center mb-4 sm:mb-6 md:mb-0"
         >
           <Image
             src="/media/Main Page/Asset 34@2x.webp"
             alt="Пощичка авторски печат за сватбени картички"
             width={240}
             height={240}
-            className="w-24 sm:w-32 md:w-40 lg:w-48 max-h-[140px] sm:max-h-[180px] md:max-h-[200px] w-auto object-contain hover:rotate-3 transition-transform duration-300"
+            className="w-28 sm:w-36 md:w-40 lg:w-48 max-h-[150px] sm:max-h-[180px] md:max-h-[200px] w-auto object-contain hover:rotate-3 transition-transform duration-300 drop-shadow-md"
           />
         </motion.div>
 
@@ -32,22 +32,22 @@ export const CheckDateCTA = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex-1 text-center flex flex-col items-center justify-center space-y-2 sm:space-y-3 max-w-2xl lg:max-w-3xl"
+          className="flex-1 text-center flex flex-col items-center justify-center max-w-2xl lg:max-w-3xl"
         >
-          <h2 className="font-salongbeach text-[28px] sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-white leading-tight text-center">
+          <h2 className="font-salongbeach text-[28px] sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-white leading-tight sm:leading-snug text-center mb-4 sm:mb-6 drop-shadow-sm">
             ЧУДИТЕ СЕ ДАЛИ ДАТАТА ВИ Е СВОБОДНА?
           </h2>
 
-          <p className="font-sans text-sm sm:text-base lg:text-lg font-light text-white/95 italic">
+          <p className="font-sans text-sm sm:text-base lg:text-lg font-light text-white/95 italic leading-relaxed mb-8 sm:mb-10 max-w-xl mx-auto">
             Проверете дали Пощичка може да пътува за вашия специален ден!
           </p>
 
           {/* Button & Arrow Area */}
-          <div className="pt-3 sm:pt-6 md:pt-7 flex items-center justify-center">
+          <div className="mt-2 sm:mt-4 mb-8 sm:mb-12 md:mb-0 flex items-center justify-center">
             <div className="relative inline-flex items-center justify-center">
               <Link
                 href="/calendar"
-                className="inline-flex items-center justify-center px-6 sm:px-7 py-3 rounded-full border-2 border-white bg-white/10 hover:bg-white hover:text-[#00b4b6] backdrop-blur-sm text-white font-salongbeach text-base sm:text-lg font-bold uppercase tracking-wider transition-all duration-300 shadow-xl group cursor-pointer"
+                className="inline-flex items-center justify-center px-7 sm:px-9 py-3.5 sm:py-4 rounded-full border-2 border-white bg-white/15 hover:bg-white hover:text-[#00b4b6] backdrop-blur-sm text-white font-salongbeach text-base sm:text-lg lg:text-xl font-bold uppercase tracking-wider transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 group cursor-pointer"
               >
                 <span>ПРОВЕРЕТЕ ТУК</span>
               </Link>
@@ -67,20 +67,20 @@ export const CheckDateCTA = () => {
           </div>
         </motion.div>
 
-        {/* Right Side: Vending Booth Asset - 10% Larger & Flush at Bottom on Mobile */}
+        {/* Right Side: Vending Booth Asset */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex-shrink-0 flex items-center justify-center -mb-2 sm:mb-0"
+          className="flex-shrink-0 flex items-center justify-center"
         >
           <Image
             src="/media/Main Page/poshtichka-booth-blank.png"
             alt="Интерактивна ретро вендинг машина Пощичка"
             width={320}
             height={440}
-            className="w-32 sm:w-40 md:w-48 lg:w-56 max-h-[200px] sm:max-h-[240px] md:max-h-[260px] w-auto object-contain hover:scale-105 transition-transform duration-300"
+            className="w-32 sm:w-40 md:w-48 lg:w-56 max-h-[220px] sm:max-h-[250px] md:max-h-[270px] w-auto object-contain hover:scale-105 transition-transform duration-300 drop-shadow-xl"
           />
         </motion.div>
       </div>

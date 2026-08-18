@@ -178,11 +178,11 @@ export default function AboutPage() {
           />
         </section>
 
-        {/* Section 8: Final Bottom CTA Banner (Tight Normal Top Padding & Zero Empty Bottom Space) */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-8 pt-6 sm:pt-10 pb-4 sm:pb-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8 sm:gap-10 md:gap-16 text-center relative">
+        {/* Section 8: Final Bottom CTA Banner */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-16">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 lg:gap-12 text-center relative">
             {/* Left Graphic: Asset 71@2x.png (Hands holding bird postcard) */}
-            <div className="relative w-36 sm:w-48 md:w-60 h-36 sm:h-48 md:h-60 flex-shrink-0 mx-auto md:mx-0">
+            <div className="relative w-32 sm:w-44 md:w-52 lg:w-60 h-32 sm:h-44 md:h-52 lg:h-60 flex-shrink-0 mx-auto md:mx-0 mb-4 sm:mb-6 md:mb-0">
               <Image
                 src={encodeURI("/media/За Пощичка/Asset 71@2x.png")}
                 alt="Ръце с персонализирана картичка от Пощичка"
@@ -193,18 +193,18 @@ export default function AboutPage() {
             </div>
 
             {/* Center Content */}
-            <div className="space-y-4 max-w-2xl mx-auto flex-1">
-              <h2 className="font-salongbeach text-2xl sm:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-[#00b4b6] leading-tight">
+            <div className="max-w-2xl mx-auto flex-1 flex flex-col items-center justify-center">
+              <h2 className="font-salongbeach text-2xl sm:text-4xl lg:text-5xl font-bold uppercase tracking-wider text-[#00b4b6] leading-tight sm:leading-snug mb-4 sm:mb-6">
                 ЧУДИТЕ СЕ ДАЛИ ДАТАТА ВИ Е СВОБОДНА?
               </h2>
-              <p className="font-sans text-sm sm:text-base lg:text-lg text-[#182b2c]/85 italic">
+              <p className="font-sans text-sm sm:text-base lg:text-lg text-[#182b2c]/85 italic leading-relaxed mb-8 sm:mb-10 max-w-xl mx-auto">
                 Проверете дали Пощичка може да пътува за вашия специален ден!
               </p>
 
-              <div className="pt-2 flex items-center justify-center relative">
+              <div className="mt-2 sm:mt-4 mb-8 sm:mb-12 md:mb-0 flex items-center justify-center relative">
                 <div className="relative inline-flex items-center justify-center">
                   <Link href="/calendar">
-                    <button className="inline-flex items-center justify-center px-8 sm:px-10 py-3.5 rounded-full border-2 border-[#00b4b6] bg-white hover:bg-[#00b4b6] hover:text-white text-[#00b4b6] font-salongbeach text-lg sm:text-xl font-bold uppercase tracking-wider transition-all duration-300 shadow-md cursor-pointer">
+                    <button className="inline-flex items-center justify-center px-8 sm:px-10 py-3.5 sm:py-4 rounded-full border-2 border-[#00b4b6] bg-white hover:bg-[#00b4b6] hover:text-white text-[#00b4b6] font-salongbeach text-lg sm:text-xl font-bold uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105 active:scale-95 cursor-pointer">
                       <span>ПРОВЕРЕТЕ ТУК</span>
                     </button>
                   </Link>
@@ -226,7 +226,7 @@ export default function AboutPage() {
             </div>
 
             {/* Right Graphic: Asset 72@2x.png (Hands making heart) */}
-            <div className="relative w-36 sm:w-48 md:w-60 h-36 sm:h-48 md:h-60 flex-shrink-0 mx-auto md:mx-0">
+            <div className="relative w-32 sm:w-44 md:w-52 lg:w-60 h-32 sm:h-44 md:h-52 lg:h-60 flex-shrink-0 mx-auto md:mx-0">
               <Image
                 src={encodeURI("/media/За Пощичка/Asset 72@2x.png")}
                 alt="Ръце оформящи сърце – символ на обич и спомени"
