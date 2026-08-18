@@ -17,6 +17,7 @@ import {
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TestimonialItem, defaultTestimonials } from "@/lib/content-store";
+import { formatTestimonialQuote } from "@/lib/utils";
 
 export const TestimonialsManager = () => {
   const [items, setItems] = useState<TestimonialItem[]>(defaultTestimonials);
@@ -91,6 +92,8 @@ export const TestimonialsManager = () => {
 
     const updatedList = [...items];
 
+    const formattedQuote = formatTestimonialQuote(quote.trim());
+
     if (editingItem) {
       // Edit existing
       const idx = updatedList.findIndex((i) => i.id === editingItem.id);
@@ -98,7 +101,7 @@ export const TestimonialsManager = () => {
         updatedList[idx] = {
           ...editingItem,
           name: name.trim().toUpperCase(),
-          quote: quote.trim(),
+          quote: formattedQuote,
         };
       }
     } else {
@@ -106,7 +109,7 @@ export const TestimonialsManager = () => {
       const newItem: TestimonialItem = {
         id: `TST-${Date.now()}`,
         name: name.trim().toUpperCase(),
-        quote: quote.trim(),
+        quote: formattedQuote,
         rating: 5,
       };
       updatedList.unshift(newItem);
@@ -228,7 +231,7 @@ export const TestimonialsManager = () => {
 
                   {/* Quote in Stampatello */}
                   <p className="font-stampatello text-sm sm:text-base text-[#182b2c]/90 leading-relaxed font-normal px-2 my-auto">
-                    {item.quote}
+                    {formatTestimonialQuote(item.quote)}
                   </p>
 
                   {/* Heart Hands Asset 93@2x.png */}
@@ -378,7 +381,9 @@ export const TestimonialsManager = () => {
 
                     {/* Quote in Stampatello */}
                     <p className="font-stampatello text-sm sm:text-base text-[#182b2c]/90 leading-relaxed font-normal px-2 my-auto">
-                      {quote.trim() || "Тук ще се появи текстът на отзива в автентичен ръкописен шрифт..."}
+                      {quote.trim()
+                        ? formatTestimonialQuote(quote)
+                        : "Тук ще се появи текстът на отзива в автентичен ръкописен шрифт..."}
                     </p>
 
                     {/* Heart Hands Asset 93@2x.png */}

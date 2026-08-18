@@ -3,6 +3,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import { Star, MessageSquareQuote } from "lucide-react";
+import { formatTestimonialQuote } from "@/lib/utils";
 
 interface Testimonial {
   id: string;
@@ -154,7 +155,7 @@ export const TestimonialsSection = () => {
 
               {/* Review Quote Text in Stampatello */}
               <p className="font-stampatello text-base sm:text-lg md:text-xl text-[#182b2c]/90 leading-relaxed font-normal px-2 sm:px-4 my-auto">
-                {item.quote || "Благодарим от сърце за прекрасното изживяване!"}
+                {formatTestimonialQuote(item.quote || "Благодарим от сърце за прекрасното изживяване!")}
               </p>
 
               {/* Hand-drawn Teal Heart Hands Asset 93@2x.png */}
