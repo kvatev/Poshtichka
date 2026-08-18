@@ -29,7 +29,8 @@ export const Header = () => {
                 src="/media/logos/Logo.png"
                 alt="Пощичка от драсканици - лого на бутикова ретро вендинг машина"
                 fill
-                className="object-contain object-center group-hover:scale-105 transition-transform duration-300"
+                draggable={false}
+                className="object-contain object-center group-hover:scale-105 transition-transform duration-300 select-none pointer-events-none"
                 priority
               />
             </div>
@@ -49,7 +50,8 @@ export const Header = () => {
                   src={encodeURI("/media/Main Page/Asset 96@2x.png")}
                   alt="Икона за отваряне на мобилно меню"
                   fill
-                  className="object-contain"
+                  draggable={false}
+                  className="object-contain select-none pointer-events-none"
                   unoptimized
                   priority
                 />

@@ -88,7 +88,8 @@ export const WhatsIncluded = () => {
                   alt={item.altText}
                   width={item.width}
                   height={item.height}
-                  className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300 drop-shadow-md"
+                  draggable={false}
+                  className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300 drop-shadow-md select-none pointer-events-none"
                 />
               </div>
 

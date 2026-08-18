@@ -45,7 +45,8 @@ export default function AboutPage() {
             src={encodeURI("/media/За Пощичка/Asset 61@2x.webp")}
             alt="Интерактивна вендинг машина Пощичка на живо по време на сватбено събитие"
             fill
-            className="object-cover object-[47%_center] sm:object-center"
+            draggable={false}
+            className="object-cover object-[47%_center] sm:object-center select-none pointer-events-none"
             priority
             unoptimized
           />
@@ -74,7 +75,8 @@ export default function AboutPage() {
                   src={encodeURI("/media/За Пощичка/Asset 65@2x.png")}
                   alt="100% Авторски графичен дизайн на сватбени картички и марки"
                   fill
-                  className="object-contain object-center"
+                  draggable={false}
+                  className="object-contain object-center select-none pointer-events-none"
                   unoptimized
                   priority
                 />
@@ -88,7 +90,8 @@ export default function AboutPage() {
                   src={encodeURI("/media/За Пощичка/Asset 63@2x.png")}
                   alt="Емоционална стойност и споделени мигове за гостите на събитието"
                   fill
-                  className="object-contain object-center"
+                  draggable={false}
+                  className="object-contain object-center select-none pointer-events-none"
                   unoptimized
                   priority
                 />
@@ -102,7 +105,8 @@ export default function AboutPage() {
                   src={encodeURI("/media/За Пощичка/Asset 64@2x.png")}
                   alt="Гъвкавост, доставка, монтаж и пълна логистика в цяла България"
                   fill
-                  className="object-contain object-center"
+                  draggable={false}
+                  className="object-contain object-center select-none pointer-events-none"
                   unoptimized
                   priority
                 />
@@ -120,7 +124,8 @@ export default function AboutPage() {
             src={encodeURI("/media/За Пощичка/Asset 67@2x.webp")}
             alt="Младоженци и гости се забавляват около машината Пощичка"
             fill
-            className="object-cover object-center"
+            draggable={false}
+            className="object-cover object-center select-none pointer-events-none"
             unoptimized
           />
         </section>
@@ -144,7 +149,8 @@ export default function AboutPage() {
                   src={encodeURI("/media/За Пощичка/Asset 68@2x.png")}
                   alt="Гери – графичен дизайнер и създател на концепцията Пощичка"
                   fill
-                  className="object-contain object-top"
+                  draggable={false}
+                  className="object-contain object-top select-none pointer-events-none"
                   unoptimized
                   priority
                 />
@@ -158,7 +164,8 @@ export default function AboutPage() {
                   src={encodeURI("/media/За Пощичка/Asset 69@2x.png")}
                   alt="Краси – техническо изпълнение, хардуер и софтуер на Пощичка"
                   fill
-                  className="object-contain object-top"
+                  draggable={false}
+                  className="object-contain object-top select-none pointer-events-none"
                   unoptimized
                   priority
                 />
@@ -173,7 +180,8 @@ export default function AboutPage() {
             src={encodeURI("/media/За Пощичка/Asset 70@2x.webp")}
             alt="Гости на събитие разглеждат своите персонализирани сватбени картички"
             fill
-            className="object-cover object-center"
+            draggable={false}
+            className="object-cover object-center select-none pointer-events-none"
             unoptimized
           />
         </section>
@@ -187,7 +195,8 @@ export default function AboutPage() {
                 src={encodeURI("/media/За Пощичка/Asset 71@2x.png")}
                 alt="Ръце с персонализирана картичка от Пощичка"
                 fill
-                className="object-contain object-center"
+                draggable={false}
+                className="object-contain object-center select-none pointer-events-none"
                 unoptimized
               />
             </div>
@@ -217,7 +226,8 @@ export default function AboutPage() {
                       aria-hidden="true"
                       width={52}
                       height={52}
-                      className="w-8 sm:w-11 h-auto object-contain opacity-90 translate-y-[2px]"
+                      draggable={false}
+                      className="w-8 sm:w-11 h-auto object-contain opacity-90 translate-y-[2px] select-none pointer-events-none"
                       unoptimized
                     />
                   </div>
@@ -231,7 +241,8 @@ export default function AboutPage() {
                 src={encodeURI("/media/За Пощичка/Asset 72@2x.png")}
                 alt="Ръце оформящи сърце – символ на обич и спомени"
                 fill
-                className="object-contain object-center"
+                draggable={false}
+                className="object-contain object-center select-none pointer-events-none"
                 unoptimized
               />
             </div>

@@ -86,3 +86,21 @@
   visibility: hidden !important;
   pointer-events: none !important;
 }
+
+/* Disable native dragging and selection for all media and decorative assets */
+img,
+svg,
+picture,
+video,
+canvas {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+

@@ -22,7 +22,8 @@ export const CheckDateCTA = () => {
             alt="Пощичка авторски печат за сватбени картички"
             width={240}
             height={240}
-            className="w-28 sm:w-36 md:w-40 lg:w-48 max-h-[150px] sm:max-h-[180px] md:max-h-[200px] w-auto object-contain hover:rotate-3 transition-transform duration-300 drop-shadow-md"
+            draggable={false}
+            className="w-28 sm:w-36 md:w-40 lg:w-48 max-h-[150px] sm:max-h-[180px] md:max-h-[200px] w-auto object-contain hover:rotate-3 transition-transform duration-300 drop-shadow-md select-none pointer-events-none"
           />
         </motion.div>
 
@@ -60,7 +61,8 @@ export const CheckDateCTA = () => {
                   aria-hidden="true"
                   width={60}
                   height={60}
-                  className="w-8 sm:w-11 h-auto object-contain opacity-90 translate-y-[2px]"
+                  draggable={false}
+                  className="w-8 sm:w-11 h-auto object-contain opacity-90 translate-y-[2px] select-none pointer-events-none"
                 />
               </div>
             </div>
@@ -80,7 +82,8 @@ export const CheckDateCTA = () => {
             alt="Интерактивна ретро вендинг машина Пощичка"
             width={320}
             height={440}
-            className="w-32 sm:w-40 md:w-48 lg:w-56 max-h-[220px] sm:max-h-[250px] md:max-h-[270px] w-auto object-contain hover:scale-105 transition-transform duration-300 drop-shadow-xl"
+            draggable={false}
+            className="w-32 sm:w-40 md:w-48 lg:w-56 max-h-[220px] sm:max-h-[250px] md:max-h-[270px] w-auto object-contain hover:scale-105 transition-transform duration-300 drop-shadow-xl select-none pointer-events-none"
           />
         </motion.div>
       </div>

@@ -51,7 +51,8 @@ export const GalleryCategories = () => {
                     src={category.image}
                     alt={category.alt}
                     fill
-                    className="object-contain group-hover:scale-105 transition-transform duration-500"
+                    draggable={false}
+                    className="object-contain group-hover:scale-105 transition-transform duration-500 select-none pointer-events-none"
                     unoptimized
                   />
                 </div>

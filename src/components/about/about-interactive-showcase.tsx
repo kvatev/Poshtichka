@@ -114,7 +114,8 @@ export const AboutInteractiveShowcase = () => {
               alt="Илюстрация на машина Пощичка със сърце от драсканици"
               fill
               priority
-              className="object-contain drop-shadow-2xl"
+              draggable={false}
+              className="object-contain drop-shadow-2xl select-none pointer-events-none"
               sizes="(max-width: 640px) 160px, (max-width: 1024px) 200px, 220px"
             />
 
@@ -132,7 +133,8 @@ export const AboutInteractiveShowcase = () => {
                     src={item.badge}
                     alt={item.altText}
                     fill
-                    className="object-contain p-1"
+                    draggable={false}
+                    className="object-contain p-1 select-none pointer-events-none"
                   />
                 </div>
                 {/* Subtle Pulsing Beacon Ring */}
@@ -178,7 +180,8 @@ export const AboutInteractiveShowcase = () => {
                     src={selectedStep.badge}
                     alt={selectedStep.altText}
                     fill
-                    className="object-contain"
+                    draggable={false}
+                    className="object-contain select-none pointer-events-none"
                   />
                 </div>
                 <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-brand-dark">

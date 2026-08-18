@@ -26,7 +26,8 @@ export const PageHeaderBanner = ({
         alt={`Пощичка – ${title}`}
         fill
         priority
-        className="object-cover object-center pointer-events-none"
+        draggable={false}
+        className="object-cover object-center pointer-events-none select-none"
         unoptimized
       />
 
@@ -58,7 +59,8 @@ export const PageHeaderBanner = ({
               aria-hidden="true"
               width={44}
               height={44}
-              className="w-8 sm:w-10 h-auto object-contain opacity-85 -rotate-90"
+              draggable={false}
+              className="w-8 sm:w-10 h-auto object-contain opacity-85 -rotate-90 select-none pointer-events-none"
             />
           </div>
         )}

@@ -62,7 +62,8 @@ export const Footer = () => {
                     src={encodeURI("/media/Main Page/Asset 98@2x.png")}
                     alt="Пощичка във Facebook"
                     fill
-                    className="object-contain"
+                    draggable={false}
+                    className="object-contain select-none pointer-events-none"
                     unoptimized
                   />
                 </div>
@@ -81,7 +82,8 @@ export const Footer = () => {
                     src={encodeURI("/media/Main Page/Asset 97@2x.png")}
                     alt="Пощичка в Instagram"
                     fill
-                    className="object-contain"
+                    draggable={false}
+                    className="object-contain select-none pointer-events-none"
                     unoptimized
                   />
                 </div>
@@ -97,7 +99,8 @@ export const Footer = () => {
                 alt="Бутикова ретро вендинг машина Пощичка"
                 width={240}
                 height={340}
-                className="w-44 sm:w-56 h-auto object-contain group-hover:scale-105 transition-transform duration-300"
+                draggable={false}
+                className="w-44 sm:w-56 h-auto object-contain group-hover:scale-105 transition-transform duration-300 select-none pointer-events-none"
               />
             </Link>
           </div>

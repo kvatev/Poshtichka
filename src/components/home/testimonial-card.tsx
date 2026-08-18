@@ -34,7 +34,8 @@ export const TestimonialCard = ({ testimonial, className = "" }: TestimonialCard
           alt=""
           aria-hidden="true"
           fill
-          className="object-fill drop-shadow-xs"
+          draggable={false}
+          className="object-fill drop-shadow-xs select-none pointer-events-none"
           unoptimized
         />
       </div>
@@ -57,7 +58,8 @@ export const TestimonialCard = ({ testimonial, className = "" }: TestimonialCard
             src={encodeURI("/media/Отзиви/Asset 93@2x.png")}
             alt="Илюстрация на ръце държащи сърце от драсканици"
             fill
-            className="object-contain pointer-events-none"
+            draggable={false}
+            className="object-contain pointer-events-none select-none"
             unoptimized
           />
         </div>

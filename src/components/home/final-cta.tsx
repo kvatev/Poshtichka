@@ -34,7 +34,8 @@ export const FinalCTA = () => {
           src="/media/Main Page/final-cta-bg.webp"
           alt="Пощичка – незабравими спомени и персонализирани подаръци за сватби и събития"
           fill
-          className="object-cover object-[80%_center] md:object-center opacity-95 sm:opacity-100"
+          draggable={false}
+          className="object-cover object-[80%_center] md:object-center opacity-95 sm:opacity-100 select-none pointer-events-none"
           unoptimized
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/15 to-black/10" />

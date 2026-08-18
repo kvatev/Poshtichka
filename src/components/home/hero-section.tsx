@@ -30,8 +30,9 @@ export const HeroSection = ({
           fill
           priority
           quality={75}
+          draggable={false}
           sizes="(max-width: 640px) 100vw, (max-width: 1200px) 100vw, 1920px"
-          className="object-cover object-center opacity-95 sm:opacity-100"
+          className="object-cover object-center opacity-95 sm:opacity-100 select-none pointer-events-none"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-black/10" />
       </div>

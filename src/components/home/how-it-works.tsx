@@ -54,7 +54,8 @@ export const HowItWorks = () => {
                   alt={step.alt}
                   width={1112}
                   height={1426}
-                  className="w-full h-auto object-contain select-none"
+                  draggable={false}
+                  className="w-full h-auto object-contain select-none pointer-events-none"
                   unoptimized
                 />
               </div>
