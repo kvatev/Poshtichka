@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { PageWrapper } from "@/components/layout/page-wrapper";
+import { AboutInteractiveShowcase } from "@/components/about/about-interactive-showcase";
 
 export default function AboutPage() {
   const [aboutHeading, setAboutHeading] = React.useState("НИЕ НЕ ПЕЧАТАМЕ КАРТИЧКИ");
@@ -110,19 +111,8 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Section 4: What is Poshtichka & Booth Diagram (Exact Native Aspect Ratio Asset 66@2x.png) */}
-        <section className="max-w-5xl mx-auto px-2 sm:px-8 py-0 sm:py-2 flex justify-center items-center -my-2 sm:my-0">
-          <div className="relative w-full max-w-4xl aspect-[3738/2212]">
-            <Image
-              src={encodeURI("/media/За Пощичка/Asset 66@2x.png")}
-              alt="Какво е Пощичка - схема и въпроси"
-              fill
-              className="object-contain object-center"
-              unoptimized
-              priority
-            />
-          </div>
-        </section>
+        {/* Section 4: What is Poshtichka - Interactive Showcase with Live Typography & Stateful Badges */}
+        <AboutInteractiveShowcase />
 
         {/* Section 5: Photo Banner 1 (Hands holding over booth) */}
         <section className="relative w-full h-[280px] sm:h-[450px] overflow-hidden">
