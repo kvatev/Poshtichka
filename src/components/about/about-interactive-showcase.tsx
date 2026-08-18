@@ -11,6 +11,7 @@ export interface AboutStep {
   number: string;
   shortLabel: string;
   title: string;
+  altText: string;
   text: string;
   anchor: {
     top: string;
@@ -26,6 +27,7 @@ const aboutSteps: AboutStep[] = [
     number: "1",
     shortLabel: "Какво е?",
     title: "КАКВО Е ПОЩИЧКА?",
+    altText: "Акцент 1: Споделени емоции за гостите",
     text: "Пощичка е вендинг машина, специално създадена за вашето събитие, каквото и да е то. Тя е интерактивен начин гостите на дадения повод, да получат спомен или подарък от него.",
     anchor: { top: "18%", position: "left", offset: "-left-4 sm:-left-8 md:-left-12" },
   },
@@ -35,6 +37,7 @@ const aboutSteps: AboutStep[] = [
     number: "2",
     shortLabel: "Как се създаде?",
     title: "КАК СЕ СЪЗДАДЕ?",
+    altText: "Акцент 2: Траен спомен от сватбения ден",
     text: "Идеята дойде, когато се чудихме какво интересно да включим на сватбения си ден. Идеята толкова се хареса, че успя да дебютира като продукт преди нашата сватба!",
     anchor: { top: "38%", position: "right", offset: "-right-4 sm:-right-8 md:-right-12" },
   },
@@ -44,6 +47,7 @@ const aboutSteps: AboutStep[] = [
     number: "3",
     shortLabel: "Как работи?",
     title: "КАК РАБОТИ?",
+    altText: "Акцент 3: Персонализирано изживяване на живо",
     text: "Всеки гост получава жетон, който поставя в машината, завърта ръчката и от там излиза картонче, в което е поместен и самия подарък!",
     anchor: { top: "62%", position: "left", offset: "-left-4 sm:-left-8 md:-left-12" },
   },
@@ -53,6 +57,7 @@ const aboutSteps: AboutStep[] = [
     number: "4",
     shortLabel: "Какво се поставя?",
     title: "КАКВО МОЖЕ ДА СЕ ПОСТАВИ?",
+    altText: "Акцент 4: Всичко в едно – забавление и подарък",
     text: "Всичко на хартиен носител – марка, картичка, снимка, стикер, татуировка, предизвикателство, благодарствена картичка и още много други.",
     anchor: { top: "80%", position: "right", offset: "-right-4 sm:-right-8 md:-right-12" },
   },
@@ -106,7 +111,7 @@ export const AboutInteractiveShowcase = () => {
           <div className="relative w-auto h-[380px] sm:h-[440px] md:h-[500px] aspect-[740/2134] flex items-center justify-center">
             <Image
               src="/media/Main Page/Asset 114@2x.webp"
-              alt="Пощичка машина със сърце"
+              alt="Илюстрация на машина Пощичка със сърце от драсканици"
               fill
               priority
               className="object-contain drop-shadow-2xl"
@@ -125,7 +130,7 @@ export const AboutInteractiveShowcase = () => {
                 <div className="relative w-11 h-11 sm:w-13 sm:h-13 md:w-14 md:h-14 rounded-full overflow-hidden shadow-xl border-2 border-white bg-white/95 backdrop-blur-xs flex items-center justify-center group-hover:border-[#00b4b6] group-hover:shadow-[0_0_16px_rgba(0,180,182,0.6)] transition-all">
                   <Image
                     src={item.badge}
-                    alt={`Номер ${item.number}`}
+                    alt={item.altText}
                     fill
                     className="object-contain p-1"
                   />
@@ -171,7 +176,7 @@ export const AboutInteractiveShowcase = () => {
                 <div className="relative w-14 h-14 sm:w-16 sm:h-16 drop-shadow-md">
                   <Image
                     src={selectedStep.badge}
-                    alt={`Икона ${selectedStep.number}`}
+                    alt={selectedStep.altText}
                     fill
                     className="object-contain"
                   />

@@ -137,7 +137,8 @@ export const TestimonialsSection = () => {
             <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
               <Image
                 src={encodeURI("/media/Отзиви/Asset 92@2x.png")}
-                alt="Рамка"
+                alt=""
+                aria-hidden="true"
                 fill
                 className="object-fill drop-shadow-xs"
                 unoptimized
@@ -160,7 +161,7 @@ export const TestimonialsSection = () => {
               <div className="relative w-28 sm:w-36 md:w-40 h-20 sm:h-24 shrink-0 flex items-center justify-center pb-2">
                 <Image
                   src={encodeURI("/media/Отзиви/Asset 93@2x.png")}
-                  alt="Спомен с любов"
+                  alt="Илюстрация на ръце държащи сърце от драсканици"
                   fill
                   className="object-contain pointer-events-none"
                   unoptimized

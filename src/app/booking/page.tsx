@@ -275,7 +275,7 @@ function BookingFormContent() {
             <div className="relative w-24 h-24 sm:w-28 sm:h-28 mx-auto flex items-center justify-center">
               <Image
                 src={encodeURI("/icons/Asset 101@2x.png")}
-                alt="Пощичка"
+                alt="Пощичка от драсканици - лого на бутикова ретро вендинг машина"
                 width={112}
                 height={112}
                 className="w-20 h-20 sm:w-24 sm:h-24 object-contain"

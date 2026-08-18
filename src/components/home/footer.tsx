@@ -60,7 +60,7 @@ export const Footer = () => {
                 <div className="relative w-6 h-6 flex items-center justify-center">
                   <Image
                     src={encodeURI("/media/Main Page/Asset 98@2x.png")}
-                    alt="Facebook"
+                    alt="Пощичка във Facebook"
                     fill
                     className="object-contain"
                     unoptimized
@@ -79,7 +79,7 @@ export const Footer = () => {
                 <div className="relative w-7 h-7 flex items-center justify-center">
                   <Image
                     src={encodeURI("/media/Main Page/Asset 97@2x.png")}
-                    alt="Instagram"
+                    alt="Пощичка в Instagram"
                     fill
                     className="object-contain"
                     unoptimized
@@ -94,7 +94,7 @@ export const Footer = () => {
             <Link href="/" className="group block">
               <Image
                 src="/media/Main Page/poshtichka-booth-heart.png"
-                alt="Пощичка машина"
+                alt="Бутикова ретро вендинг машина Пощичка"
                 width={240}
                 height={340}
                 className="w-44 sm:w-56 h-auto object-contain group-hover:scale-105 transition-transform duration-300"

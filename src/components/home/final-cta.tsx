@@ -32,7 +32,7 @@ export const FinalCTA = () => {
       <div className="absolute inset-0 z-0">
         <Image
           src="/media/Main Page/final-cta-bg.webp"
-          alt="Пощичка незабравим спомен"
+          alt="Пощичка – незабравими спомени и персонализирани подаръци за сватби и събития"
           fill
           className="object-cover object-[80%_center] md:object-center opacity-95 sm:opacity-100"
           unoptimized

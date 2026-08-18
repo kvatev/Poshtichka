@@ -10,6 +10,7 @@ interface ShowcaseItem {
   badge: string;
   number: string;
   tagline: string;
+  altText: string;
   text: string;
   anchor: {
     top: string;
@@ -24,6 +25,7 @@ const showcaseItems: ShowcaseItem[] = [
     badge: "/media/Main Page/Asset 104@2x.webp",
     number: "1",
     tagline: "СПОДЕЛЕНИ ЕМОЦИИ",
+    altText: "Акцент 1: Споделени емоции за гостите",
     text: "Мястото, където Вашите гости се събират, усмихват се и общуват помежду си",
     anchor: { top: "18%", position: "left", offset: "-left-4 sm:-left-8 md:-left-12" },
   },
@@ -32,6 +34,7 @@ const showcaseItems: ShowcaseItem[] = [
     badge: "/media/Main Page/Asset 105@2x.webp",
     number: "2",
     tagline: "ТРАЕН СПОМЕН",
+    altText: "Акцент 2: Траен спомен от сватбения ден",
     text: "Подаръкът, който всеки ще прибере със себе си, ще поглежда и ще се припомня за Вашия специален ден!",
     anchor: { top: "38%", position: "right", offset: "-right-4 sm:-right-8 md:-right-12" },
   },
@@ -40,6 +43,7 @@ const showcaseItems: ShowcaseItem[] = [
     badge: "/media/Main Page/Asset 106@2x.webp",
     number: "3",
     tagline: "ПЕРСОНАЛИЗИРАНО ИЗЖИВЯВАНЕ",
+    altText: "Акцент 3: Персонализирано изживяване на живо",
     text: "Интерактивно преживяване на живо по време на Вашето събитие. Подарък, създаден персонализирано, специално за Вашия повод!",
     anchor: { top: "62%", position: "left", offset: "-left-4 sm:-left-8 md:-left-12" },
   },
@@ -48,6 +52,7 @@ const showcaseItems: ShowcaseItem[] = [
     badge: "/media/Main Page/Asset 107@2x.webp",
     number: "4",
     tagline: "ВСИЧКО В ЕДНО",
+    altText: "Акцент 4: Всичко в едно – забавление и подарък",
     text: "Спомен, емоция и преживяване в едно!",
     anchor: { top: "80%", position: "right", offset: "-right-4 sm:-right-8 md:-right-12" },
   },
@@ -101,7 +106,7 @@ export const WhatIsPoshtichka = () => {
           <div className="relative w-auto h-[380px] sm:h-[440px] md:h-[500px] aspect-[741/2060] flex items-center justify-center">
             <Image
               src="/media/Main Page/Asset 102@2x.webp"
-              alt="Пощичка вендинг машина"
+              alt="Ретро вендинг машина Пощичка – интерактивна атракция за сватбени подаръци"
               fill
               priority
               className="object-contain drop-shadow-2xl"
@@ -120,7 +125,7 @@ export const WhatIsPoshtichka = () => {
                 <div className="relative w-11 h-11 sm:w-13 sm:h-13 md:w-14 md:h-14 rounded-full overflow-hidden shadow-xl border-2 border-white bg-white/95 backdrop-blur-xs flex items-center justify-center group-hover:border-[#00b4b6] group-hover:shadow-[0_0_16px_rgba(0,180,182,0.6)] transition-all">
                   <Image
                     src={item.badge}
-                    alt={`Номер ${item.number}`}
+                    alt={item.altText}
                     fill
                     className="object-contain p-1"
                   />
@@ -166,7 +171,7 @@ export const WhatIsPoshtichka = () => {
                 <div className="relative w-14 h-14 sm:w-16 sm:h-16 drop-shadow-md">
                   <Image
                     src={selectedItem.badge}
-                    alt={`Икона ${selectedItem.number}`}
+                    alt={selectedItem.altText}
                     fill
                     className="object-contain"
                   />

@@ -42,7 +42,7 @@ export default async function ServicesPage() {
                 <div className="relative w-full lg:w-1/2 min-h-[380px] sm:min-h-[460px] lg:min-h-[540px] flex-shrink-0 bg-gray-100 overflow-hidden">
                   <Image
                     src={service.image || "/media/services/service_SRV-01.webp"}
-                    alt={service.title}
+                    alt={`Услуга Пощичка: ${service.title}`}
                     fill
                     className="object-cover"
                     style={{ objectPosition: service.imagePosition || "center" }}
@@ -75,10 +75,11 @@ export default async function ServicesPage() {
                       {service.features.map((feat, i) => (
                         <li key={i} className="flex items-center space-x-3.5 sm:space-x-4">
                           {/* Official Hand-Drawn Teal Checkmark Asset 86@2x.png */}
-                          <div className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 relative flex items-center justify-center">
+                          <div className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 relative flex items-center justify-center" aria-hidden="true">
                             <Image
                               src={encodeURI("/media/Услуги/Asset 86@2x.png")}
-                              alt="Отметка"
+                              alt=""
+                              aria-hidden="true"
                               width={32}
                               height={32}
                               className="w-full h-full object-contain pointer-events-none"

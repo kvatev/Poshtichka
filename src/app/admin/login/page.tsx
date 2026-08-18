@@ -63,7 +63,7 @@ export default function AdminLoginPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl border border-brand-accent/40 overflow-hidden relative mb-2 shadow-lg">
             <Image
               src="/media/logos/logo.webp"
-              alt="Пощичка Лого"
+              alt="Пощичка от драсканици - лого на бутикова ретро вендинг машина"
               fill
               className="object-cover"
               sizes="64px"

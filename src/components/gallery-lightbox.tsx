@@ -93,7 +93,7 @@ export const GalleryGrid = ({ initialItems = [] }: GalleryGridProps) => {
               <div className="relative w-full aspect-[3/4] overflow-hidden">
                 <Image
                   src={item.imageUrl}
-                  alt={item.alt || item.title}
+                  alt={item.alt || item.title ? `Пощичка галерия: ${item.alt || item.title}` : "Сватбени подаръци, картички и временни татуировки от Пощичка"}
                   fill
                   loading="lazy"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -156,7 +156,7 @@ export const GalleryGrid = ({ initialItems = [] }: GalleryGridProps) => {
                   <div className="relative h-80 md:h-[480px] w-full bg-brand-secondary/20">
                     <Image
                       src={activeItem.imageUrl}
-                      alt={activeItem.alt || activeItem.title}
+                      alt={activeItem.alt || activeItem.title ? `Пощичка детайли: ${activeItem.alt || activeItem.title}` : "Сватбени подаръци и спомени от Пощичка"}
                       fill
                       className="object-cover"
                     />

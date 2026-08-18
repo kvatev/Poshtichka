@@ -319,7 +319,7 @@ export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
               <div className="relative w-12 sm:w-14 h-12 sm:h-14">
                 <Image
                   src={encodeURI("/media/Галерия/Asset 83@2x.png")}
-                  alt="Иконка локация"
+                  alt="Икона за локация"
                   fill
                   className="object-contain"
                   unoptimized
@@ -353,7 +353,7 @@ export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
                       <div className="relative w-full h-[68%] overflow-hidden bg-neutral-200/60">
                         <Image
                           src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
-                          alt={ev.eventName || ev.cityName}
+                          alt={`Сватбено тържество ${ev.eventName ? `– ${ev.eventName}` : ""} в гр. ${ev.cityName || "България"}`}
                           fill
                           sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 360px"
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -405,7 +405,7 @@ export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
             <div className="relative w-10 sm:w-12 h-10 sm:h-12">
               <Image
                 src={encodeURI("/media/Галерия/Asset 83@2x.png")}
-                alt="Иконка локация"
+                alt="Икона за локация"
                 fill
                 className="object-contain"
                 unoptimized
@@ -448,7 +448,7 @@ export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
                 <div className="relative w-full h-[68%] overflow-hidden bg-neutral-200/60">
                   <Image
                     src={ev.coverImage || "/media/gallery/Tezza_2025_07_07_170901960_1.webp"}
-                    alt={ev.eventName || ev.cityName}
+                    alt={`Събитие ${ev.eventName ? `– ${ev.eventName}` : ""} в гр. ${ev.cityName || "България"}`}
                     fill
                     sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 360px"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -525,7 +525,7 @@ export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
                     return (
                       <Image
                         src={currentImg}
-                        alt={activeModalEvent.eventName || activeModalEvent.cityName}
+                        alt={`Снимка от ${activeModalEvent.eventName || "събитие на Пощичка"} в гр. ${activeModalEvent.cityName}`}
                         fill
                         className="object-cover transition-all duration-300"
                         style={{ objectPosition: pos }}
@@ -581,7 +581,7 @@ export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
                               >
                                 <Image
                                   src={img}
-                                  alt={`Снимка ${idx + 1}`}
+                                  alt={`Сватбени подаръци, картички и спомени от ${activeModalEvent.eventName || "Пощичка"} – снимка ${idx + 1}`}
                                   fill
                                   className="object-cover"
                                   style={{ objectPosition: thumbPos }}
@@ -600,7 +600,7 @@ export const MapGallery = ({ initialEvents = [] }: MapGalleryProps) => {
                     <div className="relative w-9 h-9 flex-shrink-0">
                       <Image
                         src={encodeURI("/media/За Пощичка/Asset 72@2x.png")}
-                        alt="Автентичен спомен"
+                        alt="Илюстрация на сърце от ръце – автентичен спомен от Пощичка"
                         fill
                         className="object-contain"
                         unoptimized

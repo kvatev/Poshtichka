@@ -9,16 +9,19 @@ const categories = [
   {
     id: "wedding",
     title: "СВАТБА",
+    alt: "Вендинг машина Пощичка за сватби и сватбени тържества",
     image: "/media/Main Page/category-wedding.webp",
   },
   {
     id: "baptism",
     title: "КРЪЩЕНЕ",
+    alt: "Интерактивна машина Пощичка за кръщенета и рождени дни",
     image: "/media/Main Page/category-baptism.webp",
   },
   {
     id: "corporate",
     title: "ФИРМЕНО ПАРТИ",
+    alt: "Вендинг машина за корпоративни събития, тиймбилдинги и бранд партита",
     image: "/media/Main Page/category-corporate.webp",
   },
 ];
@@ -26,9 +29,8 @@ const categories = [
 export const GalleryCategories = () => {
   return (
     <section className="py-16 sm:py-24 bg-brand-cream relative">
-
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
-        {/* 3 Category Cards - Render PNG graphics directly without outer white frames */}
+        {/* 3 Category Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-center">
           {categories.map((category, idx) => (
             <motion.div
@@ -47,7 +49,7 @@ export const GalleryCategories = () => {
                 <div className="relative w-full aspect-[4/5] flex justify-center items-center">
                   <Image
                     src={category.image}
-                    alt={category.title}
+                    alt={category.alt}
                     fill
                     className="object-contain group-hover:scale-105 transition-transform duration-500"
                     unoptimized
@@ -61,6 +63,3 @@ export const GalleryCategories = () => {
     </section>
   );
 };
-
-
-

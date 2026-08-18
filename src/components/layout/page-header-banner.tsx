@@ -23,7 +23,7 @@ export const PageHeaderBanner = ({
       {/* Universal Background Image: Asset 88@2x.png */}
       <Image
         src={encodeURI("/media/Услуги/Asset 88@2x.png")}
-        alt={title}
+        alt={`Пощичка – ${title}`}
         fill
         priority
         className="object-cover object-center pointer-events-none"
@@ -51,10 +51,11 @@ export const PageHeaderBanner = ({
         {children && <div className="pt-2">{children}</div>}
 
         {showCurlyArrow && (
-          <div className="pt-2 flex items-center justify-center pointer-events-none">
+          <div className="pt-2 flex items-center justify-center pointer-events-none" aria-hidden="true">
             <Image
               src="/media/Main Page/curly-arrow-left.png"
-              alt="Стрелка"
+              alt=""
+              aria-hidden="true"
               width={44}
               height={44}
               className="w-8 sm:w-10 h-auto object-contain opacity-85 -rotate-90"

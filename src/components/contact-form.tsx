@@ -137,7 +137,7 @@ export function ContactForm({ initialServices = [], initialGeneral }: ContactFor
           <div className="relative w-16 h-16 flex items-center justify-center">
             <Image
               src={encodeURI("/media/Контакти/Asset 50@2x.png")}
-              alt="Локация"
+              alt="Икона за локация на Пощичка"
               width={56}
               height={56}
               className="w-14 h-14 object-contain"
@@ -163,7 +163,7 @@ export function ContactForm({ initialServices = [], initialGeneral }: ContactFor
           <div className="relative w-16 h-16 flex items-center justify-center">
             <Image
               src={encodeURI("/media/Контакти/Asset 49@2x.png")}
-              alt="Имейл"
+              alt="Икона за имейл за връзка с Пощичка"
               width={56}
               height={56}
               className="w-14 h-14 object-contain"
@@ -192,7 +192,7 @@ export function ContactForm({ initialServices = [], initialGeneral }: ContactFor
           <div className="relative w-16 h-16 flex items-center justify-center">
             <Image
               src={encodeURI("/media/Контакти/Asset 48@2x.png")}
-              alt="Instagram"
+              alt="Икона за Instagram профил на Пощичка"
               width={56}
               height={56}
               className="w-14 h-14 object-contain"
@@ -233,7 +233,7 @@ export function ContactForm({ initialServices = [], initialGeneral }: ContactFor
               <div className="relative w-24 h-24 sm:w-28 sm:h-28 mx-auto flex items-center justify-center">
                 <Image
                   src={encodeURI("/icons/Asset 101@2x.png")}
-                  alt="Пощичка"
+                  alt="Пощичка от драсканици - лого на бутикова ретро вендинг машина"
                   width={112}
                   height={112}
                   className="w-20 h-20 sm:w-24 sm:h-24 object-contain"

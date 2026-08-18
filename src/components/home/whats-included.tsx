@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 
 interface IncludedItem {
   icon: string;
+  altText: string;
   text: string;
   width: number;
   height: number;
@@ -14,30 +15,35 @@ interface IncludedItem {
 const includedItems: IncludedItem[] = [
   {
     icon: "/media/Main Page/Asset 112@2x.webp",
+    altText: "Индивидуален графичен дизайн на авторски сватбени материали от дизайнер",
     text: "Дизайн изготвен от графичен дизайнер, с 5 годишен опит в сферата.",
     width: 427,
     height: 471,
   },
   {
     icon: "/media/Main Page/Asset 111@2x.webp",
+    altText: "Висококачествен печат върху луксозни италиански картони",
     text: "Висококачествен печат върху луксозни картони.",
     width: 467,
     height: 501,
   },
   {
     icon: "/media/Main Page/Asset 110@2x.webp",
+    altText: "Стъклен буркан с персонализирани жетони за гостите на събитието",
     text: "Буркан с жетони, съобразен с бройката на вашите гости.",
     width: 505,
     height: 450,
   },
   {
     icon: "/media/Main Page/Asset 109@2x.webp",
+    altText: "Помощна дървена маса, рамка с постер и пулверизатор за татуировки",
     text: "Помощна маса, рамка с постер, пулверизатор за татуировки.",
     width: 349,
     height: 507,
   },
   {
     icon: "/media/Main Page/Asset 108@2x.webp",
+    altText: "Двама служители на Пощичка за доставка, монтаж и съдействие",
     text: "Двама служители за транспорт, монтаж и съдействие на гостите.",
     width: 433,
     height: 467,
@@ -79,7 +85,7 @@ export const WhatsIncluded = () => {
               <div className="relative w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-32 lg:h-32 xl:w-36 xl:h-36 flex items-center justify-center flex-shrink-0">
                 <Image
                   src={item.icon}
-                  alt={item.text}
+                  alt={item.altText}
                   width={item.width}
                   height={item.height}
                   className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300 drop-shadow-md"

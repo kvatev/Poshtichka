@@ -19,7 +19,7 @@ export const CheckDateCTA = () => {
         >
           <Image
             src="/media/Main Page/Asset 34@2x.webp"
-            alt="Пощичка печат"
+            alt="Пощичка авторски печат за сватбени картички"
             width={240}
             height={240}
             className="w-24 sm:w-32 md:w-40 lg:w-48 max-h-[140px] sm:max-h-[180px] md:max-h-[200px] w-auto object-contain hover:rotate-3 transition-transform duration-300"
@@ -52,11 +52,12 @@ export const CheckDateCTA = () => {
                 <span>ПРОВЕРЕТЕ ТУК</span>
               </Link>
 
-              {/* Curly Arrow - Vertically Centered */}
-              <div className="flex items-center justify-center absolute -right-10 sm:-right-14 top-1/2 -translate-y-1/2 h-full pointer-events-none">
+              {/* Curly Arrow - Decorative */}
+              <div className="flex items-center justify-center absolute -right-10 sm:-right-14 top-1/2 -translate-y-1/2 h-full pointer-events-none" aria-hidden="true">
                 <Image
                   src="/media/Main Page/curly-arrow-left.png"
-                  alt="Стрелка"
+                  alt=""
+                  aria-hidden="true"
                   width={60}
                   height={60}
                   className="w-8 sm:w-11 h-auto object-contain opacity-90 translate-y-[2px]"
@@ -76,7 +77,7 @@ export const CheckDateCTA = () => {
         >
           <Image
             src="/media/Main Page/poshtichka-booth-blank.png"
-            alt="Пощичка машина"
+            alt="Интерактивна ретро вендинг машина Пощичка"
             width={320}
             height={440}
             className="w-32 sm:w-40 md:w-48 lg:w-56 max-h-[200px] sm:max-h-[240px] md:max-h-[260px] w-auto object-contain hover:scale-105 transition-transform duration-300"

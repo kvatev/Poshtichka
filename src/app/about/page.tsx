@@ -43,7 +43,7 @@ export default function AboutPage() {
         <section className="relative w-full h-[40vh] sm:h-[55vh] lg:h-[65vh] overflow-hidden">
           <Image
             src={encodeURI("/media/За Пощичка/Asset 61@2x.webp")}
-            alt="Пощичка машина на събитие"
+            alt="Интерактивна вендинг машина Пощичка на живо по време на сватбено събитие"
             fill
             className="object-cover object-[47%_center] sm:object-center"
             priority
@@ -72,7 +72,7 @@ export default function AboutPage() {
               <div className="relative w-full max-w-[300px] sm:max-w-[350px] aspect-[4/3]">
                 <Image
                   src={encodeURI("/media/За Пощичка/Asset 65@2x.png")}
-                  alt="100% Авторски дизайн"
+                  alt="100% Авторски графичен дизайн на сватбени картички и марки"
                   fill
                   className="object-contain object-center"
                   unoptimized
@@ -86,7 +86,7 @@ export default function AboutPage() {
               <div className="relative w-full max-w-[300px] sm:max-w-[350px] aspect-[4/3]">
                 <Image
                   src={encodeURI("/media/За Пощичка/Asset 63@2x.png")}
-                  alt="Емоционална стойност"
+                  alt="Емоционална стойност и споделени мигове за гостите на събитието"
                   fill
                   className="object-contain object-center"
                   unoptimized
@@ -100,7 +100,7 @@ export default function AboutPage() {
               <div className="relative w-full max-w-[300px] sm:max-w-[350px] aspect-[4/3]">
                 <Image
                   src={encodeURI("/media/За Пощичка/Asset 64@2x.png")}
-                  alt="Гъвкавост и логистика"
+                  alt="Гъвкавост, доставка, монтаж и пълна логистика в цяла България"
                   fill
                   className="object-contain object-center"
                   unoptimized
@@ -118,7 +118,7 @@ export default function AboutPage() {
         <section className="relative w-full h-[280px] sm:h-[450px] overflow-hidden">
           <Image
             src={encodeURI("/media/За Пощичка/Asset 67@2x.webp")}
-            alt="Младоженци и Пощичка"
+            alt="Младоженци и гости се забавляват около машината Пощичка"
             fill
             className="object-cover object-center"
             unoptimized
@@ -142,7 +142,7 @@ export default function AboutPage() {
               <div className="relative w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[440px] h-[580px] sm:h-[760px] lg:h-[840px]">
                 <Image
                   src={encodeURI("/media/За Пощичка/Asset 68@2x.png")}
-                  alt="Гери - дизайнер"
+                  alt="Гери – графичен дизайнер и създател на концепцията Пощичка"
                   fill
                   className="object-contain object-top"
                   unoptimized
@@ -156,7 +156,7 @@ export default function AboutPage() {
               <div className="relative w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[440px] h-[580px] sm:h-[760px] lg:h-[840px]">
                 <Image
                   src={encodeURI("/media/За Пощичка/Asset 69@2x.png")}
-                  alt="Краси - програмист"
+                  alt="Краси – техническо изпълнение, хардуер и софтуер на Пощичка"
                   fill
                   className="object-contain object-top"
                   unoptimized
@@ -171,7 +171,7 @@ export default function AboutPage() {
         <section className="relative w-full h-[280px] sm:h-[450px] overflow-hidden">
           <Image
             src={encodeURI("/media/За Пощичка/Asset 70@2x.webp")}
-            alt="Ръце с сватбени картички"
+            alt="Гости на събитие разглеждат своите персонализирани сватбени картички"
             fill
             className="object-cover object-center"
             unoptimized
@@ -185,7 +185,7 @@ export default function AboutPage() {
             <div className="relative w-36 sm:w-48 md:w-60 h-36 sm:h-48 md:h-60 flex-shrink-0 mx-auto md:mx-0">
               <Image
                 src={encodeURI("/media/За Пощичка/Asset 71@2x.png")}
-                alt="Ръце с картичка"
+                alt="Ръце с персонализирана картичка от Пощичка"
                 fill
                 className="object-contain object-center"
                 unoptimized
@@ -210,10 +210,11 @@ export default function AboutPage() {
                   </Link>
 
                   {/* Curly Arrow pointing directly at the button */}
-                  <div className="flex items-center justify-center absolute -right-10 sm:-right-14 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <div className="flex items-center justify-center absolute -right-10 sm:-right-14 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
                     <Image
                       src={encodeURI("/media/Main Page/curly-arrow-left.png")}
-                      alt="Стрелка"
+                      alt=""
+                      aria-hidden="true"
                       width={52}
                       height={52}
                       className="w-8 sm:w-11 h-auto object-contain opacity-90 translate-y-[2px]"
@@ -228,7 +229,7 @@ export default function AboutPage() {
             <div className="relative w-36 sm:w-48 md:w-60 h-36 sm:h-48 md:h-60 flex-shrink-0 mx-auto md:mx-0">
               <Image
                 src={encodeURI("/media/За Пощичка/Asset 72@2x.png")}
-                alt="Ръце със сърце"
+                alt="Ръце оформящи сърце – символ на обич и спомени"
                 fill
                 className="object-contain object-center"
                 unoptimized

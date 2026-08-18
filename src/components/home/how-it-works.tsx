@@ -8,16 +8,19 @@ const steps = [
   {
     id: 1,
     title: "1. Гостите взимат жетон",
+    alt: "Стъпка 1: Гостите получават жетон за вендинг машината",
     image: "/media/Main Page/step-1.webp",
   },
   {
     id: 2,
     title: "2. Поставят го и завъртат ръчката",
+    alt: "Стъпка 2: Завъртане на ръчката на Пощичка",
     image: "/media/Main Page/step-2.webp",
   },
   {
     id: 3,
     title: "3. Отварят картончето и получават подаръка си",
+    alt: "Стъпка 3: Получаване на уникален персонализиран подарък",
     image: "/media/Main Page/step-3.webp",
   },
 ];
@@ -33,7 +36,7 @@ export const HowItWorks = () => {
           </h2>
         </div>
 
-        {/* 3 Step Cards - 100% Identical Uniform Sizing Without Hover Effects */}
+        {/* 3 Step Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 items-start justify-items-center w-full">
           {steps.map((step, idx) => (
             <motion.div
@@ -48,7 +51,7 @@ export const HowItWorks = () => {
               <div className="relative w-full flex items-center justify-center">
                 <Image
                   src={step.image}
-                  alt={step.title}
+                  alt={step.alt}
                   width={1112}
                   height={1426}
                   className="w-full h-auto object-contain select-none"

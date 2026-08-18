@@ -8,21 +8,25 @@ const features = [
   {
     id: "marka",
     title: "МАРКА",
+    alt: "Авторска пощенска марка с инициали и дата на сватбата",
     image: "/media/Main Page/feature-marka.webp",
   },
   {
     id: "kartichka",
     title: "КАРТИЧКА",
+    alt: "Персонализирана сватбена картичка с благодарствено послание",
     image: "/media/Main Page/feature-kartichka.webp",
   },
   {
     id: "stiker",
     title: "СТИКЕР",
+    alt: "Илюстрован дизайнерски стикер за гости",
     image: "/media/Main Page/feature-stiker.webp",
   },
   {
     id: "tatuirovka",
     title: "ТАТУИРОВКА",
+    alt: "Временна сватбена татуировка с вода за забавление на тържеството",
     image: "/media/Main Page/feature-tatuirovka.webp",
   },
 ];
@@ -44,7 +48,7 @@ export const FeaturesSection = () => {
               <div className="relative w-full aspect-square sm:aspect-[4/5] flex items-center justify-center p-1">
                 <Image
                   src={feature.image}
-                  alt={feature.title}
+                  alt={feature.alt}
                   fill
                   className="object-contain group-hover:scale-105 transition-transform duration-500"
                   unoptimized

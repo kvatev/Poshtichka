@@ -101,7 +101,7 @@ export const AdminSidebar = ({
             <div className="w-10 h-10 rounded-xl overflow-hidden border border-brand-accent/40 flex-shrink-0 relative">
               <Image
                 src="/media/logos/logo.webp"
-                alt="Пощичка Лого"
+                alt="Пощичка от драсканици - лого на бутикова ретро вендинг машина"
                 fill
                 className="object-cover"
                 sizes="40px"

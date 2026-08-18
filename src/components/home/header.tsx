@@ -27,7 +27,7 @@ export const Header = () => {
             <div className="relative w-44 sm:w-64 h-12 sm:h-16">
               <Image
                 src="/media/logos/Logo.png"
-                alt="Пощичка от драсканици"
+                alt="Пощичка от драсканици - лого на бутикова ретро вендинг машина"
                 fill
                 className="object-contain object-center group-hover:scale-105 transition-transform duration-300"
                 priority
@@ -47,7 +47,7 @@ export const Header = () => {
               <div className="relative w-8 sm:w-9 h-8 sm:h-9">
                 <Image
                   src={encodeURI("/media/Main Page/Asset 96@2x.png")}
-                  alt="Меню"
+                  alt="Икона за отваряне на мобилно меню"
                   fill
                   className="object-contain"
                   unoptimized

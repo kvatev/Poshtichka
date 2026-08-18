@@ -26,7 +26,7 @@ export const HeroSection = ({
       <div className="absolute inset-0 z-0">
         <Image
           src={imageUrl}
-          alt="Пощичка събитие"
+          alt="Пощичка – интерактивна вендинг машина под наем за сватби и специални събития"
           fill
           priority
           quality={75}
