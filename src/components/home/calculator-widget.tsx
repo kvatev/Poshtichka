@@ -240,8 +240,9 @@ export const CalculatorWidget = () => {
                   </p>
                 </motion.div>
               ) : (
-                <p className="text-xs sm:text-sm text-[#00b4b6] font-medium italic text-center leading-relaxed mt-3 sm:mt-4 px-2">
-                  *Първите {pricing.freeDistance} км от Бургас са безплатни. Транспортът се начислява двупосочно ({distance * 2} км общо) по {pricing.ratePerKm} €/км за платеното разстояние.
+                <p className="font-salongbeach text-xs sm:text-sm text-[#00b4b6] font-medium italic text-center leading-relaxed mt-3 sm:mt-4 px-2 space-y-0.5">
+                  <span className="block">*Първите 100 км двупосочно от Бургас са безплатни.</span>
+                  <span className="block">Транспортът се начислява двупосочно по 0.23 €/км (0.45 лв./км) за разстоянието над 100 км.</span>
                 </p>
               )}
             </div>
