@@ -16,7 +16,7 @@ interface HeroSectionProps {
 export const HeroSection = ({
   title = "ВЕНДИНГ МАШИНА ЗА СВАТБИ И СЪБИТИЯ",
   subtitle = "Превръщаме традиционните подаръци за гости в незабравимо забавление!",
-  buttonText = "Разбери повече",
+  buttonText = "ЗА ПОЩИЧКА",
   buttonUrl = "/about",
   imageUrl = "/media/Main Page/Main Banner.webp",
 }: HeroSectionProps) => {

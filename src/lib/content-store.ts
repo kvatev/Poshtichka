@@ -185,7 +185,7 @@ export const defaultHomepageConfig: HomepageConfig = {
   heroTitleLine1: "ВЕНДИНГ МАШИНА ЗА СВАТБИ И СЪБИТИЯ",
   heroTitleHighlight: "",
   heroSubtitle: "Превръщаме традиционните подаръци за гости в незабравимо забавление!",
-  primaryCtaText: "Разбери повече",
+  primaryCtaText: "ЗА ПОЩИЧКА",
   secondaryCtaText: "Разгледайте галерията",
   heroImageUrl: "/media/Main Page/Main Banner.webp",
   heroVideoUrl: "",
