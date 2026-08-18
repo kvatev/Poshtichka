@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, X } from "lucide-react";
+import { X } from "lucide-react";
 
 interface ShowcaseItem {
   id: number;
@@ -81,10 +81,6 @@ export const WhatIsPoshtichka = () => {
           transition={{ duration: 0.6 }}
           className="text-center space-y-2.5"
         >
-          <div className="inline-flex items-center space-x-2 bg-[#00b4b6]/10 px-4 py-1.5 rounded-full border border-[#00b4b6]/30 text-[#00b4b6] text-xs sm:text-sm font-semibold tracking-wider uppercase mb-1">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Интерактивно преживяване</span>
-          </div>
           <h2 className="font-salongbeach text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase tracking-wider text-brand-dark leading-tight drop-shadow-xs">
             КАКВО Е ПОЩИЧКА?
           </h2>
@@ -135,30 +131,6 @@ export const WhatIsPoshtichka = () => {
             ))}
           </div>
         </motion.div>
-
-        {/* Quick-Select Badges Row Below (Thumb-Friendly on Mobile) */}
-        <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 pt-2">
-          {showcaseItems.map((item) => (
-            <button
-              key={`quick-btn-${item.id}`}
-              onClick={() => setSelectedItem(item)}
-              aria-label={`Преглед на акцент ${item.number} - ${item.tagline}`}
-              className="inline-flex items-center space-x-2 px-3.5 sm:px-4 py-2 rounded-2xl bg-white hover:bg-[#00b4b6]/10 border-2 border-[#00b4b6]/40 hover:border-[#00b4b6] text-[#182b2c] transition-all shadow-xs hover:shadow-md cursor-pointer hover:scale-105 active:scale-95"
-            >
-              <div className="relative w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0">
-                <Image
-                  src={item.badge}
-                  alt={`Икона ${item.number}`}
-                  fill
-                  className="object-contain"
-                />
-              </div>
-              <span className="font-salongbeach text-xs sm:text-sm font-bold uppercase tracking-wider">
-                {item.tagline}
-              </span>
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* Lightweight Pop-up Modal Dialog with Backdrop Blur */}
@@ -189,19 +161,16 @@ export const WhatIsPoshtichka = () => {
                 <X className="w-5 h-5 stroke-[2.5]" />
               </button>
 
-              {/* Badge Icon Header */}
-              <div className="flex flex-col items-center space-y-2 pt-2">
+              {/* Badge Icon Header & Main Title */}
+              <div className="flex flex-col items-center space-y-2.5 pt-2">
                 <div className="relative w-14 h-14 sm:w-16 sm:h-16 drop-shadow-md">
                   <Image
                     src={selectedItem.badge}
-                    alt={`Акцент ${selectedItem.number}`}
+                    alt={`Икона ${selectedItem.number}`}
                     fill
                     className="object-contain"
                   />
                 </div>
-                <span className="text-[#00b4b6] text-xs font-bold uppercase tracking-widest">
-                  АКЦЕНТ 0{selectedItem.number}
-                </span>
                 <h3 className="font-salongbeach text-xl sm:text-2xl font-bold uppercase tracking-wider text-brand-dark">
                   {selectedItem.tagline}
                 </h3>
