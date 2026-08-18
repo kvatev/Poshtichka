@@ -197,7 +197,7 @@ export const CalculatorWidget = () => {
                 htmlFor="distance-slider"
                 className="font-display text-lg sm:text-xl font-bold uppercase tracking-wider text-[#00b4b6] block cursor-pointer"
               >
-                ЛОКАЦИЯ ОТ ГРАД БУРГАС: {isFarLocation ? "НАД 450 КМ (ПО ЗАПИТВАНЕ)" : `${distance} КМ (${distance * 2} КМ ДВУПОСОЧНО)`}
+                ЛОКАЦИЯ ОТ ГРАД БУРГАС: {isFarLocation ? "НАД 450 КМ (ПО ЗАПИТВАНЕ)" : `${distance} КМ`}
               </label>
               <div className="relative px-2">
                 <input
@@ -241,7 +241,7 @@ export const CalculatorWidget = () => {
                 </motion.div>
               ) : (
                 <p className="text-xs text-[#00b4b6] font-medium italic pt-0.5">
-                  *Километрите се изчисляват двупосочно (отиване и връщане от Бургас). Първите {pricing.freeDistance} км в посока (общо {pricing.freeDistance * 2} км двупосочно) са безплатни!
+                  *Първите {pricing.freeDistance} км от Бургас са напълно безплатни, след което се начисляват по {pricing.ratePerKm} €/км.
                 </p>
               )}
             </div>
@@ -316,7 +316,7 @@ export const CalculatorWidget = () => {
                   {totalPrice} €
                 </div>
                 <p className="text-xs text-white/70 font-light max-w-lg mx-auto leading-relaxed">
-                  * Включва отиване и връщане ({distance * 2} км двупосочно). Крайната оферта се потвърждава след връзка с нас.
+                  * Включва транспорт до {pricing.freeDistance} км от Бургас. Крайната оферта се потвърждава след връзка с нас.
                 </p>
               </>
             )}
