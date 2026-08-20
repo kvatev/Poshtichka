@@ -92,7 +92,7 @@ export const AboutInteractiveShowcase = () => {
           className="text-center space-y-2.5"
         >
           <h2 className="font-salongbeach text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase tracking-wider text-[#182b2c] leading-tight drop-shadow-xs">
-            КАКВО Е ПОЩИЧКА?
+            ЗА ПОЩИЧКА
           </h2>
           <p className="font-sans text-xs sm:text-sm md:text-base text-[#182b2c]/80 font-light max-w-xl mx-auto">
             Кликнете върху номерата около машината, за да научите за концепцията и създаването
